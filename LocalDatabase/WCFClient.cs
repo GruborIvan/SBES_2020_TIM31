@@ -15,8 +15,9 @@ namespace LocalDatabase
         public WCFClient(NetTcpBinding binding, EndpointAddress address)
             : base(binding, address) {
             factory = this.CreateChannel();
+            Console.WriteLine("PROVERA: Namestio sam!");
         }
-
+        
         public void Dispose() {
             if (factory != null) {
                 factory = null;
