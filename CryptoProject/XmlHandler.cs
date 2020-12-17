@@ -9,15 +9,21 @@ using System.IO;
 
 namespace CryptoProject
 {
-    class XmlHandler
+    public class XmlHandler
     {
+        public XmlHandler()
+        {
+
+        }
         public string EntityToXml(LogEntitet le)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(LogEntitet));
             using (StringWriter textWriter = new StringWriter()){
+
                 xmlSerializer.Serialize(textWriter, le);
                 File.WriteAllText("baza.xml", textWriter.ToString());
                 return textWriter.ToString();
+
             }
         }
     }

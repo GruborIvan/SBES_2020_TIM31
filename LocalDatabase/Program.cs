@@ -15,7 +15,7 @@ namespace LocalDatabase
 			string address = "net.tcp://localhost:9999/wcfserver";
 
 			using (WCFClient proxy = new WCFClient(binding, new EndpointAddress(new Uri(address)))) {
-				proxy.testservermessage("hello to server from client.");
+				proxy.testServerMessage("hello to server from client.");
 			}
 
 			Console.ReadLine();

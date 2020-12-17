@@ -28,16 +28,6 @@ namespace Common
 
         }
 
-        public LogEntitet(Region reg, string municipality, int godina) {
-
-            this.Id = "";
-            Region = reg;
-            Grad = municipality;
-            Year = godina;
-            Potrosnja = new List<float>(12);
-
-        }
-
         public LogEntitet(string id, Region reg, string municipality, int godina) {
 
             this.Id = id;
