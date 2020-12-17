@@ -19,7 +19,13 @@ namespace LocalDatabase
         }
 
         public string addLogEntity(LogEntitet entitet) {
-            throw new NotImplementedException();
+
+            Database database = new Database();
+
+            entitet.Id = factory.addLogEntity(entitet);
+            database.EntityList.Add(entitet);
+
+            return entitet.Id;
         }
 
         public float cityAverageConsumption(string grad) {
@@ -47,7 +53,8 @@ namespace LocalDatabase
         }
 
         public void testServerMessage(string message) {
-            throw new NotImplementedException();
+
+            factory.testServerMessage("Hello to server from client.");
         }
 
         public LogEntitet updateConsumption(string id, int month, float consumption) {
