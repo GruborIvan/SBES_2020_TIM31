@@ -22,7 +22,10 @@ namespace CryptoProject
 			Console.WriteLine("WCFService is opened. Press <enter> to finish...");
 			Console.ReadLine();
 
-			host.Close();
+            LogEntitet le = new LogEntitet("1", Region.BACKA, "asd", 1231);
+
+            XmlHandler xh = new XmlHandler();
+            xh.EntityToXml(le);
 		}
     }
 }
