@@ -46,8 +46,8 @@ namespace LocalDatabase
             throw new NotImplementedException();
         }
 
-        public void testservermessage(string message) {
-            factory.testservermessage(message);
+        public void testServerMessage(string message) {
+            throw new NotImplementedException();
         }
 
         public LogEntitet updateConsumption(string id, int month, float consumption) {
