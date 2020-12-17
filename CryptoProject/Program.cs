@@ -35,7 +35,14 @@ namespace CryptoProject
 
             le.Potrosnja[0] = 200;
             le.Potrosnja[1] = 300;
+            le.Potrosnja[2] = 400;
+            le.Potrosnja[3] = 500;
+            le.Potrosnja[4] = 600;
+            le.Potrosnja[5] = 700;
+            le.Potrosnja[6] = 800;
+            le.Potrosnja[7] = 900;
 
+            Console.WriteLine("potrosnja: "+le.Potrosnja[1]);
             xh.UpdateEntity(le);
 
             try

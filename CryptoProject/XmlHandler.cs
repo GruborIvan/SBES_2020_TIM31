@@ -73,12 +73,21 @@ namespace CryptoProject
                 var items = from item in xmlDoc.Descendants("LogEntitet")
                             where item.Element("Id").Value == le.Id
                             select item;
+                
                 foreach(XElement ielement in items)
                 {
                     ielement.SetElementValue("Region", le.Region.ToString());
                     ielement.SetElementValue("Grad", le.Grad);
                     ielement.SetElementValue("Year", le.Year.ToString());
-                    ielement.SetElementValue("Potrosnja", le.Potrosnja);
+
+                    int i = 0;
+                                        
+                    foreach(var pot in ielement.Descendants("Potrosnja").Elements("float"))
+                    {
+                        pot.SetElementValue(name:"float",le.Potrosnja[i].ToString());
+                        i++;
+                    }
+                    
                 }
                 xmlDoc.Save("baza.xml");
                 return true;
