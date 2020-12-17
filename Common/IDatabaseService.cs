@@ -13,7 +13,7 @@ namespace Common
     {
 
         [OperationContract]
-        void testservermessage(string message);
+        void testServerMessage(string message);
         [OperationContract]
         List<LogEntitet> readEntities(List<Region> regioni);
         [OperationContract]
