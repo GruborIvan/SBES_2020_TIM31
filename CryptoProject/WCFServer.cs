@@ -49,13 +49,42 @@ namespace CryptoProject
         }
 
         public List<LogEntitet> readEntities(List<Region> regioni) {
-            try { return xh.ReturnList(); }
-            catch (Exception e) { Console.WriteLine(e); }
-            return null;
+            List<LogEntitet> ret = new List<LogEntitet>();
+
+            foreach(var item in regioni)
+            {
+                foreach(var predmet in xh.ReturnList())
+                {
+                    if (item.Equals(predmet.Region))
+                    {
+                        ret.Add(predmet);
+                    }
+                }
+            }
+
+            return ret;
         }
 
         public float regionAverageConsumption(Region reg) {
-            throw new NotImplementedException();
+            float ret = 0, cons = 0;
+            int n = 0, i = 0;
+
+            foreach (LogEntitet item in xh.ReturnList())
+            {
+                if (item.Region.Equals(reg))
+                {
+                    foreach (float f in item.Potrosnja)
+                    {
+                        cons += item.Potrosnja[i];
+                        i++;
+                    }
+                    ret += cons;
+                    cons = 0;
+                    i = 0;
+                    n++;
+                }
+            }
+            return (ret / n);
         }
 
         public void testServerMessage(string message) {
@@ -63,7 +92,19 @@ namespace CryptoProject
         }
 
         public LogEntitet updateConsumption(string id, int month, float consumption) {
-            throw new NotImplementedException();
+            LogEntitet le = new LogEntitet();
+            foreach (var element in xh.ReturnList())
+            {
+                if (element.Id.Equals(id))
+                {
+                    le = element;
+                    break;
+                }
+            }
+            le.Potrosnja[month] = consumption;
+            xh.UpdateEntity(le);
+            return le;
+
         }
     }
 }
