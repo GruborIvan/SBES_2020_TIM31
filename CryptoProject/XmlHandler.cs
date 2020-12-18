@@ -82,10 +82,13 @@ namespace CryptoProject
 
                     int i = 0;
                                         
-                    foreach(var pot in ielement.Descendants("Potrosnja").Elements("float"))
+                    foreach(var pot in items.Descendants("Potrosnja").Descendants("float"))
                     {
-                        pot.SetElementValue(name:"float",le.Potrosnja[i].ToString());
+                        pot.SetValue(le.Potrosnja[i]);
+                        
                         i++;
+                        if (i == le.Potrosnja.Count)
+                            break;
                     }
                     
                 }
