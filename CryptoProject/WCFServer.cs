@@ -11,8 +11,7 @@ namespace CryptoProject
     {
         XmlHandler xh = new XmlHandler();
         public string addLogEntity(LogEntitet entitet) {
-
-            throw new NotImplementedException();
+            return xh.AddEntity(entitet);
         }
 
         public float cityAverageConsumption(string grad) {

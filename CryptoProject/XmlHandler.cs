@@ -31,6 +31,15 @@ namespace CryptoProject
 
         public string AddEntity(LogEntitet le)
         {
+            le.Id = "0";
+            if(ListaLogEntitet != null)
+            {
+                string max = ListaLogEntitet.Keys.ToList().Last();
+                int a = Int32.Parse(max);
+                a++;
+                le.Id = a.ToString();
+            }
+
             ListaLogEntitet.Add(le.Id,le);
             List<LogEntitet> entries = new List<LogEntitet>(ListaLogEntitet.Count);
             foreach(string key in ListaLogEntitet.Keys)
@@ -42,7 +51,7 @@ namespace CryptoProject
 
                 xmlSerializer.Serialize(textWriter, entries);
                 File.WriteAllText("baza.xml", textWriter.ToString());
-                return (textWriter.ToString());
+                return le.Id;
 
             }
             
