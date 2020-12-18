@@ -13,7 +13,7 @@ namespace CryptoProject
 {
     public class XmlHandler
     {
-        static Dictionary<string,LogEntitet> ListaLogEntitet = new Dictionary<string, LogEntitet>();
+        public static Dictionary<string,LogEntitet> ListaLogEntitet = new Dictionary<string, LogEntitet>();
         public XmlHandler()
         {
 
@@ -32,12 +32,9 @@ namespace CryptoProject
         public string AddEntity(LogEntitet le)
         {
             le.Id = "0";
-            if(ListaLogEntitet != null)
+            if (!(ListaLogEntitet.Count()==0))
             {
-                string max = ListaLogEntitet.Keys.ToList().Last();
-                int a = Int32.Parse(max);
-                a++;
-                le.Id = a.ToString();
+                le.Id = NadjiRupu(ListaLogEntitet).ToString();
             }
 
             ListaLogEntitet.Add(le.Id,le);
@@ -59,6 +56,7 @@ namespace CryptoProject
 
         public bool DeleteEntity(string id)
         {
+            
             string xmlEntitet = "";
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(LogEntitet));
             
@@ -71,10 +69,11 @@ namespace CryptoProject
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(File.ReadAllText("baza.xml"));
             XmlNode xmlNode = doc.SelectSingleNode("ArrayOfLogEntitet/LogEntitet[Id = " + id+"]");
-            
+
+            ListaLogEntitet.Remove(id);
+
             if (xmlNode != null)
             {
-                ListaLogEntitet.Remove(id);
                 xmlNode.ParentNode.RemoveChild(xmlNode);
                 doc.Save("baza.xml");
                 return true;
@@ -87,21 +86,34 @@ namespace CryptoProject
         {
             if (ListaLogEntitet.ContainsKey(le.Id))
             {
+                int rupa = NadjiRupu(ListaLogEntitet);
+
                 ListaLogEntitet[le.Id] = le;
+                
                 XDocument xmlDoc = XDocument.Parse(File.ReadAllText("baza.xml"));
 
                 var items = from item in xmlDoc.Descendants("LogEntitet")
                             where item.Element("Id").Value == le.Id
                             select item;
-                
-                foreach(XElement ielement in items)
+
+
+                foreach (XElement ielement in items)
                 {
+                    
                     ielement.SetElementValue("Region", le.Region.ToString());
-                    ielement.SetElementValue("Grad", le.Grad);
+                    ielement.SetElementValue("Grad", le.Grad.ToString());
                     ielement.SetElementValue("Year", le.Year.ToString());
 
+                    if (rupa < Int32.Parse(le.Id))
+                    {
+                        ielement.SetElementValue("Id", rupa.ToString());
+                        items = from item in xmlDoc.Descendants("LogEntitet")
+                                where item.Element("Id").Value == rupa.ToString()
+                                select item;
+                    }
+
                     int i = 0;
-                                        
+                    
                     foreach(var pot in items.Descendants("Potrosnja").Descendants("float"))
                     {
                         pot.SetValue(le.Potrosnja[i]);
@@ -112,11 +124,30 @@ namespace CryptoProject
                     }
                     
                 }
+                if (rupa < Int32.Parse(le.Id))
+                {
+                    ListaLogEntitet.Remove(le.Id);
+                    le.Id = rupa.ToString();
+                    ListaLogEntitet.Add(rupa.ToString(), le);
+                    Console.WriteLine("ID u diksnariju: " + ListaLogEntitet["1"].Grad);
+                }
                 xmlDoc.Save("baza.xml");
                 return true;
             }
             return false;
         } 
+
+        public int NadjiRupu(Dictionary<string, LogEntitet> provera)
+        {
+            int a = 0;
+
+            while(provera.ContainsKey(a.ToString()))
+            { 
+                a++;
+            }
+
+            return a;
+        }
 
     }
 }
