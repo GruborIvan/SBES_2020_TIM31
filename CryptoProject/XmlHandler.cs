@@ -18,6 +18,17 @@ namespace CryptoProject
         {
 
         }
+
+        public List<LogEntitet> ReturnList()
+        {
+            List<LogEntitet> entries = new List<LogEntitet>(ListaLogEntitet.Count);
+            foreach (string key in ListaLogEntitet.Keys)
+            {
+                entries.Add(ListaLogEntitet[key]);
+            }
+            return entries;
+        }
+
         public string AddEntity(LogEntitet le)
         {
             ListaLogEntitet.Add(le.Id,le);
