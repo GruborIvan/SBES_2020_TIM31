@@ -42,23 +42,23 @@ namespace CryptoProject
             le.Potrosnja[6] = 800;
             le.Potrosnja[7] = 900;
 
-            Console.WriteLine("potrosnja: "+le.Potrosnja[1]);
-            xh.UpdateEntity(le);
+            le2.Potrosnja[11] = 1200;
 
+            xh.UpdateEntity(le);
+            xh.UpdateEntity(le2);
             try
             {
-               // xh.DeleteEntity("1");
+               xh.DeleteEntity("2");
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
             }
-            le2.Region = Region.BEOGRAD;
-            le2.Grad = "SMECE ODVRATNO";
+            le1.Region = Region.BEOGRAD;
+            le1.Grad = "SMECE ODVRATNO";
             xh.UpdateEntity(le2);
 
-            Console.ReadLine();
-            Console.ReadLine();
+            Console.WriteLine("Create Update Delete 3 entiteta kreirana 2 Entiteta sa updatovanim potrosnjama 3. obrisan ");
 
             Console.ReadLine();
 

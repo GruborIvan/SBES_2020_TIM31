@@ -10,6 +10,7 @@ namespace CryptoProject
     public class WCFServer : IDatabaseService
     {
         public string addLogEntity(LogEntitet entitet) {
+
             throw new NotImplementedException();
         }
 
