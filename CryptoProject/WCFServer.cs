@@ -112,6 +112,7 @@ namespace CryptoProject
             
             float ret = 0, cons = 0;
             int n = 0, i = 0;
+            List<int> godine = new List<int>();
 
             foreach (LogEntitet item in xh.ReturnList())
             {
@@ -121,15 +122,22 @@ namespace CryptoProject
                 //////////////////////////////////////
                 if (item.Region.Equals(reg))
                 {
+                    
                     foreach (float f in item.Potrosnja)
                     {
                         cons += item.Potrosnja[i];
                         i++;
                     }
+                    
+                    if (!godine.Contains(item.Year))
+                    {
+                        godine.Add(item.Year);
+                        n++;
+                    }
                     ret += cons;
                     cons = 0;
                     i = 0;
-                    n++;
+                    
                 }
             }
             return (ret / n); // Ne!
