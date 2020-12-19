@@ -17,11 +17,19 @@ namespace CryptoProject
         public string addLogEntity(LogEntitet entitet) {
 
             //dictionary za klijent id vezu 
-           // IIdentity client = ServiceSecurityContext.Current.PrimaryIdentity;
-           // if (client == null)
+            // IIdentity client = ServiceSecurityContext.Current.PrimaryIdentity;
+            // if (client == null)
             //    return null;
             //klijenti.Add(entitet.Id, client);
             /////////////////////////////////
+            ///
+
+            List<LogEntitet> list = xh.ReturnList();
+            if (list.Find(x => x.Grad.ToLower() == entitet.Grad.ToLower() && x.Year == entitet.Year) != null) {
+
+                return null;
+            }
+            
             
             return xh.AddEntity(entitet);
         }
@@ -78,7 +86,7 @@ namespace CryptoProject
             
             List<LogEntitet> ret = new List<LogEntitet>();
 
-            foreach(var item in regioni) // Why?
+            foreach(var item in regioni)
             {
                 
                 foreach(var predmet in xh.ReturnList())
@@ -91,6 +99,7 @@ namespace CryptoProject
                         ret.Add(predmet);
                     }
                 }
+            
             }
 
             return ret;
