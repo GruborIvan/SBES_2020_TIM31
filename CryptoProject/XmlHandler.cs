@@ -129,7 +129,6 @@ namespace CryptoProject
                     ListaLogEntitet.Remove(le.Id);
                     le.Id = rupa.ToString();
                     ListaLogEntitet.Add(rupa.ToString(), le);
-                    Console.WriteLine("ID u diksnariju: " + ListaLogEntitet["1"].Grad);
                 }
                 xmlDoc.Save("baza.xml");
                 return true;
