@@ -236,15 +236,14 @@ namespace LocalDatabase
                 try {
 
 					Console.WriteLine("Unesite potrošnju za mesec {0}: ", i);
-					float.TryParse(Console.ReadLine(), out potrosnja);
-					entitet.Potrosnja[i - 1] = potrosnja;
+                    entitet.Potrosnja.Add(float.Parse(Console.ReadLine()));
 					i++;
 				}
                 catch (Exception ex) {
 
 					Console.WriteLine("Unet neispravan format potrosnje.");
-					if (i != 0) {
-						i = i - 1;
+					if (i != 1) {
+						i --;
 					}
                 }
 
