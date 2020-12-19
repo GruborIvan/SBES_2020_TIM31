@@ -78,7 +78,7 @@ namespace CryptoProject
             
             List<LogEntitet> ret = new List<LogEntitet>();
 
-            foreach(var item in regioni) // Why?
+            foreach(var item in regioni)
             {
                 
                 foreach(var predmet in xh.ReturnList())
@@ -131,7 +131,7 @@ namespace CryptoProject
                     
                 }
             }
-            return (ret / n); // Ne!
+            return (ret / n);
         }
 
         public void testServerMessage(string message) {
