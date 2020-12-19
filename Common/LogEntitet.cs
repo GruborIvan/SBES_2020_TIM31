@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Common
 {
 
-    public enum Region { SREM, BANAT, BACKA, BEOGRAD, SUMADIJA, ZAPADNA_SRBIJA, JUZNA_SRBIJA, ISTOCNA_SRBIJA, KOSOVO_I_METOHIJA };
+    public enum Region { Srem, Banat, Bačka, Beograd, Šumadija, Zapadna_Srbija, Južna_Srbija, Istočna_Srbija, Kosovo_i_Metohija };
 
     public class LogEntitet
     {
@@ -21,7 +21,7 @@ namespace Common
         public LogEntitet() {
 
             this.Id = "";
-            Region = Region.BACKA;
+            Region = Region.Bačka;
             Grad = "";
             Year = 0;
             Potrosnja = new List<float> ();

@@ -11,8 +11,9 @@ namespace CryptoProject
 {
     public class WCFServer : IDatabaseService
     {
-        XmlHandler XMLHandler = new XmlHandler();
+        XmlHandler xh = new XmlHandler();
         private static Dictionary<string, IIdentity> klijenti = new Dictionary<string, IIdentity>();
+
         public string addLogEntity(LogEntitet entitet) {
 
             //dictionary za klijent id vezu 
@@ -22,7 +23,7 @@ namespace CryptoProject
             klijenti.Add(entitet.Id, client);
             /////////////////////////////////
             
-            return XMLHandler.AddEntity(entitet);
+            return xh.AddEntity(entitet);
         }
 
         public float cityAverageConsumption(string grad) {
@@ -32,10 +33,10 @@ namespace CryptoProject
             float ret = 0,cons = 0;
             int n = 0,i = 0;
 
-            foreach(LogEntitet item in XMLHandler.ReturnList())
+            foreach(LogEntitet item in xh.ReturnList())
             {/////////////////////////////////////////ako klijentu nije dostupna dotican item -> continue
-                if (!klijenti[item.Id].Equals(client))
-                    continue;
+             //   if (!klijenti[item.Id].Equals(client))
+             //       continue;
             /////////////////////////////////////////
                 if (item.Grad.Equals(grad))
                 {
@@ -50,18 +51,18 @@ namespace CryptoProject
                     n++;
                 }
             }
-            return (ret / n);
+            return (ret / n); //Ne!
         }
 
         public bool deleteLogEntity(string id)
         {//////////////////////////////////////Ako klijentu nije dostupan doticni item -> return
             IIdentity client = ServiceSecurityContext.Current.PrimaryIdentity;
             //if (!klijenti[id].Equals(client))
-                //return false;
+            //    return false;
         ///////////////////////////////////////
             try
             {
-             return XMLHandler.DeleteEntity(id);
+             return xh.DeleteEntity(id);
 
             }catch(Exception e)
             {
@@ -74,16 +75,16 @@ namespace CryptoProject
             //////////////////////////////////////
             IIdentity client = ServiceSecurityContext.Current.PrimaryIdentity;
             ///////////////////////////////////////
-
+            
             List<LogEntitet> ret = new List<LogEntitet>();
 
-            foreach(var item in regioni)
+            foreach(var item in regioni) // Why?
             {
                 
-                foreach(var predmet in XMLHandler.ReturnList())
+                foreach(var predmet in xh.ReturnList())
                 {////////////////////////////////////////////
-                    if (!klijenti[predmet.Id].Equals(client))
-                        continue;
+                    //if (!klijenti[predmet.Id].Equals(client))
+                    //    continue;
                 ////////////////////////////////////////////
                     if (item.Equals(predmet.Region))
                     {
@@ -103,11 +104,11 @@ namespace CryptoProject
             float ret = 0, cons = 0;
             int n = 0, i = 0;
 
-            foreach (LogEntitet item in XMLHandler.ReturnList())
+            foreach (LogEntitet item in xh.ReturnList())
             {
                 ///////////////////////////////////////
-                if (!klijenti[item.Id].Equals(client))
-                    continue;
+                //if (!klijenti[item.Id].Equals(client)) //Problem ovde!
+                //    continue;
                 //////////////////////////////////////
                 if (item.Region.Equals(reg))
                 {
@@ -122,11 +123,11 @@ namespace CryptoProject
                     n++;
                 }
             }
-            return (ret / n);
+            return (ret / n); // Ne!
         }
 
         public void testServerMessage(string message) {
-            Console.WriteLine("Poruka od klijenta: " +message);
+            throw new NotImplementedException();
         }
 
         public LogEntitet updateConsumption(string id, int month, float consumption) {
@@ -135,11 +136,11 @@ namespace CryptoProject
             ///////////////////////////////////////
 
             LogEntitet le = new LogEntitet();
-            foreach (var element in XMLHandler.ReturnList())
+            foreach (var element in xh.ReturnList())
             {
             ///////////////////////////////////////
-                if (!klijenti[element.Id].Equals(client))
-                    continue;
+               // if (!klijenti[element.Id].Equals(client))
+               //     continue;
             //////////////////////////////////////
               
                 if (element.Id.Equals(id))
@@ -149,7 +150,7 @@ namespace CryptoProject
                 }
             }
             le.Potrosnja[month] = consumption;
-            XMLHandler.UpdateEntity(le);
+            xh.UpdateEntity(le);
             return le;
 
         }

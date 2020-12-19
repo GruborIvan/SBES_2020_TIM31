@@ -48,6 +48,8 @@ namespace LocalDatabase
             }else
                 db.EntityList.Remove(db.EntityList.Find(x => x.Id == id));
 
+            factory.deleteLogEntity(id);
+
             return true;
         }
 
