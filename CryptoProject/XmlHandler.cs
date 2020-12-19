@@ -104,14 +104,7 @@ namespace CryptoProject
                     ielement.SetElementValue("Grad", le.Grad.ToString());
                     ielement.SetElementValue("Year", le.Year.ToString());
 
-                    if (rupa < Int32.Parse(le.Id))
-                    {
-                        ielement.SetElementValue("Id", rupa.ToString());
-                        items = from item in xmlDoc.Descendants("LogEntitet")
-                                where item.Element("Id").Value == rupa.ToString()
-                                select item;
-                    }
-
+                  
                     int i = 0;
                     
                     foreach(var pot in items.Descendants("Potrosnja").Descendants("float"))
@@ -123,13 +116,6 @@ namespace CryptoProject
                             break;
                     }
                     
-                }
-                if (rupa < Int32.Parse(le.Id))
-                {
-                    ListaLogEntitet.Remove(le.Id);
-                    le.Id = rupa.ToString();
-                    ListaLogEntitet.Add(rupa.ToString(), le);
-                    Console.WriteLine("ID u diksnariju: " + ListaLogEntitet["1"].Grad);
                 }
                 xmlDoc.Save("baza.xml");
                 return true;

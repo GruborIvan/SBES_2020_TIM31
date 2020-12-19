@@ -17,9 +17,9 @@ namespace CryptoProject
         public string addLogEntity(LogEntitet entitet) {
 
             //dictionary za klijent id vezu 
-            //IIdentity client = ServiceSecurityContext.Current.PrimaryIdentity;
-            //if (client == null)
-                //return null;
+           // IIdentity client = ServiceSecurityContext.Current.PrimaryIdentity;
+           // if (client == null)
+            //    return null;
             //klijenti.Add(entitet.Id, client);
             /////////////////////////////////
             
