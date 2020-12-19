@@ -117,13 +117,6 @@ namespace CryptoProject
                     }
                     
                 }
-                if (rupa < Int32.Parse(le.Id))
-                {
-                    ListaLogEntitet.Remove(le.Id);
-                    le.Id = rupa.ToString();
-                    ListaLogEntitet.Add(rupa.ToString(), le);
-                }
-
                 xmlDoc.Save("baza.xml");
                 return true;
             }
