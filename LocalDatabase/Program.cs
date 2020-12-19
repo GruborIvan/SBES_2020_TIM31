@@ -148,7 +148,7 @@ namespace LocalDatabase
 
 			} while (int.TryParse(Console.ReadLine(), out ch) == false || ch < 0 || ch > i);
 
-			return (Region)ch;
+			return (Region)ch-1;
 		}
 
 		static string odaberiGrad() {
