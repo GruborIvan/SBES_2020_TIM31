@@ -23,10 +23,10 @@ namespace CryptoProject
 			Console.WriteLine("WCFService is opened. Press <enter> to finish...");
 			Console.ReadLine();
 
-            LogEntitet le = new LogEntitet("0",  Region.BACKA, "AAAA", 1231);
-            LogEntitet le3 = new LogEntitet("3", Region.BACKA, "DDDD", 1231);
-            LogEntitet le1 = new LogEntitet("1", Region.BANAT, "BBBB", 1241);
-            LogEntitet le2 = new LogEntitet("2", Region.BANAT, "CCCC", 1241);
+            LogEntitet le = new LogEntitet("0", Region.Bačka, "AAAA", 1223);
+            LogEntitet le3 = new LogEntitet("3", Region.Bačka, "DDDD", 1231);
+            LogEntitet le1 = new LogEntitet("1", Region.Bačka, "BBBB", 1241);
+            LogEntitet le2 = new LogEntitet("2", Region.Bačka, "CCCC", 1241);
             XmlHandler xh = new XmlHandler();
 
             xh.AddEntity(le);

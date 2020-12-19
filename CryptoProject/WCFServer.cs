@@ -13,6 +13,7 @@ namespace CryptoProject
     {
         XmlHandler xh = new XmlHandler();
         private static Dictionary<string, IIdentity> klijenti = new Dictionary<string, IIdentity>();
+
         public string addLogEntity(LogEntitet entitet) {
 
             //dictionary za klijent id vezu 
@@ -34,8 +35,8 @@ namespace CryptoProject
 
             foreach(LogEntitet item in xh.ReturnList())
             {/////////////////////////////////////////ako klijentu nije dostupna dotican item -> continue
-                if (!klijenti[item.Id].Equals(client))
-                    continue;
+             //   if (!klijenti[item.Id].Equals(client))
+             //       continue;
             /////////////////////////////////////////
                 if (item.Grad.Equals(grad))
                 {
@@ -50,14 +51,14 @@ namespace CryptoProject
                     n++;
                 }
             }
-            return (ret / n);
+            return (ret / n); //Ne!
         }
 
         public bool deleteLogEntity(string id)
         {//////////////////////////////////////Ako klijentu nije dostupan doticni item -> return
             IIdentity client = ServiceSecurityContext.Current.PrimaryIdentity;
-            if (!klijenti[id].Equals(client))
-                return false;
+            //if (!klijenti[id].Equals(client))
+            //    return false;
         ///////////////////////////////////////
             try
             {
@@ -74,16 +75,16 @@ namespace CryptoProject
             //////////////////////////////////////
             IIdentity client = ServiceSecurityContext.Current.PrimaryIdentity;
             ///////////////////////////////////////
-
+            
             List<LogEntitet> ret = new List<LogEntitet>();
 
-            foreach(var item in regioni)
+            foreach(var item in regioni) // Why?
             {
                 
                 foreach(var predmet in xh.ReturnList())
                 {////////////////////////////////////////////
-                    if (!klijenti[predmet.Id].Equals(client))
-                        continue;
+                    //if (!klijenti[predmet.Id].Equals(client))
+                    //    continue;
                 ////////////////////////////////////////////
                     if (item.Equals(predmet.Region))
                     {
@@ -106,8 +107,8 @@ namespace CryptoProject
             foreach (LogEntitet item in xh.ReturnList())
             {
                 ///////////////////////////////////////
-                if (!klijenti[item.Id].Equals(client))
-                    continue;
+                //if (!klijenti[item.Id].Equals(client)) //Problem ovde!
+                //    continue;
                 //////////////////////////////////////
                 if (item.Region.Equals(reg))
                 {
@@ -122,7 +123,7 @@ namespace CryptoProject
                     n++;
                 }
             }
-            return (ret / n);
+            return (ret / n); // Ne!
         }
 
         public void testServerMessage(string message) {
@@ -138,8 +139,8 @@ namespace CryptoProject
             foreach (var element in xh.ReturnList())
             {
             ///////////////////////////////////////
-                if (!klijenti[element.Id].Equals(client))
-                    continue;
+               // if (!klijenti[element.Id].Equals(client))
+               //     continue;
             //////////////////////////////////////
               
                 if (element.Id.Equals(id))

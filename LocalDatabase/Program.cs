@@ -95,10 +95,10 @@ namespace LocalDatabase
                 foreach (Region reg in Enum.GetValues(typeof(Region))) {
 
 					string val = reg.ToString().ToLower();
-					val = val.Substring(0, 1).ToUpper();
-					Console.WriteLine("{0}. {1}\n", i, val);
+					val = val.Substring(0, 1).ToUpper() + val.Substring(1, val.Length - 1).Replace('_', ' ');
+					Console.WriteLine("{0}. {1}", i, val);
 					i++;
-                }
+				}
 
 				input = Console.ReadLine();
 				regioni = validateInput(input);
@@ -118,12 +118,13 @@ namespace LocalDatabase
 
             foreach (string s in splitinput) {
 
-				success = int.TryParse(Console.ReadLine(), out ch);
-                if (success == false) {
+				success = int.TryParse(s.Replace(" ", ""), out ch);
+                if (success == false || ch < 1 || ch > 9) {
+					Console.WriteLine("Neispravan format unosa. Regione odaberite brojevima odvojenim zapetom. Brojevi su od 1 do 9.\n");
 					return null;
                 }
 
-				regioni.Add((Region)ch);
+				regioni.Add((Region)(ch - 1));
 			}
 
 			return regioni;
@@ -140,8 +141,8 @@ namespace LocalDatabase
 				foreach (Region reg in Enum.GetValues(typeof(Region))) {
 
 					string val = reg.ToString().ToLower();
-					val = val.Substring(0, 1).ToUpper() + val.Substring(1, val.Length - 1);
-					Console.WriteLine("{0}. {1}\n", i, val);
+					val = val.Substring(0, 1).ToUpper() + val.Substring(1, val.Length - 1).Replace('_', ' ');
+					Console.WriteLine("{0}. {1}", i, val);
 					i++;
 				}
 
@@ -214,36 +215,40 @@ namespace LocalDatabase
 		static LogEntitet dodajEntitet() {
 
 			LogEntitet entitet = new LogEntitet();
-			int ch;
+			int godina;
 			float potrosnja;
 
-			Console.WriteLine("Unesite region entiteta> ");
+			Console.WriteLine("Unesite region> ");
 			entitet.Region = odaberiRegion();
-			Console.WriteLine("Unesite grad entiteta> ");
+			Console.WriteLine("Unesite grad> ");
 			entitet.Grad = Console.ReadLine();
 
 			do {
-				Console.WriteLine("Unesite godinu ");
+				Console.WriteLine("Unesite godinu> ");
 
-			} while (int.TryParse(Console.ReadLine(), out ch) == false || ch < 0);
+			}while(int.TryParse(Console.ReadLine(), out godina) == false || godina < 0);
 
-			entitet.Year = ch;
+			entitet.Year = godina;
 
 			int i = 1;
 			do {
 
-				try {
-					Console.WriteLine("Unesite potrošnju za mesec: {0} [kW/h].\n", i);
-					i++;
-					potrosnja = float.Parse(Console.ReadLine());
-					entitet.Potrosnja.Add(potrosnja);
+                try {
 
+					Console.WriteLine("Unesite potrošnju za mesec {0}: ", i);
+					float.TryParse(Console.ReadLine(), out potrosnja);
+					entitet.Potrosnja[i - 1] = potrosnja;
+					i++;
 				}
-				catch (Exception ex) {
-					i = i - 1;
-					Console.WriteLine("Nepravilan unos potrošnje.");
-				}
-			} while (i < 12);
+                catch (Exception ex) {
+
+					Console.WriteLine("Unet neispravan format potrosnje.");
+					if (i != 0) {
+						i = i - 1;
+					}
+                }
+
+			} while (i < 13);
 
 			return entitet;
         }
