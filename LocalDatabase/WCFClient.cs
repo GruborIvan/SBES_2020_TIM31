@@ -23,6 +23,11 @@ namespace LocalDatabase
             Database database = new Database();
 
             entitet.Id = factory.addLogEntity(entitet);
+
+            if (entitet.Id == null) {
+                Console.WriteLine("Entitet za grad: {0} i godinu: {1} već postoji!", entitet.Grad, entitet.Year);
+                return null;
+            }
             database.EntityList.Add(entitet);
 
             return entitet.Id;
@@ -32,7 +37,7 @@ namespace LocalDatabase
 
             float potrosnja;
             potrosnja = factory.cityAverageConsumption(grad);
-            Console.WriteLine("Prosečna potrošnja za {0} je : {1} [kW/h]", grad, potrosnja);
+            Console.WriteLine("Prosečna godišnja potrošnja za {0} je : {1} [kW/h]", grad, potrosnja);
 
             return potrosnja;
         }
@@ -63,11 +68,17 @@ namespace LocalDatabase
 
         public List<LogEntitet> readEntities(List<Region> regioni) {
 
-            Database db = new Database();
+            Database database = new Database();
 
             List <LogEntitet> entiteti = new List<LogEntitet>();
             entiteti = factory.readEntities(regioni);
-            db.EntityList.AddRange(entiteti);
+
+            foreach (LogEntitet ent in entiteti) {
+                if (database.EntityList.Find(x => x.Id == ent.Id) != null) {
+                    continue;
+                }
+                database.EntityList.Add(ent);
+            }
 
             return entiteti;
         }
@@ -76,7 +87,7 @@ namespace LocalDatabase
 
             float potrosnja;
             potrosnja = factory.regionAverageConsumption(reg);
-            Console.WriteLine("Prosečna potrošnja za {0} je : {1} [kW/h]", reg, potrosnja);
+            Console.WriteLine("Prosečna godišnja potrošnja za {0} je : {1} [kW/h]", reg, potrosnja);
 
             return potrosnja;
         }
