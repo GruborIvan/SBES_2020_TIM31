@@ -24,7 +24,7 @@ namespace Common
             Region = Region.BACKA;
             Grad = "";
             Year = 0;
-            Potrosnja = new List<float> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            Potrosnja = new List<float> ();
 
         }
 
@@ -34,7 +34,7 @@ namespace Common
             Region = reg;
             Grad = municipality;
             Year = godina;
-            Potrosnja = new List<float> { 0,0,0,0,0,0,0,0,0,0,0,0};
+            Potrosnja = new List<float> ();
             
         }
 

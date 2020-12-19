@@ -243,7 +243,7 @@ namespace LocalDatabase
 					i = i - 1;
 					Console.WriteLine("Nepravilan unos potrošnje.");
 				}
-			} while (i < 12);
+			} while (i <= 12);
 
 			return entitet;
         }
