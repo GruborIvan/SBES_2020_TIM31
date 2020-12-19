@@ -94,8 +94,8 @@ namespace LocalDatabase
 				int i = 1;
                 foreach (Region reg in Enum.GetValues(typeof(Region))) {
 
-					string val = reg.ToString().ToLower();
-					val = val.Substring(0, 1).ToUpper() + val.Substring(1, val.Length - 1).Replace('_', ' ');
+					string val = reg.ToString();
+					val = val.Replace('_', ' ');
 					Console.WriteLine("{0}. {1}", i, val);
 					i++;
 				}
@@ -140,8 +140,8 @@ namespace LocalDatabase
 				i = 1;
 				foreach (Region reg in Enum.GetValues(typeof(Region))) {
 
-					string val = reg.ToString().ToLower();
-					val = val.Substring(0, 1).ToUpper() + val.Substring(1, val.Length - 1).Replace('_', ' ');
+					string val = reg.ToString();
+					val = val.Replace('_', ' ');
 					Console.WriteLine("{0}. {1}", i, val);
 					i++;
 				}
