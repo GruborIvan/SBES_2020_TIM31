@@ -16,8 +16,9 @@ namespace LocalDatabase
             NetTcpBinding binding = new NetTcpBinding();
             string address = "net.tcp://localhost:9999/wcfserver";
 
-            IDatabaseCallback callbackclient = new CallbackClient();
+            CallbackClient callbackclient = new CallbackClient();
             WCFClient proxy = new WCFClient(callbackclient, binding, new EndpointAddress(new Uri(address)));
+            callbackclient.Proxy = proxy;
 
             int opt = 0;
 

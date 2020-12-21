@@ -110,5 +110,18 @@ namespace LocalDatabase
             Console.WriteLine("Traženi entitet nije pronađen.");
             return null;
         }
+
+        public LogEntitet getUpdatedEntity(string id) {
+
+            Database database = new Database();
+
+            LogEntitet entitet = factory.getUpdatedEntity(id);
+            if (entitet != null && database.EntityList.ContainsKey(id)) {
+                database.EntityList[id] = entitet;
+                return entitet;
+            }
+
+            return null;
+        }
     }
 }

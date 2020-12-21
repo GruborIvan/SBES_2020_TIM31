@@ -202,5 +202,13 @@ namespace CryptoProject
 
         }
 
+        public LogEntitet getUpdatedEntity(string id) {
+            List<LogEntitet> entiteti = xh.ReturnList();
+
+            LogEntitet updateVal = entiteti.Find(x => x.Id == id);
+
+            return updateVal;
+        }
+
     }
 }
