@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Common
 {
 
-    [ServiceContract]
+    [ServiceContract(CallbackContract = typeof(IDatabaseCallback))]
     public interface IDatabaseService
     {
 
@@ -26,6 +26,8 @@ namespace Common
         LogEntitet updateConsumption(string id, int month, float consumption);
         [OperationContract]
         bool deleteLogEntity(string id);
+        [OperationContract]
+        LogEntitet getUpdatedEntity(string id);
 
     }
 }

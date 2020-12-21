@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace LocalDatabase
 {
-    public class WCFClient : ChannelFactory<IDatabaseService>, IDatabaseService, IDisposable
+    public class WCFClient : DuplexClientBase<IDatabaseService>, IDatabaseService, IDisposable
     {
         IDatabaseService factory;
 
-        public WCFClient(NetTcpBinding binding, EndpointAddress address)
-            : base(binding, address) {
+        public WCFClient(object callbackInstance, NetTcpBinding binding, EndpointAddress address)
+            : base(callbackInstance, binding, address) {
             factory = this.CreateChannel();
             Console.WriteLine("PROVERA: Namestio sam!");
         }
@@ -28,7 +28,7 @@ namespace LocalDatabase
                 Console.WriteLine("Entitet za grad: {0} i godinu: {1} već postoji!", entitet.Grad, entitet.Year);
                 return null;
             }
-            database.EntityList.Add(entitet);
+            database.EntityList.Add(entitet.Id, entitet);
 
             return entitet.Id;
         }
@@ -46,12 +46,12 @@ namespace LocalDatabase
 
             Database db = new Database();
 
-            if (db.EntityList.Find(x => x.Id == id) == null)
-            {
+            if (db.EntityList.ContainsKey(id) == false) {
                 Console.WriteLine("Traženi entitet ne postoji.");
                 return false;
-            }else
-                db.EntityList.Remove(db.EntityList.Find(x => x.Id == id));
+            }
+            else
+                db.EntityList.Remove(id);
 
             factory.deleteLogEntity(id);
 
@@ -70,15 +70,15 @@ namespace LocalDatabase
 
             Database database = new Database();
 
-            List <LogEntitet> entiteti = new List<LogEntitet>();
+            List<LogEntitet> entiteti = new List<LogEntitet>();
             entiteti = factory.readEntities(regioni);
 
             foreach (LogEntitet ent in entiteti) {
-                if (database.EntityList.Find(x => x.Id == ent.Id) != null) {
-                    continue;
+                if (database.EntityList.ContainsKey(ent.Id) == false) {
+                    database.EntityList.Add(ent.Id, ent);
                 }
-                database.EntityList.Add(ent);
             }
+            Console.WriteLine("Dobavljeni su entiteti, molimo odaberite opciju izlistaj entitete za detalje.\n");
 
             return entiteti;
         }
@@ -99,19 +99,28 @@ namespace LocalDatabase
 
         public LogEntitet updateConsumption(string id, int month, float consumption) {
 
-            Database db = new Database();        
+            Database db = new Database();
 
-            foreach (LogEntitet ent in db.EntityList)
-            {
-                if (ent.Id == id)
-                {
-                    ent.Potrosnja[month] = consumption;
-                    factory.updateConsumption(id, month, consumption);
-                    return ent;
-                }
+            if (db.EntityList.ContainsKey(id)) {
+                db.EntityList[id].Potrosnja[month] = consumption;
+                factory.updateConsumption(id, month, consumption);
+                return db.EntityList[id];
             }
 
             Console.WriteLine("Traženi entitet nije pronađen.");
+            return null;
+        }
+
+        public LogEntitet getUpdatedEntity(string id) {
+
+            Database database = new Database();
+
+            LogEntitet entitet = factory.getUpdatedEntity(id);
+            if (entitet != null && database.EntityList.ContainsKey(id)) {
+                database.EntityList[id] = entitet;
+                return entitet;
+            }
+
             return null;
         }
     }

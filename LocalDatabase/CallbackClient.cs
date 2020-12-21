@@ -1,0 +1,39 @@
+﻿using Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.ServiceModel;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace LocalDatabase
+{
+    [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, UseSynchronizationContext = false)]
+    public class CallbackClient : IDatabaseCallback
+    {
+
+        IDatabaseService proxy = null;
+
+        public void broadcastDeleteId(string id) {
+
+            Database database = new Database();
+            Console.WriteLine("Broadcasted delete id: {0}.\n", id);
+            if (database.EntityList.ContainsKey(id)) {
+                database.EntityList.Remove(id);
+            }
+
+        }
+
+        public void broadcastUpdateId(string id) {
+            Console.WriteLine("Broadcasted update id: {0}.", id);
+            proxy.getUpdatedEntity(id);
+
+        }
+
+        public IDatabaseService Proxy {
+
+            get { return proxy; }
+            set { proxy = value; }
+        }
+    }
+}
