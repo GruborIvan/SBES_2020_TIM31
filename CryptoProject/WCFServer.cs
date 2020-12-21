@@ -166,6 +166,7 @@ namespace CryptoProject
                     le = element;
                     break;
                 }
+
             }
             le.Potrosnja[month] = consumption;
             xh.UpdateEntity(le);
@@ -181,7 +182,9 @@ namespace CryptoProject
             List<IDatabaseCallback> deleteitems = new List<IDatabaseCallback>();
 
             foreach (IDatabaseCallback client in klijenti) {
-                try {
+
+                try 
+                {
                     if (type == 0) {
                         client.broadcastUpdateId(id);
                     }
@@ -193,10 +196,11 @@ namespace CryptoProject
                     Console.WriteLine("{0}", ex.Message);
                     deleteitems.Add(client);
                 }
+
             }
 
+            // Brisanje ugasenih klijenata..
             foreach (IDatabaseCallback client in deleteitems) {
-
                 klijenti.Remove(client);
             }
 
