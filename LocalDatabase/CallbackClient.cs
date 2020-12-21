@@ -26,7 +26,11 @@ namespace LocalDatabase
 
         public void broadcastUpdateId(string id) {
             Console.WriteLine("Broadcasted update id: {0}.", id);
-            proxy.getUpdatedEntity(id);
+            Database database = new Database();
+
+            if (database.EntityList.ContainsKey(id)) {
+                proxy.getUpdatedEntity(id);
+            }
 
         }
 

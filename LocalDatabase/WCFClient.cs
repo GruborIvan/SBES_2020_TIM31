@@ -116,7 +116,7 @@ namespace LocalDatabase
             Database database = new Database();
 
             LogEntitet entitet = factory.getUpdatedEntity(id);
-            if (entitet != null && database.EntityList.ContainsKey(id)) {
+            if (entitet != null) {
                 database.EntityList[id] = entitet;
                 return entitet;
             }
