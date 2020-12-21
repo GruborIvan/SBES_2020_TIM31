@@ -13,7 +13,7 @@ namespace CryptoProject
     {
         XmlHandler xh = new XmlHandler();
         private static Dictionary<string, IIdentity> klijenti = new Dictionary<string, IIdentity>();
-
+        
         public string addLogEntity(LogEntitet entitet) {
 
             //dictionary za klijent id vezu 

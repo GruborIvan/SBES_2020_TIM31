@@ -110,7 +110,6 @@ namespace CryptoProject
                     foreach(var pot in items.Descendants("Potrosnja").Descendants("float"))
                     {
                         pot.SetValue(le.Potrosnja[i]);
-                        
                         i++;
                         if (i == le.Potrosnja.Count)
                             break;
