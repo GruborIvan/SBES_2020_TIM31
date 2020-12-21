@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IDatabaseCallback.cs" />
     <Compile Include="IDatabaseService.cs" />
     <Compile Include="LogEntitet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

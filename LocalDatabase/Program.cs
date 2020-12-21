@@ -16,7 +16,8 @@ namespace LocalDatabase
             NetTcpBinding binding = new NetTcpBinding();
             string address = "net.tcp://localhost:9999/wcfserver";
 
-            WCFClient proxy = new WCFClient(binding, new EndpointAddress(new Uri(address)));
+            IDatabaseCallback callbackclient = new CallbackClient();
+            WCFClient proxy = new WCFClient(callbackclient, binding, new EndpointAddress(new Uri(address)));
 
             int opt = 0;
 
@@ -155,7 +156,6 @@ namespace LocalDatabase
                     Console.WriteLine("{0}. {1}", i, val);
                     i++;
                 }
-                Console.WriteLine("Nazad na glavni meni.");
             } while (int.TryParse(Console.ReadLine(), out ch) == false || ch < 0 || ch > i);
 
             return (Region)ch - 1;
@@ -192,6 +192,7 @@ namespace LocalDatabase
             Database db = new Database();
             string res = "";
             int ch;
+            int defaultval;
             float consumption;
             int i;
 
@@ -211,16 +212,17 @@ namespace LocalDatabase
             }
 
             res += db.EntityList.Values.ToList()[ch - 1].Id + ',';
+            defaultval = ch;
 
             do {
                 i = 1;
-                foreach (float potrosnja in db.EntityList.Values.ToList()[ch - 1].Potrosnja) {
+                foreach (float potrosnja in db.EntityList.Values.ToList()[defaultval - 1].Potrosnja) {
 
-                    Console.WriteLine("{0}. Mesec: {1}, potrošnja: {2}.\n", i, i, potrosnja);
+                    Console.WriteLine("{0}. Mesec: {1}, potrošnja: {2}[kW/h].", i, i, potrosnja);
                     i++;
                 }
 
-            } while (int.TryParse(Console.ReadLine(), out ch) == false || ch < 0 || ch > i);
+            } while (int.TryParse(Console.ReadLine(), out ch) == false || ch < 0 || ch >= i);
 
             res += (ch - 1).ToString() + ',';
 
@@ -314,7 +316,7 @@ namespace LocalDatabase
                 Console.WriteLine("{0}. {1}, {2}, Godina: {3}, Prosečna potrošnja: {4}.\n", i, entitet.Region, entitet.Grad, entitet.Year, entitet.Potrosnja.Average());
                 Console.Write("Mesečne potrošnje (januar - decembar) {0}: ", entitet.Year);
                 foreach (float monthlyconsumption in entitet.Potrosnja) {
-                    Console.Write("{0}, ", monthlyconsumption.ToString());
+                    Console.Write("{0}[kW/h], ", monthlyconsumption.ToString());
                 }
                 Console.WriteLine();
                 i++;

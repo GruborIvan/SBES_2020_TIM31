@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace LocalDatabase
 {
-    public class WCFClient : ChannelFactory<IDatabaseService>, IDatabaseService, IDisposable
+    public class WCFClient : DuplexClientBase<IDatabaseService>, IDatabaseService, IDisposable
     {
         IDatabaseService factory;
 
-        public WCFClient(NetTcpBinding binding, EndpointAddress address)
-            : base(binding, address) {
+        public WCFClient(object callbackInstance, NetTcpBinding binding, EndpointAddress address)
+            : base(callbackInstance, binding, address) {
             factory = this.CreateChannel();
             Console.WriteLine("PROVERA: Namestio sam!");
         }
@@ -78,6 +78,7 @@ namespace LocalDatabase
                     database.EntityList.Add(ent.Id, ent);
                 }
             }
+            Console.WriteLine("Dobavljeni su entiteti, molimo odaberite opciju izlistaj entitete za detalje.\n");
 
             return entiteti;
         }

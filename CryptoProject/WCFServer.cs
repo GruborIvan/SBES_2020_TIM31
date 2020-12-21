@@ -9,10 +9,12 @@ using System.Threading.Tasks;
 
 namespace CryptoProject
 {
+    [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant)]
     public class WCFServer : IDatabaseService
     {
         XmlHandler xh = new XmlHandler();
-        private static Dictionary<string, IIdentity> klijenti = new Dictionary<string, IIdentity>();
+        //private static Dictionary<string, IIdentity> klijenti = new Dictionary<string, IIdentity>();
+        public static List<IDatabaseCallback> klijenti = new List<IDatabaseCallback>();
 
         public string addLogEntity(LogEntitet entitet) {
 
@@ -29,8 +31,12 @@ namespace CryptoProject
 
                 return null;
             }
-            
-            
+
+            IDatabaseCallback callback = OperationContext.Current.GetCallbackChannel<IDatabaseCallback>();
+            if (klijenti.Contains(callback) == false) {
+                klijenti.Add(callback);
+            }
+
             return xh.AddEntity(entitet);
         }
 
@@ -38,18 +44,15 @@ namespace CryptoProject
             /////////////////////////////////////////get() klijenta koji trazi pristup
             IIdentity client = ServiceSecurityContext.Current.PrimaryIdentity;
             ////////////////////////////////////////
-            float ret = 0,cons = 0;
-            int n = 0,i = 0;
+            float ret = 0, cons = 0;
+            int n = 0, i = 0;
 
-            foreach(LogEntitet item in xh.ReturnList())
-            {/////////////////////////////////////////ako klijentu nije dostupna dotican item -> continue
-             //   if (!klijenti[item.Id].Equals(client))
-             //       continue;
-            /////////////////////////////////////////
-                if (item.Grad.Equals(grad))
-                {
-                    foreach (float f in item.Potrosnja)
-                    {
+            foreach (LogEntitet item in xh.ReturnList()) {/////////////////////////////////////////ako klijentu nije dostupna dotican item -> continue
+                                                          //   if (!klijenti[item.Id].Equals(client))
+                                                          //       continue;
+                                                          /////////////////////////////////////////
+                if (item.Grad.Equals(grad)) {
+                    foreach (float f in item.Potrosnja) {
                         cons += item.Potrosnja[i];
                         i++;
                     }
@@ -62,44 +65,48 @@ namespace CryptoProject
             return (ret / n); //Ne!
         }
 
-        public bool deleteLogEntity(string id)
-        {//////////////////////////////////////Ako klijentu nije dostupan doticni item -> return
+        public bool deleteLogEntity(string id) {//////////////////////////////////////Ako klijentu nije dostupan doticni item -> return
             IIdentity client = ServiceSecurityContext.Current.PrimaryIdentity;
             //if (!klijenti[id].Equals(client))
             //    return false;
-        ///////////////////////////////////////
-            try
-            {
-             return xh.DeleteEntity(id);
+            ///////////////////////////////////////
+            bool deletion = false;
 
-            }catch(Exception e)
-            {
+            try {
+                deletion = xh.DeleteEntity(id);
+                broadcastIdMessage(id, 1);
+                return deletion;
+            }
+            catch (Exception e) {
                 Console.WriteLine(e);
                 return false;
             }
+
         }
 
         public List<LogEntitet> readEntities(List<Region> regioni) {
             //////////////////////////////////////
             IIdentity client = ServiceSecurityContext.Current.PrimaryIdentity;
             ///////////////////////////////////////
-            
+
             List<LogEntitet> ret = new List<LogEntitet>();
 
-            foreach(var item in regioni)
-            {
-                
-                foreach(var predmet in xh.ReturnList())
-                {////////////////////////////////////////////
-                    //if (!klijenti[predmet.Id].Equals(client))
-                    //    continue;
-                ////////////////////////////////////////////
-                    if (item.Equals(predmet.Region))
-                    {
+            foreach (var item in regioni) {
+
+                foreach (var predmet in xh.ReturnList()) {////////////////////////////////////////////
+                                                          //if (!klijenti[predmet.Id].Equals(client))
+                                                          //    continue;
+                                                          ////////////////////////////////////////////
+                    if (item.Equals(predmet.Region)) {
                         ret.Add(predmet);
                     }
                 }
-            
+
+            }
+
+            IDatabaseCallback callback = OperationContext.Current.GetCallbackChannel<IDatabaseCallback>();
+            if (klijenti.Contains(callback) == false) {
+                klijenti.Add(callback);
             }
 
             return ret;
@@ -109,35 +116,31 @@ namespace CryptoProject
             //////////////////////////////////////
             IIdentity client = ServiceSecurityContext.Current.PrimaryIdentity;
             ///////////////////////////////////////
-            
+
             float ret = 0, cons = 0;
             int n = 0, i = 0;
             List<int> godine = new List<int>();
 
-            foreach (LogEntitet item in xh.ReturnList())
-            {
+            foreach (LogEntitet item in xh.ReturnList()) {
                 ///////////////////////////////////////
                 //if (!klijenti[item.Id].Equals(client)) //Problem ovde!
                 //    continue;
                 //////////////////////////////////////
-                if (item.Region.Equals(reg))
-                {
-                    
-                    foreach (float f in item.Potrosnja)
-                    {
+                if (item.Region.Equals(reg)) {
+
+                    foreach (float f in item.Potrosnja) {
                         cons += item.Potrosnja[i];
                         i++;
                     }
-                    
-                    if (!godine.Contains(item.Year))
-                    {
+
+                    if (!godine.Contains(item.Year)) {
                         godine.Add(item.Year);
                         n++;
                     }
                     ret += cons;
                     cons = 0;
                     i = 0;
-                    
+
                 }
             }
             return (ret / n);
@@ -153,23 +156,51 @@ namespace CryptoProject
             ///////////////////////////////////////
 
             LogEntitet le = new LogEntitet();
-            foreach (var element in xh.ReturnList())
-            {
-            ///////////////////////////////////////
-               // if (!klijenti[element.Id].Equals(client))
-               //     continue;
-            //////////////////////////////////////
-              
-                if (element.Id.Equals(id))
-                {
+            foreach (var element in xh.ReturnList()) {
+                ///////////////////////////////////////
+                // if (!klijenti[element.Id].Equals(client))
+                //     continue;
+                //////////////////////////////////////
+
+                if (element.Id.Equals(id)) {
                     le = element;
                     break;
                 }
             }
             le.Potrosnja[month] = consumption;
             xh.UpdateEntity(le);
+
+            broadcastIdMessage(le.Id, 0);
+
             return le;
 
         }
+
+        void broadcastIdMessage(string id, int type) {
+
+            List<IDatabaseCallback> deleteitems = new List<IDatabaseCallback>();
+
+            foreach (IDatabaseCallback client in klijenti) {
+                try {
+                    if (type == 0) {
+                        client.broadcastUpdateId(id);
+                    }
+                    else {
+                        client.broadcastDeleteId(id);
+                    }
+                }
+                catch (Exception ex) {
+                    Console.WriteLine("{0}", ex.Message);
+                    deleteitems.Add(client);
+                }
+            }
+
+            foreach (IDatabaseCallback client in deleteitems) {
+
+                klijenti.Remove(client);
+            }
+
+        }
+
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Common
 {
 
-    [ServiceContract]
+    [ServiceContract(CallbackContract = typeof(IDatabaseCallback))]
     public interface IDatabaseService
     {
 
