@@ -157,17 +157,19 @@ namespace LocalDatabase
 			int ch;
 			int i;
 
+			List<string> gradovi = database.EntityList.Values.Select(x => x.Grad).Distinct().ToList();
+
 			do {
 
 				i = 1;
-				foreach (LogEntitet s in database.EntityList) {
-					Console.WriteLine("{0}. {1}.\n", i, s.Grad);
+				foreach (string grad in gradovi) {
+					Console.WriteLine("{0}. {1}.\n", i, grad);
 					i++;
 				}
 
 			} while (int.TryParse(Console.ReadLine(), out ch) == false || ch < 0 || ch > i);
 
-			return database.EntityList[ch - 1].Grad;
+			return database.EntityList.Values.ToList()[ch - 1].Grad;
         }
 
 		static string odaberiEntitet() {
@@ -180,7 +182,7 @@ namespace LocalDatabase
 
 			do {
 				i = 1;
-				foreach (LogEntitet entitet in db.EntityList) {
+				foreach (LogEntitet entitet in db.EntityList.Values.ToList()) {
 
 					Console.WriteLine("{0}. {1}, {2}, prosečna potrošnja: {3}.\n", i, entitet.Region, entitet.Grad, entitet.Potrosnja.Average());
 					i++;
@@ -188,11 +190,11 @@ namespace LocalDatabase
 
 			} while (int.TryParse(Console.ReadLine(), out ch) == false || ch < 0 || ch > i);
 
-			res += db.EntityList[ch - 1].Id + ',';
+			res += db.EntityList.Values.ToList()[ch - 1].Id + ',';
 
 			do {
 				i = 1;
-				foreach (float potrosnja in db.EntityList[ch - 1].Potrosnja) {
+				foreach (float potrosnja in db.EntityList.Values.ToList()[ch - 1].Potrosnja) {
 
 					Console.WriteLine("{0}. Mesec: {1}, potrošnja: {2}.\n", i, i, potrosnja);
 					i++;
@@ -216,7 +218,6 @@ namespace LocalDatabase
 
 			LogEntitet entitet = new LogEntitet();
 			int godina;
-			float potrosnja;
 
 			Console.WriteLine("Unesite region> ");
 			entitet.Region = odaberiRegion();
@@ -260,7 +261,7 @@ namespace LocalDatabase
 
 			do {
 				i = 1;
-				foreach (LogEntitet entitet in database.EntityList) {
+				foreach (LogEntitet entitet in database.EntityList.Values.ToList()) {
 
 					Console.WriteLine("{0}. {1}, {2}, Godina: {3}.\n", i, entitet.Region, entitet.Grad, entitet.Year);
 					i++;
@@ -268,7 +269,7 @@ namespace LocalDatabase
 
 			} while (int.TryParse(Console.ReadLine(), out ch) == false || ch < 0 || ch > i);
 
-			return database.EntityList[ch - 1].Id;
+			return database.EntityList.Values.ToList()[ch - 1].Id;
 		}
 
 		static void izlistajEntitete() {
@@ -276,7 +277,7 @@ namespace LocalDatabase
 			Database database = new Database();
 			int i = 1;
 
-			foreach (LogEntitet entitet in database.EntityList) {
+			foreach (LogEntitet entitet in database.EntityList.Values.ToList()) {
 
 				Console.WriteLine("{0}. {1}, {2}, Godina: {3}, Prosečna potrošnja: {4}.\n", i, entitet.Region, entitet.Grad, entitet.Year, entitet.Potrosnja.Average());
 				i++;

@@ -28,7 +28,7 @@ namespace LocalDatabase
                 Console.WriteLine("Entitet za grad: {0} i godinu: {1} već postoji!", entitet.Grad, entitet.Year);
                 return null;
             }
-            database.EntityList.Add(entitet);
+            database.EntityList.Add(entitet.Id, entitet);
 
             return entitet.Id;
         }
@@ -46,12 +46,12 @@ namespace LocalDatabase
 
             Database db = new Database();
 
-            if (db.EntityList.Find(x => x.Id == id) == null)
-            {
+            if (db.EntityList.ContainsKey(id) == false) {
                 Console.WriteLine("Traženi entitet ne postoji.");
                 return false;
-            }else
-                db.EntityList.Remove(db.EntityList.Find(x => x.Id == id));
+            }
+            else
+                db.EntityList.Remove(id);
 
             factory.deleteLogEntity(id);
 
@@ -70,14 +70,13 @@ namespace LocalDatabase
 
             Database database = new Database();
 
-            List <LogEntitet> entiteti = new List<LogEntitet>();
+            List<LogEntitet> entiteti = new List<LogEntitet>();
             entiteti = factory.readEntities(regioni);
 
             foreach (LogEntitet ent in entiteti) {
-                if (database.EntityList.Find(x => x.Id == ent.Id) != null) {
-                    continue;
+                if (database.EntityList.ContainsKey(ent.Id) == false) {
+                    database.EntityList.Add(ent.Id, ent);
                 }
-                database.EntityList.Add(ent);
             }
 
             return entiteti;
@@ -99,16 +98,12 @@ namespace LocalDatabase
 
         public LogEntitet updateConsumption(string id, int month, float consumption) {
 
-            Database db = new Database();        
+            Database db = new Database();
 
-            foreach (LogEntitet ent in db.EntityList)
-            {
-                if (ent.Id == id)
-                {
-                    ent.Potrosnja[month] = consumption;
-                    factory.updateConsumption(id, month, consumption);
-                    return ent;
-                }
+            if (db.EntityList.ContainsKey(id)) {
+                db.EntityList[id].Potrosnja[month] = consumption;
+                factory.updateConsumption(id, month, consumption);
+                return db.EntityList[id];
             }
 
             Console.WriteLine("Traženi entitet nije pronađen.");
