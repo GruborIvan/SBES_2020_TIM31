@@ -13,276 +13,313 @@ namespace LocalDatabase
 
         static void Main(string[] args) {
 
-			NetTcpBinding binding = new NetTcpBinding();
-			string address = "net.tcp://localhost:9999/wcfserver";
+            NetTcpBinding binding = new NetTcpBinding();
+            string address = "net.tcp://localhost:9999/wcfserver";
 
-			WCFClient proxy = new WCFClient(binding, new EndpointAddress(new Uri(address)));
+            WCFClient proxy = new WCFClient(binding, new EndpointAddress(new Uri(address)));
 
-			int opt = 0;
+            int opt = 0;
 
             while (true) {
 
-				opt = meni();
+                opt = meni();
 
                 switch (opt) {
 
-					case 1:
-						List<Region> regioni = odaberiregione();
-						proxy.readEntities(regioni);
-						break;
-					case 2:
-
-						Region ch = odaberiRegion();
-						proxy.regionAverageConsumption(ch);
-						break;
-					case 3:
-						string grad = odaberiGrad();
-						proxy.cityAverageConsumption(grad);
-						break;
-					case 4:
-						string package = odaberiEntitet();
-						string[] input = package.Split(',');
-						proxy.updateConsumption(input[0], int.Parse(input[1]), float.Parse(input[2]));
-						break;
-					case 5:
-						LogEntitet kreiranEntitet = dodajEntitet();
-						proxy.addLogEntity(kreiranEntitet);
-						break;
-					case 6:
-						string identification = izbrisiEntitet();
-						proxy.deleteLogEntity(identification);
-						break;
-					case 7:
-						izlistajEntitete();
-						break;
-					case 8:
-						goto labela;
-					default:
-						Console.WriteLine("Nepostojeća opcija je odabrana, molimo pokušajte ponovo.");
-						break;
+                    case 1:
+                        List<Region> regioni = odaberiregione();
+                        if (regioni != null) {
+                            proxy.readEntities(regioni);
+                        }
+                        break;
+                    case 2:
+                        Region ch = odaberiRegion();
+                        if (ch != Region.Nazad) {
+                            proxy.regionAverageConsumption(ch);
+                        }
+                        break;
+                    case 3:
+                        string grad = odaberiGrad();
+                        if (grad != null) {
+                            proxy.cityAverageConsumption(grad);
+                        }
+                        break;
+                    case 4:
+                        string package = odaberiEntitet();
+                        if (package != null) {
+                            string[] input = package.Split(',');
+                            proxy.updateConsumption(input[0], int.Parse(input[1]), float.Parse(input[2]));
+                        }
+                        break;
+                    case 5:
+                        LogEntitet kreiranEntitet = dodajEntitet();
+                        if (kreiranEntitet != null) {
+                            proxy.addLogEntity(kreiranEntitet);
+                        }
+                        break;
+                    case 6:
+                        string identification = izbrisiEntitet();
+                        if (identification != null) {
+                            proxy.deleteLogEntity(identification);
+                        }
+                        break;
+                    case 7:
+                        izlistajEntitete();
+                        break;
+                    case 8:
+                        goto labela;
+                    default:
+                        Console.WriteLine("Nepostojeća opcija je odabrana, molimo pokušajte ponovo.");
+                        break;
                 }
 
             }
 
-			labela:
-			proxy.Close();
+        labela:
+            proxy.Close();
 
-			Console.ReadLine();
-		}
-
-		static int meni() {
-
-			int ch;
-
-			do {
-				Console.WriteLine("1. Prikaži odgovarajuće entitete(odaberi regione).\n2. Izračunaj srednju vrednost potrošnju za region.\n" +
-				"3. Izračunaj srednju vrednost potrošnje za grad.\n4. Ažuriraj mesečnu potrošnju grada.\n5. Dodaj nov entitet.\n6. Obriši postojeći entitet.\n7. Izlistaj entitete.\n8. Izlaz iz programa.");
-
-			} while (int.TryParse(Console.ReadLine(), out ch) == false || ch < 1 || ch > 8);
-
-
-			return ch;
+            Console.ReadLine();
         }
 
-		static List<Region> odaberiregione() {
+        static int meni() {
 
-			List<Region> regioni = new List<Region>();
-			string input;
+            int ch;
 
-			do {
+            do {
+                Console.WriteLine("1. Prikaži odgovarajuće entitete(odaberi regione).\n2. Izračunaj srednju vrednost potrošnju za region.\n" +
+                "3. Izračunaj srednju vrednost potrošnje za grad.\n4. Ažuriraj mesečnu potrošnju grada.\n5. Dodaj nov entitet.\n6. Obriši postojeći entitet.\n7. Izlistaj entitete.\n8. Izlaz iz programa.");
 
-				int i = 1;
-                foreach (Region reg in Enum.GetValues(typeof(Region))) {
+            } while (int.TryParse(Console.ReadLine(), out ch) == false || ch < 1 || ch > 8);
 
-					string val = reg.ToString();
-					val = val.Replace('_', ' ');
-					Console.WriteLine("{0}. {1}", i, val);
-					i++;
-				}
 
-				input = Console.ReadLine();
-				regioni = validateInput(input);
-
-			} while (regioni == null);
-
-			return regioni;
+            return ch;
         }
 
-		static List<Region> validateInput(string input) {
+        static List<Region> odaberiregione() {
 
-			List<Region> regioni = new List<Region>();
+            List<Region> regioni = new List<Region>();
+            string input;
 
-			string[] splitinput = input.Split(',');
-			int ch;
-			bool success;
+            int i = 1;
+            foreach (Region reg in Enum.GetValues(typeof(Region))) {
+
+                string val = reg.ToString();
+                val = val.Replace('_', ' ');
+                Console.WriteLine("{0}. {1}", i, val);
+                i++;
+            }
+
+            input = Console.ReadLine();
+            regioni = validateInput(input);
+
+            return regioni;
+        }
+
+        static List<Region> validateInput(string input) {
+
+            List<Region> regioni = new List<Region>();
+
+            string[] splitinput = input.Split(',');
+            int ch;
+            bool success;
 
             foreach (string s in splitinput) {
 
-				success = int.TryParse(s.Replace(" ", ""), out ch);
-                if (success == false || ch < 1 || ch > 9) {
-					Console.WriteLine("Neispravan format unosa. Regione odaberite brojevima odvojenim zapetom. Brojevi su od 1 do 9.\n");
-					return null;
+                success = int.TryParse(s.Replace(" ", ""), out ch);
+                if (success == false || ch < 1 || ch > 10) {
+                    Console.WriteLine("Neispravan format unosa. Regione odaberite brojevima odvojenim zapetom. Brojevi su od 1 do 9.\n");
+                    return null;
+                }
+                else if (success == true && ch == 10) {
+                    return null;
                 }
 
-				regioni.Add((Region)(ch - 1));
-			}
+                regioni.Add((Region)(ch - 1));
+            }
 
-			return regioni;
+            return regioni;
         }
 
-		static Region odaberiRegion() {
+        static Region odaberiRegion() {
 
-			int ch;
-			int i;
+            int ch;
+            int i;
 
-			do {
+            do {
 
-				i = 1;
-				foreach (Region reg in Enum.GetValues(typeof(Region))) {
+                i = 1;
+                foreach (Region reg in Enum.GetValues(typeof(Region))) {
 
-					string val = reg.ToString();
-					val = val.Replace('_', ' ');
-					Console.WriteLine("{0}. {1}", i, val);
-					i++;
-				}
+                    string val = reg.ToString();
+                    val = val.Replace('_', ' ');
+                    Console.WriteLine("{0}. {1}", i, val);
+                    i++;
+                }
+                Console.WriteLine("Nazad na glavni meni.");
+            } while (int.TryParse(Console.ReadLine(), out ch) == false || ch < 0 || ch > i);
 
-			} while (int.TryParse(Console.ReadLine(), out ch) == false || ch < 0 || ch > i);
-
-			return (Region)ch-1;
-		}
-
-		static string odaberiGrad() {
-
-			Database database = new Database();
-			int ch;
-			int i;
-
-			List<string> gradovi = database.EntityList.Values.Select(x => x.Grad).Distinct().ToList();
-
-			do {
-
-				i = 1;
-				foreach (string grad in gradovi) {
-					Console.WriteLine("{0}. {1}.\n", i, grad);
-					i++;
-				}
-
-			} while (int.TryParse(Console.ReadLine(), out ch) == false || ch < 0 || ch > i);
-
-			return database.EntityList.Values.ToList()[ch - 1].Grad;
+            return (Region)ch - 1;
         }
 
-		static string odaberiEntitet() {
+        static string odaberiGrad() {
 
-			Database db = new Database();
-			string res = "";
-			int ch;
-			float consumption;
-			int i;
+            Database database = new Database();
+            int ch;
+            int i;
 
-			do {
-				i = 1;
-				foreach (LogEntitet entitet in db.EntityList.Values.ToList()) {
+            List<string> gradovi = database.EntityList.Values.Select(x => x.Grad).Distinct().ToList();
 
-					Console.WriteLine("{0}. {1}, {2}, prosečna potrošnja: {3}.\n", i, entitet.Region, entitet.Grad, entitet.Potrosnja.Average());
-					i++;
-				}
+            do {
 
-			} while (int.TryParse(Console.ReadLine(), out ch) == false || ch < 0 || ch > i);
+                i = 1;
+                foreach (string grad in gradovi) {
+                    Console.WriteLine("{0}. {1}.\n", i, grad);
+                    i++;
+                }
+                Console.WriteLine("{0}. Nazad na glavni meni.", i);
 
-			res += db.EntityList.Values.ToList()[ch - 1].Id + ',';
+            } while (int.TryParse(Console.ReadLine(), out ch) == false || ch < 0 || ch > i);
 
-			do {
-				i = 1;
-				foreach (float potrosnja in db.EntityList.Values.ToList()[ch - 1].Potrosnja) {
+            if (ch == i) {
+                return null;
+            }
 
-					Console.WriteLine("{0}. Mesec: {1}, potrošnja: {2}.\n", i, i, potrosnja);
-					i++;
-				}
+            return database.EntityList.Values.ToList()[ch - 1].Grad;
+        }
 
-			} while (int.TryParse(Console.ReadLine(), out ch) == false || ch < 0 || ch > i);
+        static string odaberiEntitet() {
 
-			res += (ch - 1).ToString() + ',';
+            Database db = new Database();
+            string res = "";
+            int ch;
+            float consumption;
+            int i;
 
-			do {
-				Console.WriteLine("Unesite postrošnju: ");
+            do {
+                i = 1;
+                foreach (LogEntitet entitet in db.EntityList.Values.ToList()) {
 
-			} while (float.TryParse(Console.ReadLine(), out consumption) == false);
+                    Console.WriteLine("{0}. {1}, {2}, prosečna potrošnja: {3}.\n", i, entitet.Region, entitet.Grad, entitet.Potrosnja.Average());
+                    i++;
+                }
+                Console.WriteLine("{0}. Nazad na glavni meni.", i);
 
-			res += consumption.ToString();
+            } while (int.TryParse(Console.ReadLine(), out ch) == false || ch < 0 || ch > i);
 
-			return res;
-		}
+            if (ch == i) {
+                return null;
+            }
 
-		static LogEntitet dodajEntitet() {
+            res += db.EntityList.Values.ToList()[ch - 1].Id + ',';
 
-			LogEntitet entitet = new LogEntitet();
-			int godina;
+            do {
+                i = 1;
+                foreach (float potrosnja in db.EntityList.Values.ToList()[ch - 1].Potrosnja) {
 
-			Console.WriteLine("Unesite region> ");
-			entitet.Region = odaberiRegion();
-			Console.WriteLine("Unesite grad> ");
-			entitet.Grad = Console.ReadLine();
+                    Console.WriteLine("{0}. Mesec: {1}, potrošnja: {2}.\n", i, i, potrosnja);
+                    i++;
+                }
 
-			do {
-				Console.WriteLine("Unesite godinu> ");
+            } while (int.TryParse(Console.ReadLine(), out ch) == false || ch < 0 || ch > i);
 
-			}while(int.TryParse(Console.ReadLine(), out godina) == false || godina < 0);
+            res += (ch - 1).ToString() + ',';
 
-			entitet.Year = godina;
+            do {
+                Console.WriteLine("Unesite postrošnju: ");
 
-			int i = 1;
-			do {
+            } while (float.TryParse(Console.ReadLine(), out consumption) == false);
+
+            res += consumption.ToString();
+
+            return res;
+        }
+
+        static LogEntitet dodajEntitet() {
+
+            LogEntitet entitet = new LogEntitet();
+            int godina;
+
+            Console.WriteLine("Unesite region> ");
+            entitet.Region = odaberiRegion();
+
+            if (entitet.Region == Region.Nazad) {
+                return null;
+            }
+
+            Console.WriteLine("Unesite grad> ");
+            entitet.Grad = Console.ReadLine();
+
+            do {
+                Console.WriteLine("Unesite godinu> ");
+
+            } while (int.TryParse(Console.ReadLine(), out godina) == false || godina < 0);
+
+            entitet.Year = godina;
+
+            int i = 1;
+            do {
 
                 try {
 
-					Console.WriteLine("Unesite potrošnju za mesec {0}: ", i);
+                    Console.WriteLine("Unesite potrošnju za mesec {0}: ", i);
                     entitet.Potrosnja.Add(float.Parse(Console.ReadLine()));
-					i++;
-				}
+                    i++;
+                }
                 catch (Exception ex) {
 
-					Console.WriteLine("Unet neispravan format potrosnje.");
-					if (i != 1) {
-						i --;
-					}
+                    Console.WriteLine("Unet neispravan format potrosnje.");
+                    if (i != 1) {
+                        i--;
+                    }
                 }
 
-			} while (i < 13);
+            } while (i < 13);
 
-			return entitet;
+            return entitet;
         }
 
-		static string izbrisiEntitet() {
+        static string izbrisiEntitet() {
 
-			Database database = new Database();
-			int i;
-			int ch;
+            Database database = new Database();
+            int i;
+            int ch;
 
-			do {
-				i = 1;
-				foreach (LogEntitet entitet in database.EntityList.Values.ToList()) {
+            do {
+                i = 1;
+                foreach (LogEntitet entitet in database.EntityList.Values.ToList()) {
 
-					Console.WriteLine("{0}. {1}, {2}, Godina: {3}.\n", i, entitet.Region, entitet.Grad, entitet.Year);
-					i++;
-				}
+                    Console.WriteLine("{0}. {1}, {2}, Godina: {3}.\n", i, entitet.Region, entitet.Grad, entitet.Year);
+                    i++;
+                }
+                Console.WriteLine("{0}. Nazad na glavni meni.", i);
 
-			} while (int.TryParse(Console.ReadLine(), out ch) == false || ch < 0 || ch > i);
+            } while (int.TryParse(Console.ReadLine(), out ch) == false || ch < 0 || ch > i);
 
-			return database.EntityList.Values.ToList()[ch - 1].Id;
-		}
+            if (ch == i) {
+                return null;
+            }
 
-		static void izlistajEntitete() {
+            return database.EntityList.Values.ToList()[ch - 1].Id;
+        }
 
-			Database database = new Database();
-			int i = 1;
+        static void izlistajEntitete() {
 
-			foreach (LogEntitet entitet in database.EntityList.Values.ToList()) {
+            Database database = new Database();
+            int i = 1;
 
-				Console.WriteLine("{0}. {1}, {2}, Godina: {3}, Prosečna potrošnja: {4}.\n", i, entitet.Region, entitet.Grad, entitet.Year, entitet.Potrosnja.Average());
-				i++;
-			}
+            foreach (LogEntitet entitet in database.EntityList.Values.ToList()) {
 
-		}
+                Console.WriteLine();
+
+                Console.WriteLine("{0}. {1}, {2}, Godina: {3}, Prosečna potrošnja: {4}.\n", i, entitet.Region, entitet.Grad, entitet.Year, entitet.Potrosnja.Average());
+                Console.Write("Mesečne potrošnje (januar - decembar) {0}: ", entitet.Year);
+                foreach (float monthlyconsumption in entitet.Potrosnja) {
+                    Console.Write("{0}, ", monthlyconsumption.ToString());
+                }
+                Console.WriteLine();
+                i++;
+            }
+
+        }
     }
 }

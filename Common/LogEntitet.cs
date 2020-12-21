@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Common
 {
 
-    public enum Region { Srem, Banat, Bačka, Beograd, Šumadija, Zapadna_Srbija, Južna_Srbija, Istočna_Srbija, Kosovo_i_Metohija };
+    public enum Region { Srem, Banat, Bačka, Beograd, Šumadija, Zapadna_Srbija, Južna_Srbija, Istočna_Srbija, Kosovo_i_Metohija, Nazad };
 
     public class LogEntitet
     {
