@@ -37,6 +37,7 @@ namespace CryptoProject
                 klijenti.Add(callback);
             }
 
+            Console.WriteLine(callback.ToString());
             return xh.AddEntity(entitet);
         }
 

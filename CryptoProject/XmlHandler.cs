@@ -16,9 +16,38 @@ namespace CryptoProject
         public static Dictionary<string,LogEntitet> ListaLogEntitet = new Dictionary<string, LogEntitet>();
         public XmlHandler()
         {
-
+            if (!File.Exists("baza.xml"))
+            {
+                XmlWriterSettings xws = new XmlWriterSettings();
+                xws.Indent = true;
+                xws.NewLineOnAttributes = true;
+                using (XmlWriter xmlwriter = XmlWriter.Create("baza.xml", xws))
+                {
+                    xmlwriter.WriteStartDocument();
+                    xmlwriter.WriteStartElement("ArrayOfLogEntitet");
+                    xmlwriter.WriteEndElement();
+                    xmlwriter.WriteEndDocument();
+                    xmlwriter.Close();
+                }
+            }
+            else
+            {
+                if (ListaLogEntitet.Count == 0)
+                {
+                    XmlSerializer ser = new XmlSerializer(typeof(List<LogEntitet>), new XmlRootAttribute("ArrayOfLogEntitet"));
+                    StringReader sr = new StringReader(File.ReadAllText("baza.xml"));
+                    List<LogEntitet> data = (List<LogEntitet>)ser.Deserialize(sr);
+                    UpdateDictionary(data);
+                }
+            }
         }
-
+        public void UpdateDictionary(List<LogEntitet> lista)
+        {
+            foreach(var item in lista)
+            {
+                ListaLogEntitet.Add(item.Id, item);
+            }
+        }
         public List<LogEntitet> ReturnList()
         {
             List<LogEntitet> entries = new List<LogEntitet>(ListaLogEntitet.Count);
@@ -38,20 +67,40 @@ namespace CryptoProject
             }
 
             ListaLogEntitet.Add(le.Id,le);
-            List<LogEntitet> entries = new List<LogEntitet>(ListaLogEntitet.Count);
-            foreach(string key in ListaLogEntitet.Keys)
+
+
+            XDocument doc = XDocument.Load("baza.xml");
+            XElement lista = doc.Element("ArrayOfLogEntitet");
+
+            XElement LEntEle = new XElement("LogEntitet");
+
+            XElement GodEle = new XElement("Year", le.Year.ToString());
+            XElement IdEle = new XElement("Id", le.Id.ToString());
+            XElement RegEle = new XElement("Region", le.Region.ToString());
+            XElement GrdEle = new XElement("Grad", le.Grad);
+            XElement PotEle = new XElement("Potrosnja");
+
+            foreach(float item in le.Potrosnja)
             {
-                entries.Add(ListaLogEntitet[key]);
+                PotEle.Add(
+                    new XElement("float", item.ToString())
+                    ) ;
             }
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<LogEntitet>));
-            using (StringWriter textWriter = new StringWriter()){
 
-                xmlSerializer.Serialize(textWriter, entries);
-                File.WriteAllText("baza.xml", textWriter.ToString());
-                return le.Id;
+            LEntEle.Add(
+                    GodEle,
+                    IdEle,
+                    RegEle,
+                    GrdEle,
+                    PotEle
+                );
 
-            }
-            
+            lista.Add(
+                    LEntEle
+                );
+
+            doc.Save("baza.xml");
+            return le.Id;
         }
 
         public bool DeleteEntity(string id)
