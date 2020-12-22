@@ -28,7 +28,6 @@ namespace CryptoProject
 
             List<LogEntitet> list = xh.ReturnList();
             if (list.Find(x => x.Grad.ToLower() == entitet.Grad.ToLower() && x.Year == entitet.Year) != null) {
-
                 return null;
             }
 
@@ -37,7 +36,6 @@ namespace CryptoProject
                 klijenti.Add(callback);
             }
 
-            Console.WriteLine(callback.ToString());
             return xh.AddEntity(entitet);
         }
 
