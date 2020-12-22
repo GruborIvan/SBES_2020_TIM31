@@ -11,14 +11,20 @@ namespace LocalDatabase
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, UseSynchronizationContext = false)]
     public class CallbackClient : IDatabaseCallback
     {
+
+        Database db;
         IDatabaseService proxy = null;
+
+        public CallbackClient(ref Database db)
+        {
+            this.db = db;
+        }
 
         public void broadcastDeleteId(string id) {
 
-            Database database = new Database();
             Console.WriteLine("Broadcasted delete id: {0}.\n", id);
-            if (database.EntityList.ContainsKey(id)) {
-                database.EntityList.Remove(id);
+            if (db.LogEntities.ContainsKey(id)) {
+                db.LogEntities.Remove(id);
             }
 
         }
@@ -26,23 +32,26 @@ namespace LocalDatabase
         public void broadcastUpdateId(string id) {
 
             Console.WriteLine("Broadcasted update id: {0}.", id);
-            Database database = new Database();
 
-            if (database.EntityList.ContainsKey(id)) {
+            if (db.LogEntities.ContainsKey(id)) 
+            {
                 proxy.GetLogEntityById(id);
             }
-
         }
 
         public void broadcastAddLogEntity(Region region, string id)
         {
             Console.WriteLine($"Broadcasted Adding new Entity, region: {region.ToString()}, Id: {id}");
 
-            Database db = new Database();
-            if (!db.EntityList.ContainsKey(id))
+            if (db.RegioniOdInteresa.Contains(region))
             {
-                proxy.GetLogEntityById(id);
+                if (!db.LogEntities.ContainsKey(id))
+                {
+                    LogEntity entity = proxy.GetLogEntityById(id);
+                    db.LogEntities.Add(entity.Id,entity);
+                }
             }
+
         }
 
         public IDatabaseService Proxy {
