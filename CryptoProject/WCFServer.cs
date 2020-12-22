@@ -35,7 +35,7 @@ namespace CryptoProject
             if (klijenti.Contains(callback) == false) {
                 klijenti.Add(callback);
             }
-
+            //TEST 12 12 123
             return xh.AddEntity(entitet);
         }
 
