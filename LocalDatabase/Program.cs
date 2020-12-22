@@ -1,6 +1,7 @@
 ﻿using Common;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
@@ -20,53 +21,53 @@ namespace LocalDatabase
             WCFClient proxy = new WCFClient(callbackclient, binding, new EndpointAddress(new Uri(address)));
             callbackclient.Proxy = proxy;
 
-            int opt = 0;
+            int opt;
 
             while (true) {
 
-                opt = meni();
+                opt = Meni();
 
                 switch (opt) {
 
                     case 1:
-                        List<Region> regioni = odaberiregione();
+                        List<Region> regioni = Odaberiregione();
                         if (regioni != null) {
-                            proxy.readEntities(regioni);
+                            proxy.GetEntitiesForRegions(regioni);
                         }
                         break;
                     case 2:
-                        Region ch = odaberiRegion();
+                        Region ch = OdaberiRegion();
                         if (ch != Region.Nazad) {
-                            proxy.regionAverageConsumption(ch);
+                            proxy.GetAverageConsumptionForRegion(ch);
                         }
                         break;
                     case 3:
-                        string grad = odaberiGrad();
+                        string grad = OdaberiGrad();
                         if (grad != null) {
-                            proxy.cityAverageConsumption(grad);
+                            proxy.GetAverageConsumptionForCity(grad);
                         }
                         break;
                     case 4:
-                        string package = odaberiEntitet();
+                        string package = OdaberiEntitet();
                         if (package != null) {
                             string[] input = package.Split(',');
-                            proxy.updateConsumption(input[0], int.Parse(input[1]), float.Parse(input[2]));
+                            proxy.UpdateConsumption(input[0], int.Parse(input[1]), float.Parse(input[2]));
                         }
                         break;
                     case 5:
-                        LogEntitet kreiranEntitet = dodajEntitet();
+                        LogEntity kreiranEntitet = DodajEntitet();
                         if (kreiranEntitet != null) {
-                            proxy.addLogEntity(kreiranEntitet);
+                            proxy.AddLogEntity(kreiranEntitet);
                         }
                         break;
                     case 6:
-                        string identification = izbrisiEntitet();
+                        string identification = IzbrisiEntitet();
                         if (identification != null) {
-                            proxy.deleteLogEntity(identification);
+                            proxy.DeleteLogEntity(identification);
                         }
                         break;
                     case 7:
-                        izlistajEntitete();
+                        IzlistajEntitete();
                         break;
                     case 8:
                         goto labela;
@@ -83,7 +84,7 @@ namespace LocalDatabase
             Console.ReadLine();
         }
 
-        static int meni() {
+        static int Meni() {
 
             int ch;
 
@@ -97,7 +98,7 @@ namespace LocalDatabase
             return ch;
         }
 
-        static List<Region> odaberiregione() {
+        static List<Region> Odaberiregione() {
 
             List<Region> regioni = new List<Region>();
             string input;
@@ -112,22 +113,21 @@ namespace LocalDatabase
             }
 
             input = Console.ReadLine();
-            regioni = validateInput(input);
+            regioni = ValidateInput(input);
 
             return regioni;
         }
 
-        static List<Region> validateInput(string input) {
+        static List<Region> ValidateInput(string input) {
 
             List<Region> regioni = new List<Region>();
 
             string[] splitinput = input.Split(',');
-            int ch;
             bool success;
 
             foreach (string s in splitinput) {
 
-                success = int.TryParse(s.Replace(" ", ""), out ch);
+                success = int.TryParse(s.Replace(" ", ""), out int ch);
                 if (success == false || ch < 1 || ch > 10) {
                     Console.WriteLine("Neispravan format unosa. Regione odaberite brojevima odvojenim zapetom. Brojevi su od 1 do 9.\n");
                     return null;
@@ -142,7 +142,7 @@ namespace LocalDatabase
             return regioni;
         }
 
-        static Region odaberiRegion() {
+        static Region OdaberiRegion() {
 
             int ch;
             int i;
@@ -162,7 +162,7 @@ namespace LocalDatabase
             return (Region)ch - 1;
         }
 
-        static string odaberiGrad() {
+        static string OdaberiGrad() {
 
             Database database = new Database();
             int ch;
@@ -188,7 +188,7 @@ namespace LocalDatabase
             return database.EntityList.Values.ToList()[ch - 1].Grad;
         }
 
-        static string odaberiEntitet() {
+        static string OdaberiEntitet() {
 
             Database db = new Database();
             string res = "";
@@ -199,7 +199,7 @@ namespace LocalDatabase
 
             do {
                 i = 1;
-                foreach (LogEntitet entitet in db.EntityList.Values.ToList()) {
+                foreach (LogEntity entitet in db.EntityList.Values.ToList()) {
 
                     Console.WriteLine("{0}. {1}, {2}, prosečna potrošnja: {3}.\n", i, entitet.Region, entitet.Grad, entitet.Potrosnja.Average());
                     i++;
@@ -237,13 +237,13 @@ namespace LocalDatabase
             return res;
         }
 
-        static LogEntitet dodajEntitet() {
+        static LogEntity DodajEntitet() {
 
-            LogEntitet entitet = new LogEntitet();
+            LogEntity entitet = new LogEntity();
             int godina;
 
             Console.WriteLine("Unesite region> ");
-            entitet.Region = odaberiRegion();
+            entitet.Region = OdaberiRegion();
 
             if (entitet.Region == Region.Nazad) {
                 return null;
@@ -269,7 +269,7 @@ namespace LocalDatabase
                     i++;
                 }
                 catch (Exception ex) {
-
+                    Trace.TraceInformation(ex.Message);
                     Console.WriteLine("Unet neispravan format potrosnje.");
                     if (i != 1) {
                         i--;
@@ -281,7 +281,7 @@ namespace LocalDatabase
             return entitet;
         }
 
-        static string izbrisiEntitet() {
+        static string IzbrisiEntitet() {
 
             Database database = new Database();
             int i;
@@ -289,7 +289,7 @@ namespace LocalDatabase
 
             do {
                 i = 1;
-                foreach (LogEntitet entitet in database.EntityList.Values.ToList()) {
+                foreach (LogEntity entitet in database.EntityList.Values.ToList()) {
 
                     Console.WriteLine("{0}. {1}, {2}, Godina: {3}.\n", i, entitet.Region, entitet.Grad, entitet.Year);
                     i++;
@@ -305,12 +305,12 @@ namespace LocalDatabase
             return database.EntityList.Values.ToList()[ch - 1].Id;
         }
 
-        static void izlistajEntitete() {
+        static void IzlistajEntitete() {
 
             Database database = new Database();
             int i = 1;
 
-            foreach (LogEntitet entitet in database.EntityList.Values.ToList()) {
+            foreach (LogEntity entitet in database.EntityList.Values.ToList()) {
 
                 Console.WriteLine();
 

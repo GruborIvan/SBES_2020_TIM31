@@ -13,7 +13,7 @@ namespace CryptoProject
 {
     public class XmlHandler
     {
-        public static Dictionary<string,LogEntitet> ListaLogEntitet = new Dictionary<string, LogEntitet>();
+        public static Dictionary<string,LogEntity> ListaLogEntitet = new Dictionary<string, LogEntity>();
         static readonly object pblock = new object();
 
         public XmlHandler()
@@ -37,14 +37,14 @@ namespace CryptoProject
             {
                 if (ListaLogEntitet.Count == 0)
                 {
-                    XmlSerializer ser = new XmlSerializer(typeof(List<LogEntitet>), new XmlRootAttribute("ArrayOfLogEntitet"));
+                    XmlSerializer ser = new XmlSerializer(typeof(List<LogEntity>), new XmlRootAttribute("ArrayOfLogEntitet"));
                     StringReader sr = new StringReader(File.ReadAllText("baza.xml"));
-                    List<LogEntitet> data = (List<LogEntitet>)ser.Deserialize(sr);
+                    List<LogEntity> data = (List<LogEntity>)ser.Deserialize(sr);
                     UpdateDictionary(data);
                 }
             }
         }
-        public void UpdateDictionary(List<LogEntitet> lista)
+        public void UpdateDictionary(List<LogEntity> lista)
         {
             lock (pblock)
             {
@@ -54,11 +54,11 @@ namespace CryptoProject
                 }
             }
         }
-        public List<LogEntitet> ReturnList()
+        public List<LogEntity> ReturnList()
         {
             lock (pblock)
             {
-                List<LogEntitet> entries = new List<LogEntitet>(ListaLogEntitet.Count);
+                List<LogEntity> entries = new List<LogEntity>(ListaLogEntitet.Count);
                 foreach (string key in ListaLogEntitet.Keys)
                 {
                     entries.Add(ListaLogEntitet[key]);
@@ -66,7 +66,7 @@ namespace CryptoProject
                 return entries;
             }
         }
-        public string AddEntity(LogEntitet le)
+        public string AddEntity(LogEntity le)
         {
             lock (pblock)
             {
@@ -118,7 +118,7 @@ namespace CryptoProject
             lock (pblock)
             {
                 string xmlEntitet = "";
-                XmlSerializer xmlSerializer = new XmlSerializer(typeof(LogEntitet));
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(LogEntity));
 
                 using (StringWriter textWriter = new StringWriter())
                 {
@@ -142,7 +142,7 @@ namespace CryptoProject
                 return false;
             }
         }
-        public bool UpdateEntity(LogEntitet le)
+        public bool UpdateEntity(LogEntity le)
         {
             lock (pblock)
             {
@@ -184,7 +184,7 @@ namespace CryptoProject
                 return false;
             }
         } 
-        public int NadjiRupu(Dictionary<string, LogEntitet> provera)
+        public int NadjiRupu(Dictionary<string, LogEntity> provera)
         {
             lock (pblock)
             {
