@@ -30,7 +30,7 @@ namespace LocalDatabase
             Database database = new Database();
 
             if (database.EntityList.ContainsKey(id)) {
-                proxy.getUpdatedEntity(id);
+                proxy.GetLogEntityById(id);
             }
 
         }
@@ -42,7 +42,7 @@ namespace LocalDatabase
             Database db = new Database();
             if (!db.EntityList.ContainsKey(id))
             {
-                proxy.getUpdatedEntity(id);
+                proxy.GetLogEntityById(id);
             }
         }
 

@@ -18,11 +18,11 @@ namespace LocalDatabase
             Console.WriteLine("PROVERA: Namestio sam!");
         }
 
-        public string addLogEntity(LogEntitet entitet) {
+        public string AddLogEntity(LogEntity entitet) {
 
             Database database = new Database();
 
-            entitet.Id = factory.addLogEntity(entitet);
+            entitet.Id = factory.AddLogEntity(entitet);
 
             if (entitet.Id == null) {
                 Console.WriteLine("Entitet za grad: {0} i godinu: {1} već postoji!", entitet.Grad, entitet.Year);
@@ -33,16 +33,16 @@ namespace LocalDatabase
             return entitet.Id;
         }
 
-        public float cityAverageConsumption(string grad) {
+        public float GetAverageConsumptionForCity(string grad) {
 
             float potrosnja;
-            potrosnja = factory.cityAverageConsumption(grad);
+            potrosnja = factory.GetAverageConsumptionForCity(grad);
             Console.WriteLine("Prosečna godišnja potrošnja za {0} je : {1} [kW/h]", grad, potrosnja);
 
             return potrosnja;
         }
 
-        public bool deleteLogEntity(string id) {
+        public bool DeleteLogEntity(string id) {
 
             Database db = new Database();
 
@@ -53,7 +53,7 @@ namespace LocalDatabase
             else
                 db.EntityList.Remove(id);
 
-            factory.deleteLogEntity(id);
+            factory.DeleteLogEntity(id);
 
             return true;
         }
@@ -66,14 +66,14 @@ namespace LocalDatabase
             this.Close();
         }
 
-        public List<LogEntitet> readEntities(List<Region> regioni) {
+        public List<LogEntity> GetEntitiesForRegions(List<Region> regioni) {
 
             Database database = new Database();
 
-            List<LogEntitet> entiteti = new List<LogEntitet>();
-            entiteti = factory.readEntities(regioni);
+            List<LogEntity> entiteti = new List<LogEntity>();
+            entiteti = factory.GetEntitiesForRegions(regioni);
 
-            foreach (LogEntitet ent in entiteti) {
+            foreach (LogEntity ent in entiteti) {
                 if (database.EntityList.ContainsKey(ent.Id) == false) {
                     database.EntityList.Add(ent.Id, ent);
                 }
@@ -83,10 +83,10 @@ namespace LocalDatabase
             return entiteti;
         }
 
-        public float regionAverageConsumption(Region reg) {
+        public float GetAverageConsumptionForRegion(Region reg) {
 
             float potrosnja;
-            potrosnja = factory.regionAverageConsumption(reg);
+            potrosnja = factory.GetAverageConsumptionForRegion(reg);
             Console.WriteLine("Prosečna godišnja potrošnja za {0} je : {1} [kW/h]", reg, potrosnja);
 
             return potrosnja;
@@ -97,13 +97,13 @@ namespace LocalDatabase
             factory.testServerMessage("Hello to server from client.");
         }
 
-        public LogEntitet updateConsumption(string id, int month, float consumption) {
+        public LogEntity UpdateConsumption(string id, int month, float consumption) {
 
             Database db = new Database();
 
             if (db.EntityList.ContainsKey(id)) {
                 db.EntityList[id].Potrosnja[month] = consumption;
-                factory.updateConsumption(id, month, consumption);
+                factory.UpdateConsumption(id, month, consumption);
                 return db.EntityList[id];
             }
 
@@ -111,11 +111,11 @@ namespace LocalDatabase
             return null;
         }
 
-        public LogEntitet getUpdatedEntity(string id) {
+        public LogEntity GetLogEntityById(string id) {
 
             Database database = new Database();
 
-            LogEntitet entitet = factory.getUpdatedEntity(id);
+            LogEntity entitet = factory.GetLogEntityById(id);
             if (entitet != null) {
                 database.EntityList[id] = entitet;
                 return entitet;

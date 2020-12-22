@@ -46,7 +46,7 @@
   <ItemGroup>
     <Compile Include="IDatabaseCallback.cs" />
     <Compile Include="IDatabaseService.cs" />
-    <Compile Include="LogEntitet.cs" />
+    <Compile Include="LogEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -15,7 +15,7 @@ namespace Common
     };
 
     [DataContract]
-    public class LogEntitet
+    public class LogEntity
     {
 
         string id;
@@ -24,7 +24,7 @@ namespace Common
         int year;
         List<float> potrosnja;
 
-        public LogEntitet() {
+        public LogEntity() {
 
             this.Id = "";
             Region = Region.Bačka;
@@ -34,7 +34,7 @@ namespace Common
 
         }
 
-        public LogEntitet(string id, Region reg, string municipality, int godina) {
+        public LogEntity(string id, Region reg, string municipality, int godina) {
 
             this.Id = id;
             Region = reg;

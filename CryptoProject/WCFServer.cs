@@ -16,7 +16,7 @@ namespace CryptoProject
         //private static Dictionary<string, IIdentity> klijenti = new Dictionary<string, IIdentity>();
         public static List<IDatabaseCallback> klijenti = new List<IDatabaseCallback>();
 
-        public string addLogEntity(LogEntitet entitet) {
+        public string AddLogEntity(LogEntity entitet) {
 
             //dictionary za klijent id vezu 
             // IIdentity client = ServiceSecurityContext.Current.PrimaryIdentity;
@@ -26,7 +26,7 @@ namespace CryptoProject
             /////////////////////////////////
             ///
 
-            List<LogEntitet> list = xh.ReturnList();
+            List<LogEntity> list = xh.ReturnList();
             if (list.Find(x => x.Grad.ToLower() == entitet.Grad.ToLower() && x.Year == entitet.Year) != null) {
                 return null;
             }
@@ -39,14 +39,14 @@ namespace CryptoProject
             return xh.AddEntity(entitet);
         }
 
-        public float cityAverageConsumption(string grad) {
+        public float GetAverageConsumptionForCity(string grad) {
             /////////////////////////////////////////get() klijenta koji trazi pristup
             IIdentity client = ServiceSecurityContext.Current.PrimaryIdentity;
             ////////////////////////////////////////
             float ret = 0, cons = 0;
             int n = 0, i = 0;
 
-            foreach (LogEntitet item in xh.ReturnList()) {/////////////////////////////////////////ako klijentu nije dostupna dotican item -> continue
+            foreach (LogEntity item in xh.ReturnList()) {/////////////////////////////////////////ako klijentu nije dostupna dotican item -> continue
                                                           //   if (!klijenti[item.Id].Equals(client))
                                                           //       continue;
                                                           /////////////////////////////////////////
@@ -64,7 +64,7 @@ namespace CryptoProject
             return (ret / n); //Ne!
         }
 
-        public bool deleteLogEntity(string id) {//////////////////////////////////////Ako klijentu nije dostupan doticni item -> return
+        public bool DeleteLogEntity(string id) {//////////////////////////////////////Ako klijentu nije dostupan doticni item -> return
             IIdentity client = ServiceSecurityContext.Current.PrimaryIdentity;
             //if (!klijenti[id].Equals(client))
             //    return false;
@@ -83,12 +83,12 @@ namespace CryptoProject
 
         }
 
-        public List<LogEntitet> readEntities(List<Region> regioni) {
+        public List<LogEntity> GetEntitiesForRegions(List<Region> regioni) {
             //////////////////////////////////////
             IIdentity client = ServiceSecurityContext.Current.PrimaryIdentity;
             ///////////////////////////////////////
 
-            List<LogEntitet> ret = new List<LogEntitet>();
+            List<LogEntity> ret = new List<LogEntity>();
 
             foreach (var item in regioni) {
 
@@ -111,7 +111,7 @@ namespace CryptoProject
             return ret;
         }
 
-        public float regionAverageConsumption(Region reg) {
+        public float GetAverageConsumptionForRegion(Region reg) {
             //////////////////////////////////////
             IIdentity client = ServiceSecurityContext.Current.PrimaryIdentity;
             ///////////////////////////////////////
@@ -120,7 +120,7 @@ namespace CryptoProject
             int n = 0, i = 0;
             List<int> godine = new List<int>();
 
-            foreach (LogEntitet item in xh.ReturnList()) {
+            foreach (LogEntity item in xh.ReturnList()) {
                 ///////////////////////////////////////
                 //if (!klijenti[item.Id].Equals(client)) //Problem ovde!
                 //    continue;
@@ -149,12 +149,12 @@ namespace CryptoProject
             throw new NotImplementedException();
         }
 
-        public LogEntitet updateConsumption(string id, int month, float consumption) {
+        public LogEntity UpdateConsumption(string id, int month, float consumption) {
             //////////////////////////////////////
             IIdentity client = ServiceSecurityContext.Current.PrimaryIdentity;
             ///////////////////////////////////////
 
-            LogEntitet le = new LogEntitet();
+            LogEntity le = new LogEntity();
             foreach (var element in xh.ReturnList()) {
                 ///////////////////////////////////////
                 // if (!klijenti[element.Id].Equals(client))
@@ -205,10 +205,10 @@ namespace CryptoProject
 
         }
 
-        public LogEntitet getUpdatedEntity(string id) {
-            List<LogEntitet> entiteti = xh.ReturnList();
+        public LogEntity GetLogEntityById(string id) {
+            List<LogEntity> entiteti = xh.ReturnList();
 
-            LogEntitet updateVal = entiteti.Find(x => x.Id == id);
+            LogEntity updateVal = entiteti.Find(x => x.Id == id);
 
             return updateVal;
         }

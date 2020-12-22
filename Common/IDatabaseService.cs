@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common
 {
@@ -14,20 +10,27 @@ namespace Common
 
         [OperationContract]
         void testServerMessage(string message);
+
         [OperationContract]
-        List<LogEntitet> readEntities(List<Region> regioni);
+        List<LogEntity> GetEntitiesForRegions(List<Region> regioni);
+
         [OperationContract]
-        float cityAverageConsumption(string grad);
+        float GetAverageConsumptionForCity(string city);
+
         [OperationContract]
-        float regionAverageConsumption(Region reg);
+        float GetAverageConsumptionForRegion(Region reg);
+
         [OperationContract]
-        string addLogEntity(LogEntitet entitet);
+        string AddLogEntity(LogEntity entitet);
+
         [OperationContract]
-        LogEntitet updateConsumption(string id, int month, float consumption);
+        LogEntity UpdateConsumption(string id, int month, float consumption);
+
         [OperationContract]
-        bool deleteLogEntity(string id);
+        bool DeleteLogEntity(string id);
+
         [OperationContract]
-        LogEntitet getUpdatedEntity(string id);
+        LogEntity GetLogEntityById(string id);
 
     }
 }
