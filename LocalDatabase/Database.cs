@@ -9,7 +9,6 @@ namespace LocalDatabase
 {
     public class Database
     {
-
         private static Dictionary<string, LogEntitet> repozitorijum = new Dictionary<string, LogEntitet>();
 
         public Dictionary<string, LogEntitet> EntityList {

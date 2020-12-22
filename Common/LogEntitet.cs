@@ -1,14 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Common
 {
+    [DataContract]
+    public enum Region { 
+        [EnumMember] Srem, [EnumMember] Banat, [EnumMember] Bačka, [EnumMember] Beograd, 
+        [EnumMember] Šumadija, [EnumMember] Zapadna_Srbija, [EnumMember] Južna_Srbija, 
+        [EnumMember] Istočna_Srbija, [EnumMember] Kosovo_i_Metohija, [EnumMember] Nazad 
+    };
 
-    public enum Region { Srem, Banat, Bačka, Beograd, Šumadija, Zapadna_Srbija, Južna_Srbija, Istočna_Srbija, Kosovo_i_Metohija, Nazad };
-
+    [DataContract]
     public class LogEntitet
     {
 
@@ -38,10 +44,19 @@ namespace Common
             
         }
 
+        [DataMember]
         public string Id { get => id; set => id = value; }
+
+        [DataMember]
         public Region Region { get => region; set => region = value; }
+
+        [DataMember]
         public string Grad { get => grad; set => grad = value; }
+
+        [DataMember]
         public int Year { get => year; set => year = value; }
+
+        [DataMember]
         public List<float> Potrosnja { get => potrosnja; set => potrosnja = value; }
     }
 }

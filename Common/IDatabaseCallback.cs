@@ -12,7 +12,11 @@ namespace Common
 
         [OperationContract]
         void broadcastUpdateId(string id);
+
         [OperationContract]
         void broadcastDeleteId(string id);
+
+        [OperationContract]
+        void broadcastAddLogEntity(Region region,string id);
     }
 }

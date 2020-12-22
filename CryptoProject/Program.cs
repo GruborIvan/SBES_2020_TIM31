@@ -10,7 +10,6 @@ namespace CryptoProject
 {
     class Program
     {
-
         static void Main(string[] args) {
 
 			NetTcpBinding binding = new NetTcpBinding();
@@ -22,7 +21,6 @@ namespace CryptoProject
 			host.Open();
 			Console.WriteLine("WCFService is opened. Press <enter> to finish...");
 			Console.ReadLine();
-
 
         }
     }

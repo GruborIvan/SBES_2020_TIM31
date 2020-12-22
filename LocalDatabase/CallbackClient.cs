@@ -25,6 +25,7 @@ namespace LocalDatabase
         }
 
         public void broadcastUpdateId(string id) {
+
             Console.WriteLine("Broadcasted update id: {0}.", id);
             Database database = new Database();
 
@@ -34,10 +35,21 @@ namespace LocalDatabase
 
         }
 
-        public IDatabaseService Proxy {
+        public void broadcastAddLogEntity(Region region, string id)
+        {
+            Console.WriteLine($"Broadcasted Adding new Entity, region: {region.ToString()}, Id: {id}");
 
+            Database db = new Database();
+            if (!db.EntityList.ContainsKey(id))
+            {
+                proxy.getUpdatedEntity(id);
+            }
+        }
+
+        public IDatabaseService Proxy {
             get { return proxy; }
             set { proxy = value; }
         }
+
     }
 }
