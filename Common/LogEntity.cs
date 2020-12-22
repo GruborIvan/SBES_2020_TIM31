@@ -29,7 +29,7 @@ namespace Common
             this.Id = "";
             Region = Region.Bačka;
             Grad = "";
-            Year = 0;
+            Godina = 0;
             Potrosnja = new List<float> ();
 
         }
@@ -39,7 +39,7 @@ namespace Common
             this.Id = id;
             Region = reg;
             Grad = municipality;
-            Year = godina;
+            Godina = godina;
             Potrosnja = new List<float> ();
             
         }
@@ -54,7 +54,7 @@ namespace Common
         public string Grad { get => grad; set => grad = value; }
 
         [DataMember]
-        public int Year { get => year; set => year = value; }
+        public int Godina { get => year; set => year = value; }
 
         [DataMember]
         public List<float> Potrosnja { get => potrosnja; set => potrosnja = value; }

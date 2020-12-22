@@ -25,7 +25,7 @@ namespace LocalDatabase
             entitet.Id = factory.AddLogEntity(entitet);
 
             if (entitet.Id == null) {
-                Console.WriteLine("Entitet za grad: {0} i godinu: {1} već postoji!", entitet.Grad, entitet.Year);
+                Console.WriteLine("Entitet za grad: {0} i godinu: {1} već postoji!", entitet.Grad, entitet.Godina);
                 return null;
             }
             database.EntityList.Add(entitet.Id, entitet);

@@ -16,27 +16,24 @@ namespace CryptoProject
         //private static Dictionary<string, IIdentity> klijenti = new Dictionary<string, IIdentity>();
         public static List<IDatabaseCallback> klijenti = new List<IDatabaseCallback>();
 
+        public enum CallbackOperation { ADD, UPDATE,DELETE };
+
         public string AddLogEntity(LogEntity entitet) {
 
-            //dictionary za klijent id vezu 
-            // IIdentity client = ServiceSecurityContext.Current.PrimaryIdentity;
-            // if (client == null)
-            //    return null;
-            //klijenti.Add(entitet.Id, client);
-            /////////////////////////////////
-            ///
-
             List<LogEntity> list = xh.ReturnList();
-            if (list.Find(x => x.Grad.ToLower() == entitet.Grad.ToLower() && x.Year == entitet.Year) != null) {
+            if (list.Find(x => x.Grad.ToLower() == entitet.Grad.ToLower() && x.Godina == entitet.Godina) != null) {
                 return null;
             }
 
             IDatabaseCallback callback = OperationContext.Current.GetCallbackChannel<IDatabaseCallback>();
-            if (klijenti.Contains(callback) == false) {
+            if (klijenti.Contains(callback) == false)
+            { 
                 klijenti.Add(callback);
             }
-            //TEST 12 12 123
-            return xh.AddEntity(entitet);
+
+            string id = xh.AddEntity(entitet);
+            broadcastIdMessage(id, CallbackOperation.ADD);
+            return id;
         }
 
         public float GetAverageConsumptionForCity(string grad) {
@@ -73,7 +70,7 @@ namespace CryptoProject
 
             try {
                 deletion = xh.DeleteEntity(id);
-                broadcastIdMessage(id, 1);
+                broadcastIdMessage(id, CallbackOperation.DELETE);
                 return deletion;
             }
             catch (Exception e) {
@@ -84,7 +81,6 @@ namespace CryptoProject
         }
 
         public List<LogEntity> GetEntitiesForRegions(List<Region> regioni) {
-            //////////////////////////////////////
             IIdentity client = ServiceSecurityContext.Current.PrimaryIdentity;
             ///////////////////////////////////////
 
@@ -92,10 +88,8 @@ namespace CryptoProject
 
             foreach (var item in regioni) {
 
-                foreach (var predmet in xh.ReturnList()) {////////////////////////////////////////////
-                                                          //if (!klijenti[predmet.Id].Equals(client))
-                                                          //    continue;
-                                                          ////////////////////////////////////////////
+                foreach (var predmet in xh.ReturnList()) {
+
                     if (item.Equals(predmet.Region)) {
                         ret.Add(predmet);
                     }
@@ -132,8 +126,8 @@ namespace CryptoProject
                         i++;
                     }
 
-                    if (!godine.Contains(item.Year)) {
-                        godine.Add(item.Year);
+                    if (!godine.Contains(item.Godina)) {
+                        godine.Add(item.Godina);
                         n++;
                     }
                     ret += cons;
@@ -152,14 +146,9 @@ namespace CryptoProject
         public LogEntity UpdateConsumption(string id, int month, float consumption) {
             //////////////////////////////////////
             IIdentity client = ServiceSecurityContext.Current.PrimaryIdentity;
-            ///////////////////////////////////////
 
             LogEntity le = new LogEntity();
             foreach (var element in xh.ReturnList()) {
-                ///////////////////////////////////////
-                // if (!klijenti[element.Id].Equals(client))
-                //     continue;
-                //////////////////////////////////////
 
                 if (element.Id.Equals(id)) {
                     le = element;
@@ -170,13 +159,11 @@ namespace CryptoProject
             le.Potrosnja[month] = consumption;
             xh.UpdateEntity(le);
 
-            broadcastIdMessage(le.Id, 0);
-
+            broadcastIdMessage(le.Id, CallbackOperation.UPDATE);
             return le;
-
         }
 
-        void broadcastIdMessage(string id, int type) {
+        void broadcastIdMessage(string id, CallbackOperation op) {
 
             List<IDatabaseCallback> deleteitems = new List<IDatabaseCallback>();
 
@@ -184,12 +171,21 @@ namespace CryptoProject
 
                 try 
                 {
-                    if (type == 0) {
-                        client.broadcastUpdateId(id);
+                    switch(op)
+                    {
+                        case CallbackOperation.ADD:
+                                        LogEntity entity = GetLogEntityById(id);
+                                        client.broadcastAddLogEntity(entity.Region,entity.Id);
+                                        break;
+
+                        case CallbackOperation.UPDATE:
+                                        client.broadcastUpdateId(id);
+                                        break;
+                        case CallbackOperation.DELETE:
+                                        client.broadcastDeleteId(id);
+                                        break;
                     }
-                    else {
-                        client.broadcastDeleteId(id);
-                    }
+
                 }
                 catch (Exception ex) {
                     Console.WriteLine("{0}", ex.Message);

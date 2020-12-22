@@ -257,7 +257,7 @@ namespace LocalDatabase
 
             } while (int.TryParse(Console.ReadLine(), out godina) == false || godina < 0);
 
-            entitet.Year = godina;
+            entitet.Godina = godina;
 
             int i = 1;
             do {
@@ -291,7 +291,7 @@ namespace LocalDatabase
                 i = 1;
                 foreach (LogEntity entitet in database.EntityList.Values.ToList()) {
 
-                    Console.WriteLine("{0}. {1}, {2}, Godina: {3}.\n", i, entitet.Region, entitet.Grad, entitet.Year);
+                    Console.WriteLine("{0}. {1}, {2}, Godina: {3}.\n", i, entitet.Region, entitet.Grad, entitet.Godina);
                     i++;
                 }
                 Console.WriteLine("{0}. Nazad na glavni meni.", i);
@@ -314,8 +314,8 @@ namespace LocalDatabase
 
                 Console.WriteLine();
 
-                Console.WriteLine("{0}. {1}, {2}, Godina: {3}, Prosečna potrošnja: {4}.\n", i, entitet.Region, entitet.Grad, entitet.Year, entitet.Potrosnja.Average());
-                Console.Write("Mesečne potrošnje (januar - decembar) {0}: ", entitet.Year);
+                Console.WriteLine("{0}. {1}, {2}, Godina: {3}, Prosečna potrošnja: {4}.\n", i, entitet.Region, entitet.Grad, entitet.Godina, entitet.Potrosnja.Average());
+                Console.Write("Mesečne potrošnje (januar - decembar) {0}: ", entitet.Godina);
                 foreach (float monthlyconsumption in entitet.Potrosnja) {
                     Console.Write("{0}[kW/h], ", monthlyconsumption.ToString());
                 }

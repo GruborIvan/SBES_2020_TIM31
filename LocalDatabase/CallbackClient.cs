@@ -11,7 +11,6 @@ namespace LocalDatabase
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, UseSynchronizationContext = false)]
     public class CallbackClient : IDatabaseCallback
     {
-
         IDatabaseService proxy = null;
 
         public void broadcastDeleteId(string id) {

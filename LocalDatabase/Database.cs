@@ -11,6 +11,8 @@ namespace LocalDatabase
     {
         private static Dictionary<string, LogEntity> repozitorijum = new Dictionary<string, LogEntity>();
 
+        public List<Region> RegioniOdInteresa = new List<Region>();
+
         public Dictionary<string, LogEntity> EntityList {
 
             get { return repozitorijum; }
