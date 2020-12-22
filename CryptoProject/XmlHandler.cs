@@ -14,6 +14,8 @@ namespace CryptoProject
     public class XmlHandler
     {
         public static Dictionary<string,LogEntitet> ListaLogEntitet = new Dictionary<string, LogEntitet>();
+        static readonly object pblock = new object();
+
         public XmlHandler()
         {
             if (!File.Exists("baza.xml"))
@@ -29,6 +31,7 @@ namespace CryptoProject
                     xmlwriter.WriteEndDocument();
                     xmlwriter.Close();
                 }
+              
             }
             else
             {
@@ -43,144 +46,157 @@ namespace CryptoProject
         }
         public void UpdateDictionary(List<LogEntitet> lista)
         {
-            foreach(var item in lista)
+            lock (pblock)
             {
-                ListaLogEntitet.Add(item.Id, item);
+                foreach (var item in lista)
+                {
+                    ListaLogEntitet.Add(item.Id, item);
+                }
             }
         }
         public List<LogEntitet> ReturnList()
         {
-            List<LogEntitet> entries = new List<LogEntitet>(ListaLogEntitet.Count);
-            foreach (string key in ListaLogEntitet.Keys)
+            lock (pblock)
             {
-                entries.Add(ListaLogEntitet[key]);
+                List<LogEntitet> entries = new List<LogEntitet>(ListaLogEntitet.Count);
+                foreach (string key in ListaLogEntitet.Keys)
+                {
+                    entries.Add(ListaLogEntitet[key]);
+                }
+                return entries;
             }
-            return entries;
         }
-
         public string AddEntity(LogEntitet le)
         {
-            le.Id = "0";
-            if (!(ListaLogEntitet.Count()==0))
+            lock (pblock)
             {
-                le.Id = NadjiRupu(ListaLogEntitet).ToString();
+                le.Id = "0";
+                if (!(ListaLogEntitet.Count() == 0))
+                {
+                    le.Id = NadjiRupu(ListaLogEntitet).ToString();
+                }
+
+                ListaLogEntitet.Add(le.Id, le);
+
+
+                XDocument doc = XDocument.Load("baza.xml");
+                XElement lista = doc.Element("ArrayOfLogEntitet");
+
+                XElement LEntEle = new XElement("LogEntitet");
+
+                XElement IdEle = new XElement("Id", le.Id.ToString());
+                XElement GodEle = new XElement("Year", le.Year.ToString());
+                XElement RegEle = new XElement("Region", le.Region.ToString());
+                XElement GrdEle = new XElement("Grad", le.Grad);
+                XElement PotEle = new XElement("Potrosnja");
+
+                foreach (float item in le.Potrosnja)
+                {
+                    PotEle.Add(
+                        new XElement("float", item.ToString())
+                        );
+                }
+
+                LEntEle.Add(
+                        IdEle,
+                        GodEle,
+                        RegEle,
+                        GrdEle,
+                        PotEle
+                    );
+
+                lista.Add(
+                        LEntEle
+                    );
+
+                doc.Save("baza.xml");
+                return le.Id;
             }
-
-            ListaLogEntitet.Add(le.Id,le);
-
-
-            XDocument doc = XDocument.Load("baza.xml");
-            XElement lista = doc.Element("ArrayOfLogEntitet");
-
-            XElement LEntEle = new XElement("LogEntitet");
-
-            XElement GodEle = new XElement("Year", le.Year.ToString());
-            XElement IdEle = new XElement("Id", le.Id.ToString());
-            XElement RegEle = new XElement("Region", le.Region.ToString());
-            XElement GrdEle = new XElement("Grad", le.Grad);
-            XElement PotEle = new XElement("Potrosnja");
-
-            foreach(float item in le.Potrosnja)
-            {
-                PotEle.Add(
-                    new XElement("float", item.ToString())
-                    ) ;
-            }
-
-            LEntEle.Add(
-                    GodEle,
-                    IdEle,
-                    RegEle,
-                    GrdEle,
-                    PotEle
-                );
-
-            lista.Add(
-                    LEntEle
-                );
-
-            doc.Save("baza.xml");
-            return le.Id;
         }
-
         public bool DeleteEntity(string id)
         {
-            
-            string xmlEntitet = "";
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(LogEntitet));
-            
-            using (StringWriter textWriter = new StringWriter())
+            lock (pblock)
             {
-                xmlSerializer.Serialize(textWriter, ListaLogEntitet[id]);
-                xmlEntitet = textWriter.ToString();
+                string xmlEntitet = "";
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(LogEntitet));
+
+                using (StringWriter textWriter = new StringWriter())
+                {
+                    xmlSerializer.Serialize(textWriter, ListaLogEntitet[id]);
+                    xmlEntitet = textWriter.ToString();
+                }
+
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(File.ReadAllText("baza.xml"));
+                XmlNode xmlNode = doc.SelectSingleNode("ArrayOfLogEntitet/LogEntitet[Id = " + id + "]");
+
+                ListaLogEntitet.Remove(id);
+
+                if (xmlNode != null)
+                {
+                    xmlNode.ParentNode.RemoveChild(xmlNode);
+                    doc.Save("baza.xml");
+                    return true;
+                }
+
+                return false;
             }
-
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(File.ReadAllText("baza.xml"));
-            XmlNode xmlNode = doc.SelectSingleNode("ArrayOfLogEntitet/LogEntitet[Id = " + id+"]");
-
-            ListaLogEntitet.Remove(id);
-
-            if (xmlNode != null)
-            {
-                xmlNode.ParentNode.RemoveChild(xmlNode);
-                doc.Save("baza.xml");
-                return true;
-            }
-
-            return false;
         }
-
         public bool UpdateEntity(LogEntitet le)
         {
-            if (ListaLogEntitet.ContainsKey(le.Id))
+            lock (pblock)
             {
-                int rupa = NadjiRupu(ListaLogEntitet);
-
-                ListaLogEntitet[le.Id] = le;
-                
-                XDocument xmlDoc = XDocument.Parse(File.ReadAllText("baza.xml"));
-
-                var items = from item in xmlDoc.Descendants("LogEntitet")
-                            where item.Element("Id").Value == le.Id
-                            select item;
-
-
-                foreach (XElement ielement in items)
+                if (ListaLogEntitet.ContainsKey(le.Id))
                 {
-                    
-                    ielement.SetElementValue("Region", le.Region.ToString());
-                    ielement.SetElementValue("Grad", le.Grad.ToString());
-                    ielement.SetElementValue("Year", le.Year.ToString());
+                    int rupa = NadjiRupu(ListaLogEntitet);
 
-                  
-                    int i = 0;
-                    
-                    foreach(var pot in items.Descendants("Potrosnja").Descendants("float"))
+                    ListaLogEntitet[le.Id] = le;
+
+                    XDocument xmlDoc = XDocument.Parse(File.ReadAllText("baza.xml"));
+
+                    var items = from item in xmlDoc.Descendants("LogEntitet")
+                                where item.Element("Id").Value == le.Id
+                                select item;
+
+
+                    foreach (XElement ielement in items)
                     {
-                        pot.SetValue(le.Potrosnja[i]);
-                        i++;
-                        if (i == le.Potrosnja.Count)
-                            break;
-                    }
-                    
-                }
-                xmlDoc.Save("baza.xml");
-                return true;
-            }
-            return false;
-        } 
 
+                        ielement.SetElementValue("Region", le.Region.ToString());
+                        ielement.SetElementValue("Grad", le.Grad.ToString());
+                        ielement.SetElementValue("Year", le.Year.ToString());
+
+
+                        int i = 0;
+
+                        foreach (var pot in items.Descendants("Potrosnja").Descendants("float"))
+                        {
+                            pot.SetValue(le.Potrosnja[i]);
+                            i++;
+                            if (i == le.Potrosnja.Count)
+                                break;
+                        }
+
+                    }
+                    xmlDoc.Save("baza.xml");
+                    return true;
+                }
+                return false;
+            }
+        } 
         public int NadjiRupu(Dictionary<string, LogEntitet> provera)
         {
-            int a = 0;
+            lock (pblock)
+            {
+                int a = 0;
 
-            while(provera.ContainsKey(a.ToString()))
-            { 
-                a++;
+                while (provera.ContainsKey(a.ToString()))
+                {
+                    a++;
+                }
+
+                return a;
             }
-
-            return a;
         }
 
     }
