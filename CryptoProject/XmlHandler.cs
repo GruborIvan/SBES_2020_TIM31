@@ -74,8 +74,8 @@ namespace CryptoProject
 
             XElement LEntEle = new XElement("LogEntitet");
 
-            XElement GodEle = new XElement("Year", le.Year.ToString());
             XElement IdEle = new XElement("Id", le.Id.ToString());
+            XElement GodEle = new XElement("Year", le.Year.ToString());
             XElement RegEle = new XElement("Region", le.Region.ToString());
             XElement GrdEle = new XElement("Grad", le.Grad);
             XElement PotEle = new XElement("Potrosnja");
@@ -88,8 +88,8 @@ namespace CryptoProject
             }
 
             LEntEle.Add(
-                    GodEle,
                     IdEle,
+                    GodEle,
                     RegEle,
                     GrdEle,
                     PotEle
