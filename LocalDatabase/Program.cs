@@ -11,28 +11,33 @@ namespace LocalDatabase
 {
     class Program
     {
-
         static void Main(string[] args) {
+
+            //List<Region> Regioni = new List<Region>();
+            //Dictionary<string, LogEntity> LokalniLogEntiteti = new Dictionary<string, LogEntity>();
+
+            Database database = new Database();
 
             NetTcpBinding binding = new NetTcpBinding();
             string address = "net.tcp://localhost:9999/wcfserver";
 
-            CallbackClient callbackclient = new CallbackClient();
-            WCFClient proxy = new WCFClient(callbackclient, binding, new EndpointAddress(new Uri(address)));
+            CallbackClient callbackclient = new CallbackClient(ref database);
+            WCFClient proxy = new WCFClient(callbackclient, binding, new EndpointAddress(new Uri(address)),ref database);
             callbackclient.Proxy = proxy;
 
             int opt;
 
-            while (true) {
-
+            while (true) 
+            {
+                // Ispis menija i unos zeljene opcije..
                 opt = Meni();
 
                 switch (opt) {
 
                     case 1:
-                        List<Region> regioni = Odaberiregione();
-                        if (regioni != null) {
-                            proxy.GetEntitiesForRegions(regioni);
+                        database.RegioniOdInteresa = Odaberiregione();
+                        if (database.RegioniOdInteresa != null) {
+                            proxy.GetEntitiesForRegions(database.RegioniOdInteresa);
                         }
                         break;
                     case 2:
@@ -67,7 +72,10 @@ namespace LocalDatabase
                         }
                         break;
                     case 7:
-                        IzlistajEntitete();
+                        foreach(LogEntity lent in database.LogEntities.Values)
+                        {
+                            Console.WriteLine($"{lent.Id}. Region: {lent.Region} Grad: {lent.Grad} Godina: {lent.Godina}");
+                        }
                         break;
                     case 8:
                         goto labela;
@@ -168,7 +176,7 @@ namespace LocalDatabase
             int ch;
             int i;
 
-            List<string> gradovi = database.EntityList.Values.Select(x => x.Grad).Distinct().ToList();
+            List<string> gradovi = database.LogEntities.Values.Select(x => x.Grad).Distinct().ToList();
 
             do {
 
@@ -185,7 +193,7 @@ namespace LocalDatabase
                 return null;
             }
 
-            return database.EntityList.Values.ToList()[ch - 1].Grad;
+            return database.LogEntities.Values.ToList()[ch - 1].Grad;
         }
 
         static string OdaberiEntitet() {
@@ -199,7 +207,7 @@ namespace LocalDatabase
 
             do {
                 i = 1;
-                foreach (LogEntity entitet in db.EntityList.Values.ToList()) {
+                foreach (LogEntity entitet in db.LogEntities.Values.ToList()) {
 
                     Console.WriteLine("{0}. {1}, {2}, prosečna potrošnja: {3}.\n", i, entitet.Region, entitet.Grad, entitet.Potrosnja.Average());
                     i++;
@@ -212,12 +220,12 @@ namespace LocalDatabase
                 return null;
             }
 
-            res += db.EntityList.Values.ToList()[ch - 1].Id + ',';
+            res += db.LogEntities.Values.ToList()[ch - 1].Id + ',';
             defaultval = ch;
 
             do {
                 i = 1;
-                foreach (float potrosnja in db.EntityList.Values.ToList()[defaultval - 1].Potrosnja) {
+                foreach (float potrosnja in db.LogEntities.Values.ToList()[defaultval - 1].Potrosnja) {
 
                     Console.WriteLine("{0}. Mesec: {1}, potrošnja: {2}[kW/h].", i, i, potrosnja);
                     i++;
@@ -257,7 +265,7 @@ namespace LocalDatabase
 
             } while (int.TryParse(Console.ReadLine(), out godina) == false || godina < 0);
 
-            entitet.Year = godina;
+            entitet.Godina = godina;
 
             int i = 1;
             do {
@@ -289,9 +297,9 @@ namespace LocalDatabase
 
             do {
                 i = 1;
-                foreach (LogEntity entitet in database.EntityList.Values.ToList()) {
+                foreach (LogEntity entitet in database.LogEntities.Values.ToList()) {
 
-                    Console.WriteLine("{0}. {1}, {2}, Godina: {3}.\n", i, entitet.Region, entitet.Grad, entitet.Year);
+                    Console.WriteLine("{0}. {1}, {2}, Godina: {3}.\n", i, entitet.Region, entitet.Grad, entitet.Godina);
                     i++;
                 }
                 Console.WriteLine("{0}. Nazad na glavni meni.", i);
@@ -302,7 +310,7 @@ namespace LocalDatabase
                 return null;
             }
 
-            return database.EntityList.Values.ToList()[ch - 1].Id;
+            return database.LogEntities.Values.ToList()[ch - 1].Id;
         }
 
         static void IzlistajEntitete() {
@@ -310,12 +318,12 @@ namespace LocalDatabase
             Database database = new Database();
             int i = 1;
 
-            foreach (LogEntity entitet in database.EntityList.Values.ToList()) {
+            foreach (LogEntity entitet in database.LogEntities.Values.ToList()) {
 
                 Console.WriteLine();
 
-                Console.WriteLine("{0}. {1}, {2}, Godina: {3}, Prosečna potrošnja: {4}.\n", i, entitet.Region, entitet.Grad, entitet.Year, entitet.Potrosnja.Average());
-                Console.Write("Mesečne potrošnje (januar - decembar) {0}: ", entitet.Year);
+                Console.WriteLine("{0}. {1}, {2}, Godina: {3}, Prosečna potrošnja: {4}.\n", i, entitet.Region, entitet.Grad, entitet.Godina, entitet.Potrosnja.Average());
+                Console.Write("Mesečne potrošnje (januar - decembar) {0}: ", entitet.Godina);
                 foreach (float monthlyconsumption in entitet.Potrosnja) {
                     Console.Write("{0}[kW/h], ", monthlyconsumption.ToString());
                 }
