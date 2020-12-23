@@ -49,10 +49,8 @@ namespace LocalDatabase
                 if (database.EntityList.ContainsKey(id) == false)
                 {
                     LogEntity entity = proxy.GetLogEntityById(id);
-                    Console.WriteLine("{0} {1} {2} {3}", entity.Id, entity.Region, entity.Grad, entity.Godina);
-                    if (database.EntityList.ContainsKey(id) == false) {
-                        database.EntityList.Add(entity.Id, entity);
-                    }
+                    database.EntityList.Add(entity.Id, entity);
+                    
                 }
             }
 

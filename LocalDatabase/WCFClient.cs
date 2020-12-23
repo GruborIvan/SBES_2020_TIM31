@@ -117,12 +117,7 @@ namespace LocalDatabase
             Database db = new Database();
             LogEntity entitet = factory.GetLogEntityById(id);
 
-            if (entitet != null) {
-                db.EntityList[id] = entitet;
-                return entitet;
-            }
-
-            return null;
+            return entitet;
         }
     }
 }
