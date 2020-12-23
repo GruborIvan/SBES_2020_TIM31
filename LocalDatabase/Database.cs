@@ -23,5 +23,11 @@ namespace LocalDatabase
             set { repozitorijum = value; }
         }
 
+        public Dictionary<string, LogEntity> EntityList {
+
+            get { return repozitorijum; }
+            set { repozitorijum = value; }
+        }
+
     }
 }
