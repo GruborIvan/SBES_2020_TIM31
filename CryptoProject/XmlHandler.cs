@@ -52,12 +52,15 @@ namespace CryptoProject
         {
             lock (pblock)
             {
-                Console.WriteLine("asdddd");
+                Console.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>ITEMI IZ BAZE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
                 foreach (var item in lista)
                 {
+                    Console.WriteLine("------------------------------------------------------------");
                     ListaLogEntity.Add(item.Id, item);
-                    Console.WriteLine(item.Id + " " +item.Grad);
+                    Console.WriteLine("ID: " + item.Id + " Grad: " + item.Grad + " Godina: " + item.Godina + " Region: " + item.Region);
+                    Console.WriteLine("------------------------------------------------------------");
                 }
+                Console.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             }
         }
         public List<LogEntity> ReturnList()

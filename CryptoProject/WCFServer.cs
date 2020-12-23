@@ -33,6 +33,7 @@ namespace CryptoProject
 
             string id = xh.AddEntity(entitet);
             broadcastIdMessage(id, CallbackOperation.ADD);
+
             return id;
         }
 
