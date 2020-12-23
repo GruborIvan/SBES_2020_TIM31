@@ -14,7 +14,7 @@ namespace LocalDatabase
         static void Main(string[] args) {
 
             //List<Region> Regioni = new List<Region>();
-            //Dictionary<string, LogEntity> LokalniLogEntiteti = new Dictionary<string, LogEntity>();
+            //Dictionary<string, LogEntity> LokalniLogEntityi = new Dictionary<string, LogEntity>();
 
             NetTcpBinding binding = new NetTcpBinding();
             string address = "net.tcp://localhost:9999/wcfserver";

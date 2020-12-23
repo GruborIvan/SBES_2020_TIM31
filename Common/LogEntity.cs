@@ -19,9 +19,9 @@ namespace Common
     {
 
         string id;
+        int godina;
         Region region;
         string grad;
-        int year;
         List<float> potrosnja;
 
         public LogEntity() {
@@ -34,7 +34,7 @@ namespace Common
 
         }
 
-        public LogEntity(string id, Region reg, string municipality, int godina) {
+        public LogEntity(string id, int godina, Region reg, string municipality) {
 
             this.Id = id;
             Region = reg;
@@ -54,7 +54,7 @@ namespace Common
         public string Grad { get => grad; set => grad = value; }
 
         [DataMember]
-        public int Godina { get => year; set => year = value; }
+        public int Godina { get => godina; set => godina = value; }
 
         [DataMember]
         public List<float> Potrosnja { get => potrosnja; set => potrosnja = value; }

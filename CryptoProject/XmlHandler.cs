@@ -13,11 +13,13 @@ namespace CryptoProject
 {
     public class XmlHandler
     {
-        public static Dictionary<string,LogEntity> ListaLogEntitet = new Dictionary<string, LogEntity>();
+        public static Dictionary<string,LogEntity> ListaLogEntity = new Dictionary<string, LogEntity>();
         static readonly object pblock = new object();
+        
 
         public XmlHandler()
         {
+
             if (!File.Exists("baza.xml"))
             {
                 XmlWriterSettings xws = new XmlWriterSettings();
@@ -26,7 +28,7 @@ namespace CryptoProject
                 using (XmlWriter xmlwriter = XmlWriter.Create("baza.xml", xws))
                 {
                     xmlwriter.WriteStartDocument();
-                    xmlwriter.WriteStartElement("ArrayOfLogEntitet");
+                    xmlwriter.WriteStartElement("ArrayOfLogEntity");
                     xmlwriter.WriteEndElement();
                     xmlwriter.WriteEndDocument();
                     xmlwriter.Close();
@@ -35,12 +37,14 @@ namespace CryptoProject
             }
             else
             {
-                if (ListaLogEntitet.Count == 0)
+                if (ListaLogEntity.Count == 0)
                 {
-                    XmlSerializer ser = new XmlSerializer(typeof(List<LogEntity>), new XmlRootAttribute("ArrayOfLogEntitet"));
-                    StringReader sr = new StringReader(File.ReadAllText("baza.xml"));
-                    List<LogEntity> data = (List<LogEntity>)ser.Deserialize(sr);
-                    UpdateDictionary(data);
+                    List<LogEntity> ArrayOfLogEntity = new List<LogEntity>();
+                    string xmlstring = File.ReadAllText("baza.xml");
+                    XmlSerializer ser = new XmlSerializer(typeof(List<LogEntity>), new XmlRootAttribute("ArrayOfLogEntity"));
+                    StringReader sr = new StringReader(xmlstring);
+                    ArrayOfLogEntity = ((List<LogEntity>)ser.Deserialize(sr));
+                    UpdateDictionary(ArrayOfLogEntity);
                 }
             }
         }
@@ -48,9 +52,11 @@ namespace CryptoProject
         {
             lock (pblock)
             {
+                Console.WriteLine("asdddd");
                 foreach (var item in lista)
                 {
-                    ListaLogEntitet.Add(item.Id, item);
+                    ListaLogEntity.Add(item.Id, item);
+                    Console.WriteLine(item.Id + " " +item.Grad);
                 }
             }
         }
@@ -58,10 +64,10 @@ namespace CryptoProject
         {
             lock (pblock)
             {
-                List<LogEntity> entries = new List<LogEntity>(ListaLogEntitet.Count);
-                foreach (string key in ListaLogEntitet.Keys)
+                List<LogEntity> entries = new List<LogEntity>(ListaLogEntity.Count);
+                foreach (string key in ListaLogEntity.Keys)
                 {
-                    entries.Add(ListaLogEntitet[key]);
+                    entries.Add(ListaLogEntity[key]);
                 }
                 return entries;
             }
@@ -71,21 +77,21 @@ namespace CryptoProject
             lock (pblock)
             {
                 le.Id = "0";
-                if (!(ListaLogEntitet.Count() == 0))
+                if (!(ListaLogEntity.Count() == 0))
                 {
-                    le.Id = NadjiRupu(ListaLogEntitet).ToString();
+                    le.Id = NadjiRupu(ListaLogEntity).ToString();
                 }
 
-                ListaLogEntitet.Add(le.Id, le);
+                ListaLogEntity.Add(le.Id, le);
 
 
                 XDocument doc = XDocument.Load("baza.xml");
-                XElement lista = doc.Element("ArrayOfLogEntitet");
+                XElement lista = doc.Element("ArrayOfLogEntity");
 
-                XElement LEntEle = new XElement("LogEntitet");
+                XElement LEntEle = new XElement("LogEntity");
 
                 XElement IdEle = new XElement("Id", le.Id.ToString());
-                XElement GodEle = new XElement("Year", le.Godina.ToString());
+                XElement GodEle = new XElement("Godina", le.Godina.ToString());
                 XElement RegEle = new XElement("Region", le.Region.ToString());
                 XElement GrdEle = new XElement("Grad", le.Grad);
                 XElement PotEle = new XElement("Potrosnja");
@@ -122,15 +128,15 @@ namespace CryptoProject
 
                 using (StringWriter textWriter = new StringWriter())
                 {
-                    xmlSerializer.Serialize(textWriter, ListaLogEntitet[id]);
+                    xmlSerializer.Serialize(textWriter, ListaLogEntity[id]);
                     xmlEntitet = textWriter.ToString();
                 }
 
                 XmlDocument doc = new XmlDocument();
                 doc.LoadXml(File.ReadAllText("baza.xml"));
-                XmlNode xmlNode = doc.SelectSingleNode("ArrayOfLogEntitet/LogEntitet[Id = " + id + "]");
+                XmlNode xmlNode = doc.SelectSingleNode("ArrayOfLogEntity/LogEntity[Id = " + id + "]");
 
-                ListaLogEntitet.Remove(id);
+                ListaLogEntity.Remove(id);
 
                 if (xmlNode != null)
                 {
@@ -146,15 +152,15 @@ namespace CryptoProject
         {
             lock (pblock)
             {
-                if (ListaLogEntitet.ContainsKey(le.Id))
+                if (ListaLogEntity.ContainsKey(le.Id))
                 {
-                    int rupa = NadjiRupu(ListaLogEntitet);
+                    int rupa = NadjiRupu(ListaLogEntity);
 
-                    ListaLogEntitet[le.Id] = le;
+                    ListaLogEntity[le.Id] = le;
 
                     XDocument xmlDoc = XDocument.Parse(File.ReadAllText("baza.xml"));
 
-                    var items = from item in xmlDoc.Descendants("LogEntitet")
+                    var items = from item in xmlDoc.Descendants("LogEntity")
                                 where item.Element("Id").Value == le.Id
                                 select item;
 
@@ -164,7 +170,7 @@ namespace CryptoProject
 
                         ielement.SetElementValue("Region", le.Region.ToString());
                         ielement.SetElementValue("Grad", le.Grad.ToString());
-                        ielement.SetElementValue("Year", le.Godina.ToString());
+                        ielement.SetElementValue("Godina", le.Godina.ToString());
 
 
                         int i = 0;
