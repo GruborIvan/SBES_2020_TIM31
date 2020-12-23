@@ -35,7 +35,7 @@ namespace LocalDatabase
 
             if (db.EntityList.ContainsKey(id)) 
             {
-                proxy.GetLogEntityById(id);
+                db.EntityList[id] = proxy.GetLogEntityById(id);
             }
         }
 
