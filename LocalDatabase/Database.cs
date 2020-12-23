@@ -9,9 +9,21 @@ namespace LocalDatabase
 {
     public class Database
     {
-        public Dictionary<string, LogEntity> LogEntities = new Dictionary<string, LogEntity>();
+        public static Dictionary<string, LogEntity> LogEntities = new Dictionary<string, LogEntity>();
 
-        public List<Region> RegioniOdInteresa = new List<Region>();
+        public static List<Region> RegioniOdInteresa = new List<Region>();
+
+        public Dictionary<string, LogEntity> EntityList {
+
+            get { return LogEntities; }
+            set { LogEntities = value; }
+        }
+
+        public List<Region> InterestRegions {
+
+            get { return RegioniOdInteresa; }
+            set { RegioniOdInteresa = value; }
+        }
 
     }
 }

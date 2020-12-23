@@ -12,28 +12,28 @@ namespace LocalDatabase
     public class CallbackClient : IDatabaseCallback
     {
 
-        Database db;
         IDatabaseService proxy = null;
 
-        public CallbackClient(ref Database db)
+        public CallbackClient()
         {
-            this.db = db;
         }
 
         public void broadcastDeleteId(string id) {
 
+            Database database = new Database();
             Console.WriteLine("Broadcasted delete id: {0}.\n", id);
-            if (db.LogEntities.ContainsKey(id)) {
-                db.LogEntities.Remove(id);
-            }
+            if (database.EntityList.ContainsKey(id)) {
+                database.EntityList.Remove(id);
 
+            }
         }
 
         public void broadcastUpdateId(string id) {
 
             Console.WriteLine("Broadcasted update id: {0}.", id);
+            Database db = new Database();
 
-            if (db.LogEntities.ContainsKey(id)) 
+            if (db.EntityList.ContainsKey(id)) 
             {
                 proxy.GetLogEntityById(id);
             }
@@ -43,12 +43,16 @@ namespace LocalDatabase
         {
             Console.WriteLine($"Broadcasted Adding new Entity, region: {region.ToString()}, Id: {id}");
 
-            if (db.RegioniOdInteresa.Contains(region))
+            Database database = new Database();
+            if (database.InterestRegions.Contains(region))
             {
-                if (!db.LogEntities.ContainsKey(id))
+                if (database.EntityList.ContainsKey(id) == false)
                 {
                     LogEntity entity = proxy.GetLogEntityById(id);
-                    db.LogEntities.Add(entity.Id,entity);
+                    Console.WriteLine("{0} {1} {2} {3}", entity.Id, entity.Region, entity.Grad, entity.Godina);
+                    if (database.EntityList.ContainsKey(id) == false) {
+                        database.EntityList.Add(entity.Id, entity);
+                    }
                 }
             }
 

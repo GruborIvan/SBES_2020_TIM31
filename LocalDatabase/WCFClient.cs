@@ -11,16 +11,15 @@ namespace LocalDatabase
     public class WCFClient : DuplexClientBase<IDatabaseService>, IDatabaseService, IDisposable
     {
         IDatabaseService factory;
-        Database db;
 
-        public WCFClient(object callbackInstance, NetTcpBinding binding, EndpointAddress address,ref Database db) : base(callbackInstance, binding, address) 
+        public WCFClient(object callbackInstance, NetTcpBinding binding, EndpointAddress address) : base(callbackInstance, binding, address) 
         {
             factory = this.CreateChannel();
-            this.db = db;
         }
 
         public string AddLogEntity(LogEntity entitet) {
 
+            Database db = new Database();
             entitet.Id = factory.AddLogEntity(entitet);
 
             if (entitet.Id == null) {
@@ -28,9 +27,9 @@ namespace LocalDatabase
                 return null;
             }
 
-            if (!db.LogEntities.ContainsKey(entitet.Id))
+            if (!db.EntityList.ContainsKey(entitet.Id))
             {
-                db.LogEntities.Add(entitet.Id, entitet);
+                db.EntityList.Add(entitet.Id, entitet);
             }
             
             return entitet.Id;
@@ -47,13 +46,15 @@ namespace LocalDatabase
 
         public bool DeleteLogEntity(string id) {
 
-            if (db.LogEntities.ContainsKey(id) == false) {
+            Database db = new Database();
+
+            if (db.EntityList.ContainsKey(id) == false) {
                 Console.WriteLine("Traženi entitet ne postoji.");
                 return false;
             }
             else
             {
-                db.LogEntities.Remove(id);
+                db.EntityList.Remove(id);
                 factory.DeleteLogEntity(id);
             }
 
@@ -71,11 +72,12 @@ namespace LocalDatabase
         public List<LogEntity> GetEntitiesForRegions(List<Region> regioni) {
 
             List<LogEntity> entiteti = new List<LogEntity>();
+            Database db = new Database();
             entiteti = factory.GetEntitiesForRegions(regioni);
 
             foreach (LogEntity ent in entiteti) {
-                if (db.LogEntities.ContainsKey(ent.Id) == false) {
-                    db.LogEntities.Add(ent.Id, ent);
+                if (db.EntityList.ContainsKey(ent.Id) == false) {
+                    db.EntityList.Add(ent.Id, ent);
                 }
             }
             Console.WriteLine("Dobavljeni su entiteti, molimo odaberite opciju izlistaj entitete za detalje.\n");
@@ -99,10 +101,11 @@ namespace LocalDatabase
 
         public LogEntity UpdateConsumption(string id, int month, float consumption) {
 
-            if (db.LogEntities.ContainsKey(id)) {
-                db.LogEntities[id].Potrosnja[month] = consumption;
+            Database db = new Database();
+            if (db.EntityList.ContainsKey(id)) {
+                db.EntityList[id].Potrosnja[month] = consumption;
                 factory.UpdateConsumption(id, month, consumption);
-                return db.LogEntities[id];
+                return db.EntityList[id];
             }
 
             Console.WriteLine("Traženi entitet nije pronađen.");
@@ -111,10 +114,11 @@ namespace LocalDatabase
 
         public LogEntity GetLogEntityById(string id) {
 
+            Database db = new Database();
             LogEntity entitet = factory.GetLogEntityById(id);
 
             if (entitet != null) {
-                db.LogEntities[id] = entitet;
+                db.EntityList[id] = entitet;
                 return entitet;
             }
 
