@@ -42,6 +42,7 @@ namespace LocalDatabase
                     case 2:
                         Region ch = OdaberiRegion();
                         if (ch != Region.Nazad) {
+
                             proxy.GetAverageConsumptionForRegion(ch);
                         }
                         break;
