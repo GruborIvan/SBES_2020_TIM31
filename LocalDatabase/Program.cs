@@ -7,14 +7,12 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LocalDatabase
+namespace Client
 {
     class Program
     {
         static void Main(string[] args) {
 
-            //List<Region> Regioni = new List<Region>();
-            //Dictionary<string, LogEntity> LokalniLogEntityi = new Dictionary<string, LogEntity>();
 
             NetTcpBinding binding = new NetTcpBinding();
             string address = "net.tcp://localhost:9999/wcfserver";
