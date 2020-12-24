@@ -15,7 +15,7 @@ namespace Client
 
 
             NetTcpBinding binding = new NetTcpBinding();
-            string address = "net.tcp://localhost:8888/wcfserver";
+            string address = "net.tcp://localhost:8888/localdb";
 
             CallbackClient callbackclient = new CallbackClient();
             WCFClient proxy = new WCFClient(callbackclient, binding, new EndpointAddress(new Uri(address)));
@@ -23,6 +23,8 @@ namespace Client
             Database database = new Database();
 
             int opt;
+
+            proxy.testServerMessage("Hello from client to server.");
 
             while (true) 
             {
