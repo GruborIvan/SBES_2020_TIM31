@@ -121,8 +121,7 @@ namespace LocalDBase
 
         public void testServerMessage(string message)
         {
-
-            factory.testServerMessage("Hello to server from client.");
+            factory.testServerMessage(message);
         }
 
         public LogEntity UpdateConsumption(string id, int month, float consumption)
