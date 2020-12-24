@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LocalDatabase
+namespace CryptoProject
 {
     public class Encryption
     {
@@ -35,10 +35,10 @@ namespace LocalDatabase
                 {
                     using (CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
                     {
-                        using(StreamWriter sw = new StreamWriter(cs))
-                        sw.Write(plainText);
+                        using (StreamWriter sw = new StreamWriter(cs))
+                            sw.Write(plainText);
                         encrypted = ms.ToArray();
-                        
+
                     }
                 }
             }
@@ -47,7 +47,7 @@ namespace LocalDatabase
         public static string Decrypt(byte[] cipherText, byte[] key, byte[] IV)
         {
             string plaintext = null;
-            using(AesManaged aes = new AesManaged())
+            using (AesManaged aes = new AesManaged())
             {
                 aes.Mode = CipherMode.CBC;
                 ICryptoTransform decryptor = aes.CreateDecryptor(key, IV);
@@ -55,7 +55,7 @@ namespace LocalDatabase
                 {
                     using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
                     {
-                        using(StreamReader reader = new StreamReader(cs))
+                        using (StreamReader reader = new StreamReader(cs))
                         {
                             plaintext = reader.ReadToEnd();
                         }
