@@ -141,7 +141,6 @@ namespace CryptoProject
         }
 
         public void testServerMessage(string message) {
-            Console.WriteLine(message + " SERVER");
             Console.WriteLine(message);
             Console.WriteLine("test");
 

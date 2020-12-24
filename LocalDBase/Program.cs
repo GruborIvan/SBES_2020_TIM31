@@ -22,6 +22,9 @@ namespace LocalDBase
             WCFLocalDB proxy = new WCFLocalDB(callbackclient, bindingServer, new EndpointAddress(new Uri(addressServer)));
             callbackclient.Proxy = proxy;
 
+            proxyCaller callerbase = new proxyCaller();
+            callerbase.ProxySetter = proxy;
+
             ////////////////////////////
 
             NetTcpBinding bindingClient = new NetTcpBinding();

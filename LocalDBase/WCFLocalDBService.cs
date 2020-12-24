@@ -12,6 +12,12 @@ namespace LocalDBase
 
         IDatabaseService proxy = null;
 
+        public WCFLocalDBService() {
+
+            proxy = proxyCaller.proxy;
+
+        }
+
         public string AddLogEntity(LogEntity entitet)
         {
             throw new NotImplementedException();
@@ -50,12 +56,6 @@ namespace LocalDBase
         public LogEntity UpdateConsumption(string id, int month, float consumption)
         {
             throw new NotImplementedException();
-        }
-
-        public IDatabaseService Proxy {
-
-            get { return proxy; }
-            set { proxy = value; }
         }
     }
 }
