@@ -9,44 +9,53 @@ namespace LocalDBase
 {
     class WCFLocalDBService : IDatabaseService
     {
+
+        IDatabaseService proxy = null;
+
         public string AddLogEntity(LogEntity entitet)
         {
-            return AddLogEntity(entitet);
+            throw new NotImplementedException();
         }
 
         public bool DeleteLogEntity(string id)
         {
-            return DeleteLogEntity(id);
+            throw new NotImplementedException();
         }
 
         public float GetAverageConsumptionForCity(string city)
         {
-            return GetAverageConsumptionForCity(city);
+            throw new NotImplementedException();
         }
 
         public float GetAverageConsumptionForRegion(Region reg)
         {
-            return GetAverageConsumptionForRegion(reg);
+            throw new NotImplementedException();
         }
 
         public List<LogEntity> GetEntitiesForRegions(List<Region> regioni)
         {
-            return GetEntitiesForRegions(regioni);
+            throw new NotImplementedException();
         }
 
         public LogEntity GetLogEntityById(string id)
         {
-            return GetLogEntityById(id);
+            throw new NotImplementedException();
         }
 
         public void testServerMessage(string message)
         {
-            testServerMessage(message);
+            proxy.testServerMessage(message);
         }
 
         public LogEntity UpdateConsumption(string id, int month, float consumption)
         {
-            return UpdateConsumption(id, month, consumption);
+            throw new NotImplementedException();
+        }
+
+        public IDatabaseService Proxy {
+
+            get { return proxy; }
+            set { proxy = value; }
         }
     }
 }

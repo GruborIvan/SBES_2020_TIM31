@@ -27,7 +27,7 @@ namespace LocalDBase
             NetTcpBinding bindingClient = new NetTcpBinding();
             string addressSelf = "net.tcp://localhost:8888/localdb";
 
-            ServiceHost host = new ServiceHost(typeof(WCFLocalDB));
+            ServiceHost host = new ServiceHost(typeof(WCFLocalDBService));
             host.AddServiceEndpoint(typeof(IDatabaseService), bindingClient, addressSelf);
 
             host.Open();
