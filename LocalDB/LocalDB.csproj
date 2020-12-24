@@ -55,7 +55,7 @@
       <Project>{A00551C2-891B-4166-89CE-E21CA53BCFBE}</Project>
       <Name>Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LocalDatabase\Client.csproj">
+    <ProjectReference Include="..\LocalDatabase\LocalDatabase.csproj">
       <Project>{7C8C2963-6D98-4533-8935-03A448C98746}</Project>
       <Name>LocalDatabase</Name>
     </ProjectReference>
