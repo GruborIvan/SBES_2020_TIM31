@@ -15,7 +15,7 @@ namespace LocalDBase
         static void Main(string[] args)
         {
             NetTcpBinding bindingClient = new NetTcpBinding();
-            string addressSelf = "net.tcp://localhost:8888/wcfserver";
+            string addressSelf = "net.tcp://localhost:8888/localdb";
 
             ServiceHost host = new ServiceHost(typeof(WCFServer));
             host.AddServiceEndpoint(typeof(IDatabaseService), bindingClient, addressSelf);
@@ -23,7 +23,6 @@ namespace LocalDBase
             host.Open();
 
             Console.WriteLine("WCFService is opened. Press <enter> to finish...");
-            Console.ReadLine();
 
             NetTcpBinding bindingServer = new NetTcpBinding();
             string addressServer = "net.tcp://localhost:9999/wcfserver";
