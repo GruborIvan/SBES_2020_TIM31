@@ -35,6 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,15 +46,18 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="XmlHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{a00551c2-891b-4166-89ce-e21ca53bcfbe}</Project>
+      <Project>{A00551C2-891B-4166-89CE-E21CA53BCFBE}</Project>
       <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LocalDatabase\Client.csproj">
+      <Project>{7C8C2963-6D98-4533-8935-03A448C98746}</Project>
+      <Name>LocalDatabase</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
