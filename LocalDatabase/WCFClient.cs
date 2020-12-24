@@ -108,7 +108,7 @@ namespace Client
         }
 
         public void testServerMessage(string message) {
-
+            Console.WriteLine(message + " CLIENT");
             factory.testServerMessage(message);
         }
 

@@ -121,6 +121,7 @@ namespace LocalDBase
 
         public void testServerMessage(string message)
         {
+            Console.WriteLine(message +" LOKALNA");
             factory.testServerMessage(message);
         }
 
