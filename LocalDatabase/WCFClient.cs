@@ -7,7 +7,7 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LocalDatabase
+namespace Client
 {
     public class WCFClient : DuplexClientBase<IDatabaseService>, IDatabaseService, IDisposable
     {
