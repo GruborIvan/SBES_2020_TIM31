@@ -17,7 +17,6 @@ namespace LocalDB
         public static Dictionary<string, LogEntity> ListaLogEntity = new Dictionary<string, LogEntity>();
         static readonly object pblock = new object();
 
-
         public XmlHandler()
         {
 
