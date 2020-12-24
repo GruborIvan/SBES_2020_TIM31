@@ -141,7 +141,7 @@ namespace CryptoProject
         }
 
         public void testServerMessage(string message) {
-            throw new NotImplementedException();
+            Console.WriteLine(message);
         }
 
         public LogEntity UpdateConsumption(string id, int month, float consumption) {
