@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace LocalDBase
 {
-    public class WCFLocalDB : DuplexClientBase<IDatabaseService>, IDatabaseService, IDisposable
-    {
+    public class WCFLocalDB : DuplexClientBase<IDatabaseService>, IDatabaseService, IDisposable {
         IDatabaseService factory;
         Encryption encryptor = new Encryption();
+
         public WCFLocalDB(object callbackInstance, NetTcpBinding binding, EndpointAddress address) : base(callbackInstance, binding, address)
         {
             factory = this.CreateChannel();
