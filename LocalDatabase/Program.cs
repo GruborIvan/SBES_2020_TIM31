@@ -15,7 +15,7 @@ namespace Client
 
 
             NetTcpBinding binding = new NetTcpBinding();
-            string address = "net.tcp://localhost:9999/wcfserver";
+            string address = "net.tcp://localhost:8888/wcfserver";
 
             CallbackClient callbackclient = new CallbackClient();
             WCFClient proxy = new WCFClient(callbackclient, binding, new EndpointAddress(new Uri(address)));
