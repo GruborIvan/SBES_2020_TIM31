@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30621.155
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CentralDatabase", "CryptoProject\CentralDatabase.csproj", "{7B1CFFEA-52F0-4646-B35B-0AF5C178E4F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalDatabase", "LocalDatabase\LocalDatabase.csproj", "{7C8C2963-6D98-4533-8935-03A448C98746}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "LocalDatabase\Client.csproj", "{7C8C2963-6D98-4533-8935-03A448C98746}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{A00551C2-891B-4166-89CE-E21CA53BCFBE}"
 EndProject
