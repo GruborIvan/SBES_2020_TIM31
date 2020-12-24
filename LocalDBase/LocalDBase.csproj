@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D34AC42B-8AF6-4A64-98E7-15BF2F262AB3}</ProjectGuid>
+    <ProjectGuid>{6134D8D9-9879-454D-BB4C-78A3EE8C23B8}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>LocalDB</RootNamespace>
-    <AssemblyName>LocalDB</AssemblyName>
+    <RootNamespace>LocalDBase</RootNamespace>
+    <AssemblyName>LocalDBase</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -57,7 +57,7 @@
     </ProjectReference>
     <ProjectReference Include="..\LocalDatabase\Client.csproj">
       <Project>{7C8C2963-6D98-4533-8935-03A448C98746}</Project>
-      <Name>LocalDatabase</Name>
+      <Name>Client</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
