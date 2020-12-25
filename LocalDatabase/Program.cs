@@ -13,18 +13,32 @@ namespace Client
     {
         static void Main(string[] args) {
 
-
-            NetTcpBinding binding = new NetTcpBinding();
-            string address = "net.tcp://localhost:8888/localdb";
-
+            int localdb = 0;
             CallbackClient callbackclient = new CallbackClient();
-            WCFClient proxy = new WCFClient(callbackclient, binding, new EndpointAddress(new Uri(address)));
+            callbackclient.Proxy = null;
+            WCFClient proxy = null;
+            NetTcpBinding binding = new NetTcpBinding();
+
+            Console.WriteLine("Na koji localDB zelis da se konektujes[0, 1, 2, 3 ... x]:");
+            while (true) {
+                
+                
+                localdb = Int32.Parse(Console.ReadLine());
+                string address = "net.tcp://localhost:"+(8888+localdb).ToString()+"/localdb";
+                proxy = new WCFClient(callbackclient, binding, new EndpointAddress(new Uri(address)));
+
+                try { proxy.testServerMessage("Hello from client to server."); }
+                catch (Exception e) { Console.WriteLine("nesto je poslo po zlu probaj opet"); continue; }
+                
+                break;
+                
+            }
+            
             callbackclient.Proxy = proxy;
             Database database = new Database();
 
             int opt;
 
-            proxy.testServerMessage("Hello from client to server.");
 
             while (true) 
             {
