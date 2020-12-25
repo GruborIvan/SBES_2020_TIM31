@@ -13,6 +13,9 @@ namespace LocalDBase
     public class WCFLocalDB : DuplexClientBase<IDatabaseService>, IDatabaseService, IDisposable {
         IDatabaseService factory;
 
+
+        XmlHandler xh = new XmlHandler();
+
         public WCFLocalDB(object callbackInstance, NetTcpBinding binding, EndpointAddress address) : base(callbackInstance, binding, address)
         {
             factory = this.CreateChannel();
@@ -20,20 +23,14 @@ namespace LocalDBase
 
         public string AddLogEntity(LogEntity entitet)
         {
-
-            Database db = new Database();
-            entitet.Id = factory.AddLogEntity(entitet);
-
-            if (entitet.Id == null)
+            List<LogEntity> list = xh.ReturnList();
+            if(list.Find(x=> x.Grad.ToLower() == entitet.Grad.ToLower() && x.Godina == entitet.Godina) != null)
             {
                 return null;
             }
 
-            if (!db.EntityList.ContainsKey(entitet.Id))
-            {
-                db.EntityList.Add(entitet.Id, entitet);
-            }
-
+            string id = xh.AddEntity(entitet);
+           
             return entitet.Id;
         }
 
@@ -53,21 +50,18 @@ namespace LocalDBase
 
         public bool DeleteLogEntity(string id)
         {
+            bool deleted = false;
 
-            Database db = new Database();
-
-            if (db.EntityList.ContainsKey(id) == false)
+            try
             {
-                Console.WriteLine("Traženi entitet ne postoji.");
+                deleted = xh.DeleteEntity(id);
+                return deleted;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
                 return false;
             }
-            else
-            {
-                db.EntityList.Remove(id);
-                factory.DeleteLogEntity(id);
-            }
-
-            return true;
         }
 
         public void Dispose()
@@ -82,19 +76,18 @@ namespace LocalDBase
 
         public List<LogEntity> GetEntitiesForRegions(List<Region> regioni)
         {
+            List<LogEntity> entiteti= new List<LogEntity>();
 
-            List<LogEntity> entiteti = new List<LogEntity>();
-            Database db = new Database();
-            entiteti = factory.GetEntitiesForRegions(regioni);
-
-            foreach (LogEntity ent in entiteti)
+            foreach (var item in regioni)
             {
-                if (db.EntityList.ContainsKey(ent.Id) == false)
+                foreach (var reg in xh.ReturnList())
                 {
-                    db.EntityList.Add(ent.Id, ent);
+                    if (item.Equals(reg.Region))
+                    {
+                        entiteti.Add(reg);
+                    }
                 }
             }
-            Console.WriteLine("Dobavljeni su entiteti, molimo odaberite opciju izlistaj entitete za detalje.\n");
 
             return entiteti;
         }
@@ -117,26 +110,25 @@ namespace LocalDBase
 
         public LogEntity UpdateConsumption(string id, int month, float consumption)
         {
+            LogEntity entitet = new LogEntity();
 
-            Database db = new Database();
-            if (db.EntityList.ContainsKey(id))
+            foreach (var en in xh.ReturnList())
             {
-                db.EntityList[id].Potrosnja[month] = consumption;
-                factory.UpdateConsumption(id, month, consumption);
-                return db.EntityList[id];
+                if (en.Id.Equals(id))
+                {
+                    entitet = en;
+                    break;
+                }
             }
+            entitet.Potrosnja[month] = consumption;
+            xh.UpdateEntity(entitet);
 
-            Console.WriteLine("Traženi entitet nije pronađen.");
-            return null;
+            return entitet;
         }
 
         public LogEntity GetLogEntityById(string id)
         {
-
-            Database db = new Database();
-            LogEntity entitet = factory.GetLogEntityById(id);
-
-            return entitet;
+            throw new NotImplementedException();
         }
     }
 }
