@@ -19,7 +19,6 @@ namespace LocalDBase
         public static List<IDatabaseCallback> klijenti = new List<IDatabaseCallback>();
         public enum CallbackOperation { ADD, UPDATE, DELETE };
 
-
         XmlHandler xh = new XmlHandler();
 
         public WCFLocalDB(object callbackInstance, NetTcpBinding binding, EndpointAddress address) : base(callbackInstance, binding, address)
@@ -29,33 +28,7 @@ namespace LocalDBase
 
         public string AddLogEntity(LogEntity entitet)
         {
-            List<LogEntity> list = xh.ReturnList();
-            if(list.Find(x=> x.Grad.ToLower() == entitet.Grad.ToLower() && x.Godina == entitet.Godina) != null)
-            {
-                return null;
-            }
-
-<<<<<<< HEAD
-            if (!db.EntityList.ContainsKey(entitet.Id))
-            {
-                db.EntityList.Add(entitet.Id, entitet);
-            }
-
-            IDatabaseCallback callback = OperationContext.Current.GetCallbackChannel<IDatabaseCallback>();
-
-            if (klijenti.Contains(callback) == false)
-            {
-                klijenti.Add(callback);
-            }
-
-            broadcastIdMessage(entitet.Id,CallbackOperation.ADD);
-            // POZVATI BROADCAST !!
-
-=======
-            string id = xh.AddEntity(entitet);
-           
->>>>>>> c397e2a7b47d772d14e8853bf2fde23d116d81e7
-            return entitet.Id;
+            throw new NotImplementedException();
         }
 
         public float GetAverageConsumptionForCity(string grad)
@@ -74,32 +47,8 @@ namespace LocalDBase
 
         public bool DeleteLogEntity(string id)
         {
-            bool deleted = false;
+            throw new NotImplementedException();
 
-            try
-            {
-                deleted = xh.DeleteEntity(id);
-                return deleted;
-            }
-            catch (Exception e)
-            {
-<<<<<<< HEAD
-                try
-                {
-                    db.EntityList.Remove(id);
-                    factory.DeleteLogEntity(id);
-                    broadcastIdMessage(id,CallbackOperation.DELETE);
-                }
-                catch(Exception e)
-                {
-                    Trace.TraceInformation(e.Message);
-                }
-                
-=======
-                Console.WriteLine(e);
-                return false;
->>>>>>> c397e2a7b47d772d14e8853bf2fde23d116d81e7
-            }
         }
 
         public void Dispose()
@@ -148,30 +97,8 @@ namespace LocalDBase
 
         public LogEntity UpdateConsumption(string id, int month, float consumption)
         {
-            LogEntity entitet = new LogEntity();
+            throw new NotImplementedException();
 
-            foreach (var en in xh.ReturnList())
-            {
-<<<<<<< HEAD
-                db.EntityList[id].Potrosnja[month] = consumption;
-                factory.UpdateConsumption(id, month, consumption);
-
-                // Broadcast changes to all subscribed clients..
-                broadcastIdMessage(id,CallbackOperation.UPDATE);
-
-                return db.EntityList[id];
-=======
-                if (en.Id.Equals(id))
-                {
-                    entitet = en;
-                    break;
-                }
->>>>>>> c397e2a7b47d772d14e8853bf2fde23d116d81e7
-            }
-            entitet.Potrosnja[month] = consumption;
-            xh.UpdateEntity(entitet);
-
-            return entitet;
         }
 
         public LogEntity GetLogEntityById(string id)

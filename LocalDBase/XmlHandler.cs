@@ -16,9 +16,9 @@ namespace LocalDBase
         public static Dictionary<string, LogEntity> ListaLogEntity = new Dictionary<string, LogEntity>();
         static readonly object pblock = new object();
 
-<<<<<<< HEAD
-        public XmlHandler()
-=======
+        public XmlHandler() {
+
+        }
         private string fileName;
 
         public string FileName
@@ -27,7 +27,6 @@ namespace LocalDBase
             set { fileName = value; }
         }
         public XmlHandler(string fileName)
->>>>>>> c397e2a7b47d772d14e8853bf2fde23d116d81e7
         {
             this.fileName = fileName;
 
