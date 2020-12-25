@@ -74,14 +74,6 @@ namespace Client
             return true;
         }
 
-        public void Dispose() {
-            if (factory != null) {
-                factory = null;
-            }
-
-            this.Close();
-        }
-
         public List<LogEntity> GetEntitiesForRegions(List<Region> regioni) {
 
             List<LogEntity> entiteti = new List<LogEntity>();
@@ -130,6 +122,16 @@ namespace Client
             LogEntity entitet = factory.GetLogEntityById(id);
 
             return entitet;
+        }
+
+        public void Dispose()
+        {
+            if (factory != null)
+            {
+                factory = null;
+            }
+
+            this.Close();
         }
     }
 }
