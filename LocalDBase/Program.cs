@@ -15,7 +15,7 @@ namespace LocalDBase
 
         static void Main(string[] args)
         {
-
+            //MARCETA RADI
             NetTcpBinding bindingServer = new NetTcpBinding();
             string addressServer = "net.tcp://localhost:9999/wcfserver";
 
