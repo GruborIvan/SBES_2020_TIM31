@@ -19,7 +19,7 @@ namespace LocalDBase
             set { proxy = value;}
         }
 
-        public void openNewEndpoint()
+        public int openNewEndpoint()
         {
             int port = 8888;
             while (true)
@@ -39,6 +39,7 @@ namespace LocalDBase
                     port++;
                 }
             }
+            return port;
         }
     }
 }
