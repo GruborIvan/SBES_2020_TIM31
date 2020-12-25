@@ -31,7 +31,7 @@ namespace LocalDBase
 
             string id = factory.AddLogEntity(entitet);
             entitet.Id = id;
-            xh.AddEntity(entitet);
+            //xh.AddEntity(entitet);
             return entitet.Id;
         }
 
@@ -55,7 +55,7 @@ namespace LocalDBase
             try
             {
                 factory.DeleteLogEntity(id);
-                deleted = xh.DeleteEntity(id);
+                //deleted = xh.DeleteEntity(id);
                 return deleted;
             }
             catch (Exception e)
@@ -77,7 +77,16 @@ namespace LocalDBase
 
         public List<LogEntity> GetEntitiesForRegions(List<Region> regioni)
         {
-            return factory.GetEntitiesForRegions(regioni);
+
+            List<LogEntity> lista = factory.GetEntitiesForRegions(regioni);
+            
+            foreach (LogEntity entitet in lista) {
+                if (xh.ReturnList().Find(x => x.Id == entitet.Id) == null) {
+                    xh.AddEntity(entitet);
+                }
+            }
+
+            return lista;
         }
 
         public float GetAverageConsumptionForRegion(Region reg)
@@ -111,14 +120,17 @@ namespace LocalDBase
 
             factory.UpdateConsumption(id, month, consumption);
             entitet.Potrosnja[month] = consumption;
-            xh.UpdateEntity(entitet);
+            //xh.UpdateEntity(entitet);
 
             return entitet;
         }
 
         public LogEntity GetLogEntityById(string id)
         {
-            throw new NotImplementedException();
+
+            LogEntity entitet = factory.GetLogEntityById(id);
+
+            return entitet;
         }
     }
 }
