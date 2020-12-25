@@ -1,4 +1,4 @@
-﻿
+﻿using Client;
 using Common;
 using System;
 using System.Collections.Generic;
@@ -133,7 +133,6 @@ namespace LocalDBase
         public LogEntity GetLogEntityById(string id)
         {
 
-            Database db = new Database();
             LogEntity entitet = factory.GetLogEntityById(id);
 
             return entitet;
