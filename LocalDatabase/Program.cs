@@ -20,18 +20,26 @@ namespace Client
             NetTcpBinding binding = new NetTcpBinding();
 
             Console.WriteLine("Na koji localDB zelis da se konektujes[0, 1, 2, 3 ... x]:");
-            while (true) {
+            while (true) 
+            {
                 
                 
                 localdb = Int32.Parse(Console.ReadLine());
                 string address = "net.tcp://localhost:"+(8888+localdb).ToString()+"/localdb";
                 proxy = new WCFClient(callbackclient, binding, new EndpointAddress(new Uri(address)));
 
-                try { proxy.testServerMessage("Hello from client to server."); }
-                catch (Exception e) { Console.WriteLine("nesto je poslo po zlu probaj opet"); continue; }
+                try 
+                { 
+                    proxy.testServerMessage("Hello from client to server."); 
+                }
+                catch (Exception e) 
+                {
+                    Trace.TraceInformation(e.Message);
+                    Console.WriteLine("nesto je poslo po zlu probaj opet"); 
+                    continue; 
+                }
                 
                 break;
-                
             }
             
             callbackclient.Proxy = proxy;

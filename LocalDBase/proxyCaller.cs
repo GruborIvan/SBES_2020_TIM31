@@ -1,6 +1,7 @@
 ﻿using Common;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
@@ -37,6 +38,7 @@ namespace LocalDBase
                 }
                 catch (Exception e)
                 {
+                    Trace.TraceInformation(e.Message);
                     port++;
                 }
             }
