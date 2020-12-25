@@ -1,17 +1,23 @@
-﻿
+﻿using Client;
 using Common;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 using System.ServiceModel;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LocalDBase
 {
-    public class WCFLocalDB : DuplexClientBase<IDatabaseService>, IDatabaseService, IDisposable {
+    public class WCFLocalDB : DuplexClientBase<IDatabaseService>, IDatabaseService, IDisposable 
+    {
+
         IDatabaseService factory;
+        public static List<IDatabaseCallback> klijenti = new List<IDatabaseCallback>();
+        public enum CallbackOperation { ADD, UPDATE, DELETE };
 
         public WCFLocalDB(object callbackInstance, NetTcpBinding binding, EndpointAddress address) : base(callbackInstance, binding, address)
         {
@@ -33,6 +39,16 @@ namespace LocalDBase
             {
                 db.EntityList.Add(entitet.Id, entitet);
             }
+
+            IDatabaseCallback callback = OperationContext.Current.GetCallbackChannel<IDatabaseCallback>();
+
+            if (klijenti.Contains(callback) == false)
+            {
+                klijenti.Add(callback);
+            }
+
+            broadcastIdMessage(entitet.Id,CallbackOperation.ADD);
+            // POZVATI BROADCAST !!
 
             return entitet.Id;
         }
@@ -63,8 +79,17 @@ namespace LocalDBase
             }
             else
             {
-                db.EntityList.Remove(id);
-                factory.DeleteLogEntity(id);
+                try
+                {
+                    db.EntityList.Remove(id);
+                    factory.DeleteLogEntity(id);
+                    broadcastIdMessage(id,CallbackOperation.DELETE);
+                }
+                catch(Exception e)
+                {
+                    Trace.TraceInformation(e.Message);
+                }
+                
             }
 
             return true;
@@ -123,6 +148,10 @@ namespace LocalDBase
             {
                 db.EntityList[id].Potrosnja[month] = consumption;
                 factory.UpdateConsumption(id, month, consumption);
+
+                // Broadcast changes to all subscribed clients..
+                broadcastIdMessage(id,CallbackOperation.UPDATE);
+
                 return db.EntityList[id];
             }
 
@@ -138,5 +167,47 @@ namespace LocalDBase
 
             return entitet;
         }
+
+        void broadcastIdMessage(string id, CallbackOperation op)
+        {
+            List<IDatabaseCallback> deleteitems = new List<IDatabaseCallback>();
+
+            foreach (IDatabaseCallback client in klijenti)
+            {
+
+                    try
+                    {
+                        switch (op)
+                        {
+                            case CallbackOperation.ADD:
+                                LogEntity entity = GetLogEntityById(id);
+                                client.broadcastAddLogEntity(entity.Region, entity.Id);
+                                break;
+
+                            case CallbackOperation.UPDATE:
+                                client.broadcastUpdateId(id);
+                                break;
+                            case CallbackOperation.DELETE:
+                                client.broadcastDeleteId(id);
+                                break;
+                        }
+                        Console.WriteLine("Hi from thread!");
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("{0}", ex.Message);
+                        deleteitems.Add(client);
+                    }
+            }
+
+            // Brisanje ugasenih klijenata..
+            foreach (IDatabaseCallback client in deleteitems)
+            {
+                klijenti.Remove(client);
+            }
+
+        }
+
     }
 }

@@ -13,9 +13,10 @@ namespace Client
     {
 
         IDatabaseService proxy = null;
-
+        
         public CallbackClient()
         {
+
         }
 
         public void broadcastDeleteId(string id) {
@@ -24,7 +25,6 @@ namespace Client
             Console.WriteLine("Broadcasted delete id: {0}.\n", id);
             if (database.EntityList.ContainsKey(id)) {
                 database.EntityList.Remove(id);
-
             }
         }
 

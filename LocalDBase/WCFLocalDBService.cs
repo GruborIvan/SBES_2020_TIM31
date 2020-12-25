@@ -2,12 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace LocalDBase
 {
-    class WCFLocalDBService : IDatabaseService
+    [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant)]
+    public class WCFLocalDBService : IDatabaseService
     {
 
         IDatabaseService proxy = null;

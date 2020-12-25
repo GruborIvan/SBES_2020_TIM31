@@ -38,16 +38,14 @@ namespace CryptoProject
         }
 
         public float GetAverageConsumptionForCity(string grad) {
-            /////////////////////////////////////////get() klijenta koji trazi pristup
+
             IIdentity client = ServiceSecurityContext.Current.PrimaryIdentity;
             ////////////////////////////////////////
             float ret = 0, cons = 0;
             int n = 0, i = 0;
 
-            foreach (LogEntity item in xh.ReturnList()) {/////////////////////////////////////////ako klijentu nije dostupna dotican item -> continue
-                                                          //   if (!klijenti[item.Id].Equals(client))
-                                                          //       continue;
-                                                          /////////////////////////////////////////
+            foreach (LogEntity item in xh.ReturnList()) {
+
                 if (item.Grad.Equals(grad)) {
                     foreach (float f in item.Potrosnja) {
                         cons += item.Potrosnja[i];
@@ -58,8 +56,10 @@ namespace CryptoProject
                     i = 0;
                     n++;
                 }
+
             }
-            return (ret / n); //Ne!
+
+            return (ret / n);
         }
 
         public bool DeleteLogEntity(string id) {//////////////////////////////////////Ako klijentu nije dostupan doticni item -> return
@@ -69,7 +69,8 @@ namespace CryptoProject
             ///////////////////////////////////////
             bool deletion = false;
 
-            try {
+            try 
+            {
                 deletion = xh.DeleteEntity(id);
                 broadcastIdMessage(id, CallbackOperation.DELETE);
                 return deletion;
