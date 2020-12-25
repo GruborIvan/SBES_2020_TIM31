@@ -29,8 +29,9 @@ namespace LocalDBase
                 return null;
             }
 
-            string id = xh.AddEntity(entitet);
-           
+            string id = factory.AddLogEntity(entitet);
+            entitet.Id = id;
+            xh.AddEntity(entitet);
             return entitet.Id;
         }
 
@@ -43,7 +44,6 @@ namespace LocalDBase
          
             Console.WriteLine($"Prosečna godišnja potrošnja za {grad}" +
                             $" je : {potrosnja} [kW/h]");
-            
 
             return potrosnja;
         }
@@ -54,6 +54,7 @@ namespace LocalDBase
 
             try
             {
+                factory.DeleteLogEntity(id);
                 deleted = xh.DeleteEntity(id);
                 return deleted;
             }
@@ -76,20 +77,7 @@ namespace LocalDBase
 
         public List<LogEntity> GetEntitiesForRegions(List<Region> regioni)
         {
-            List<LogEntity> entiteti= new List<LogEntity>();
-
-            foreach (var item in regioni)
-            {
-                foreach (var reg in xh.ReturnList())
-                {
-                    if (item.Equals(reg.Region))
-                    {
-                        entiteti.Add(reg);
-                    }
-                }
-            }
-
-            return entiteti;
+            return factory.GetEntitiesForRegions(regioni);
         }
 
         public float GetAverageConsumptionForRegion(Region reg)
@@ -120,6 +108,8 @@ namespace LocalDBase
                     break;
                 }
             }
+
+            factory.UpdateConsumption(id, month, consumption);
             entitet.Potrosnja[month] = consumption;
             xh.UpdateEntity(entitet);
 

@@ -55,7 +55,7 @@ namespace LocalDBase
 
         public LogEntity UpdateConsumption(string id, int month, float consumption)
         {
-            throw new NotImplementedException();
+            return proxy.UpdateConsumption(id, month, consumption);
         }
     }
 }

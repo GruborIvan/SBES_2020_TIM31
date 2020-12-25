@@ -16,7 +16,7 @@ namespace LocalDBase
         public static Dictionary<string, LogEntity> ListaLogEntity = new Dictionary<string, LogEntity>();
         static readonly object pblock = new object();
 
-        private string fileName;
+        static private string fileName;
 
         public string FileName
         {
@@ -29,7 +29,7 @@ namespace LocalDBase
         }
         public XmlHandler(string fileName)
         {
-            this.fileName = fileName;
+            FileName = fileName;
 
             if (!File.Exists(fileName))
             {
