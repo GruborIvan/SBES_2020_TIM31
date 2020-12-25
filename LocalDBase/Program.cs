@@ -28,7 +28,11 @@ namespace LocalDBase
 
             ////////////////////////////
 
-            callerbase.openNewEndpoint();
+            int port = callerbase.openNewEndpoint();
+
+            string baseName = "baza" + port.ToString() +".xml";
+
+            XmlHandler xh = new XmlHandler(baseName);
 
             Console.WriteLine("WCFService is opened. Press <enter> to finish...");
 

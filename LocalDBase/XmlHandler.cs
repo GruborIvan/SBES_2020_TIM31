@@ -23,6 +23,10 @@ namespace LocalDBase
             get { return fileName; }
             set { fileName = value; }
         }
+        public XmlHandler()
+        {
+
+        }
         public XmlHandler(string fileName)
         {
             this.fileName = fileName;
