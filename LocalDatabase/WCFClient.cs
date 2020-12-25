@@ -116,8 +116,7 @@ namespace Client
 
             Database db = new Database();
             if (db.EntityList.ContainsKey(id)) {
-                db.EntityList[id].Potrosnja[month] = consumption;
-                factory.UpdateConsumption(id, month, consumption);
+                db.EntityList[id] = factory.UpdateConsumption(id, month, consumption);
                 return db.EntityList[id];
             }
 

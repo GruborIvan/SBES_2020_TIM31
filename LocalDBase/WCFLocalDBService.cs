@@ -2,15 +2,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace LocalDBase
 {
+    [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant)]
     class WCFLocalDBService : IDatabaseService
     {
 
         IDatabaseService proxy = null;
+        public static List<IDatabaseCallback> klijenti = new List<IDatabaseCallback>();
 
         public WCFLocalDBService() {
 
@@ -20,6 +23,11 @@ namespace LocalDBase
 
         public string AddLogEntity(LogEntity entitet)
         {
+
+            IDatabaseCallback callback = OperationContext.Current.GetCallbackChannel<IDatabaseCallback>();
+            if (klijenti.Contains(callback) == false) {
+                klijenti.Add(callback);
+            }
             return proxy.AddLogEntity(entitet);
         }
 
@@ -40,6 +48,12 @@ namespace LocalDBase
 
         public List<LogEntity> GetEntitiesForRegions(List<Region> regioni)
         {
+
+            IDatabaseCallback callback = OperationContext.Current.GetCallbackChannel<IDatabaseCallback>();
+            if (klijenti.Contains(callback) == false) {
+                klijenti.Add(callback);
+            }
+
             return proxy.GetEntitiesForRegions(regioni);
         }
 
