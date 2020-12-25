@@ -10,6 +10,7 @@ namespace LocalDBase
 {
     public class proxyCaller
     {
+        // MOJSI PROKSI <3 !
 
         public static IDatabaseService proxy = null;
 
