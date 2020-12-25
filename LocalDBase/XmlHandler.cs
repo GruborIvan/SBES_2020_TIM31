@@ -16,15 +16,27 @@ namespace LocalDBase
         public static Dictionary<string, LogEntity> ListaLogEntity = new Dictionary<string, LogEntity>();
         static readonly object pblock = new object();
 
+<<<<<<< HEAD
         public XmlHandler()
-        {
+=======
+        private string fileName;
 
-            if (!File.Exists("baza.xml"))
+        public string FileName
+        {
+            get { return fileName; }
+            set { fileName = value; }
+        }
+        public XmlHandler(string fileName)
+>>>>>>> c397e2a7b47d772d14e8853bf2fde23d116d81e7
+        {
+            this.fileName = fileName;
+
+            if (!File.Exists(fileName))
             {
                 XmlWriterSettings xws = new XmlWriterSettings();
                 xws.Indent = true;
                 xws.NewLineOnAttributes = true;
-                using (XmlWriter xmlwriter = XmlWriter.Create("baza.xml", xws))
+                using (XmlWriter xmlwriter = XmlWriter.Create(fileName, xws))
                 {
                     xmlwriter.WriteStartDocument();
                     xmlwriter.WriteStartElement("ArrayOfLogEntity");
@@ -39,7 +51,7 @@ namespace LocalDBase
                 if (ListaLogEntity.Count == 0)
                 {
                     List<LogEntity> ArrayOfLogEntity = new List<LogEntity>();
-                    string xmlstring = File.ReadAllText("baza.xml");
+                    string xmlstring = File.ReadAllText(fileName);
                     XmlSerializer ser = new XmlSerializer(typeof(List<LogEntity>), new XmlRootAttribute("ArrayOfLogEntity"));
                     StringReader sr = new StringReader(xmlstring);
                     ArrayOfLogEntity = ((List<LogEntity>)ser.Deserialize(sr));
@@ -77,17 +89,11 @@ namespace LocalDBase
         public string AddEntity(LogEntity le)
         {
             lock (pblock)
-            {
-                le.Id = "0";
-                if (!(ListaLogEntity.Count() == 0))
-                {
-                    le.Id = NadjiRupu(ListaLogEntity).ToString();
-                }
-
+            {                
                 ListaLogEntity.Add(le.Id, le);
 
 
-                XDocument doc = XDocument.Load("baza.xml");
+                XDocument doc = XDocument.Load(fileName);
                 XElement lista = doc.Element("ArrayOfLogEntity");
 
                 XElement LEntEle = new XElement("LogEntity");
@@ -117,7 +123,7 @@ namespace LocalDBase
                         LEntEle
                     );
 
-                doc.Save("baza.xml");
+                doc.Save(fileName);
                 return le.Id;
             }
         }
@@ -135,7 +141,7 @@ namespace LocalDBase
                 }
 
                 XmlDocument doc = new XmlDocument();
-                doc.LoadXml(File.ReadAllText("baza.xml"));
+                doc.LoadXml(File.ReadAllText(fileName));
                 XmlNode xmlNode = doc.SelectSingleNode("ArrayOfLogEntity/LogEntity[Id = " + id + "]");
 
                 ListaLogEntity.Remove(id);
@@ -143,7 +149,7 @@ namespace LocalDBase
                 if (xmlNode != null)
                 {
                     xmlNode.ParentNode.RemoveChild(xmlNode);
-                    doc.Save("baza.xml");
+                    doc.Save(fileName);
                     return true;
                 }
 
@@ -155,12 +161,10 @@ namespace LocalDBase
             lock (pblock)
             {
                 if (ListaLogEntity.ContainsKey(le.Id))
-                {
-                    int rupa = NadjiRupu(ListaLogEntity);
-
+                { 
                     ListaLogEntity[le.Id] = le;
 
-                    XDocument xmlDoc = XDocument.Parse(File.ReadAllText("baza.xml"));
+                    XDocument xmlDoc = XDocument.Parse(File.ReadAllText(fileName));
 
                     var items = from item in xmlDoc.Descendants("LogEntity")
                                 where item.Element("Id").Value == le.Id
@@ -186,26 +190,11 @@ namespace LocalDBase
                         }
 
                     }
-                    xmlDoc.Save("baza.xml");
+                    xmlDoc.Save(fileName);
                     return true;
                 }
                 return false;
             }
         }
-        public int NadjiRupu(Dictionary<string, LogEntity> provera)
-        {
-            lock (pblock)
-            {
-                int a = 0;
-
-                while (provera.ContainsKey(a.ToString()))
-                {
-                    a++;
-                }
-
-                return a;
-            }
-        }
-
     }
 }

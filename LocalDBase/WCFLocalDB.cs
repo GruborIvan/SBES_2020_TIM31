@@ -19,6 +19,9 @@ namespace LocalDBase
         public static List<IDatabaseCallback> klijenti = new List<IDatabaseCallback>();
         public enum CallbackOperation { ADD, UPDATE, DELETE };
 
+
+        XmlHandler xh = new XmlHandler();
+
         public WCFLocalDB(object callbackInstance, NetTcpBinding binding, EndpointAddress address) : base(callbackInstance, binding, address)
         {
             factory = this.CreateChannel();
@@ -26,15 +29,13 @@ namespace LocalDBase
 
         public string AddLogEntity(LogEntity entitet)
         {
-
-            Database db = new Database();
-            entitet.Id = factory.AddLogEntity(entitet);
-
-            if (entitet.Id == null)
+            List<LogEntity> list = xh.ReturnList();
+            if(list.Find(x=> x.Grad.ToLower() == entitet.Grad.ToLower() && x.Godina == entitet.Godina) != null)
             {
                 return null;
             }
 
+<<<<<<< HEAD
             if (!db.EntityList.ContainsKey(entitet.Id))
             {
                 db.EntityList.Add(entitet.Id, entitet);
@@ -50,6 +51,10 @@ namespace LocalDBase
             broadcastIdMessage(entitet.Id,CallbackOperation.ADD);
             // POZVATI BROADCAST !!
 
+=======
+            string id = xh.AddEntity(entitet);
+           
+>>>>>>> c397e2a7b47d772d14e8853bf2fde23d116d81e7
             return entitet.Id;
         }
 
@@ -69,16 +74,16 @@ namespace LocalDBase
 
         public bool DeleteLogEntity(string id)
         {
+            bool deleted = false;
 
-            Database db = new Database();
-
-            if (db.EntityList.ContainsKey(id) == false)
+            try
             {
-                Console.WriteLine("Traženi entitet ne postoji.");
-                return false;
+                deleted = xh.DeleteEntity(id);
+                return deleted;
             }
-            else
+            catch (Exception e)
             {
+<<<<<<< HEAD
                 try
                 {
                     db.EntityList.Remove(id);
@@ -90,9 +95,11 @@ namespace LocalDBase
                     Trace.TraceInformation(e.Message);
                 }
                 
+=======
+                Console.WriteLine(e);
+                return false;
+>>>>>>> c397e2a7b47d772d14e8853bf2fde23d116d81e7
             }
-
-            return true;
         }
 
         public void Dispose()
@@ -107,19 +114,18 @@ namespace LocalDBase
 
         public List<LogEntity> GetEntitiesForRegions(List<Region> regioni)
         {
+            List<LogEntity> entiteti= new List<LogEntity>();
 
-            List<LogEntity> entiteti = new List<LogEntity>();
-            Database db = new Database();
-            entiteti = factory.GetEntitiesForRegions(regioni);
-
-            foreach (LogEntity ent in entiteti)
+            foreach (var item in regioni)
             {
-                if (db.EntityList.ContainsKey(ent.Id) == false)
+                foreach (var reg in xh.ReturnList())
                 {
-                    db.EntityList.Add(ent.Id, ent);
+                    if (item.Equals(reg.Region))
+                    {
+                        entiteti.Add(reg);
+                    }
                 }
             }
-            Console.WriteLine("Dobavljeni su entiteti, molimo odaberite opciju izlistaj entitete za detalje.\n");
 
             return entiteti;
         }
@@ -142,10 +148,11 @@ namespace LocalDBase
 
         public LogEntity UpdateConsumption(string id, int month, float consumption)
         {
+            LogEntity entitet = new LogEntity();
 
-            Database db = new Database();
-            if (db.EntityList.ContainsKey(id))
+            foreach (var en in xh.ReturnList())
             {
+<<<<<<< HEAD
                 db.EntityList[id].Potrosnja[month] = consumption;
                 factory.UpdateConsumption(id, month, consumption);
 
@@ -153,19 +160,23 @@ namespace LocalDBase
                 broadcastIdMessage(id,CallbackOperation.UPDATE);
 
                 return db.EntityList[id];
+=======
+                if (en.Id.Equals(id))
+                {
+                    entitet = en;
+                    break;
+                }
+>>>>>>> c397e2a7b47d772d14e8853bf2fde23d116d81e7
             }
+            entitet.Potrosnja[month] = consumption;
+            xh.UpdateEntity(entitet);
 
-            Console.WriteLine("Traženi entitet nije pronađen.");
-            return null;
+            return entitet;
         }
 
         public LogEntity GetLogEntityById(string id)
         {
-
-            Database db = new Database();
-            LogEntity entitet = factory.GetLogEntityById(id);
-
-            return entitet;
+            throw new NotImplementedException();
         }
 
         void broadcastIdMessage(string id, CallbackOperation op)
