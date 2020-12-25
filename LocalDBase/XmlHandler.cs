@@ -16,6 +16,8 @@ namespace LocalDBase
         public static Dictionary<string, LogEntity> ListaLogEntity = new Dictionary<string, LogEntity>();
         static readonly object pblock = new object();
 
+        // Nemam inspiracije za comm
+
         static private string fileName;
 
         public string FileName
