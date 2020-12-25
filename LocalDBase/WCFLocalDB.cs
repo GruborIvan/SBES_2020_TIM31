@@ -12,7 +12,7 @@ namespace LocalDBase
 {
     public class WCFLocalDB : DuplexClientBase<IDatabaseService>, IDatabaseService, IDisposable {
         IDatabaseService factory;
-
+        //komentar
 
         XmlHandler xh = new XmlHandler();
 
