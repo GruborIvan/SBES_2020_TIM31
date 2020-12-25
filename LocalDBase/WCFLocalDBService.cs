@@ -20,32 +20,32 @@ namespace LocalDBase
 
         public string AddLogEntity(LogEntity entitet)
         {
-            throw new NotImplementedException();
+            return proxy.AddLogEntity(entitet);
         }
 
         public bool DeleteLogEntity(string id)
         {
-            throw new NotImplementedException();
+            return proxy.DeleteLogEntity(id);
         }
 
         public float GetAverageConsumptionForCity(string city)
         {
-            throw new NotImplementedException();
+            return proxy.GetAverageConsumptionForCity(city);
         }
 
         public float GetAverageConsumptionForRegion(Region reg)
         {
-            throw new NotImplementedException();
+            return proxy.GetAverageConsumptionForRegion(reg);
         }
 
         public List<LogEntity> GetEntitiesForRegions(List<Region> regioni)
         {
-            throw new NotImplementedException();
+            return proxy.GetEntitiesForRegions(regioni);
         }
 
         public LogEntity GetLogEntityById(string id)
         {
-            throw new NotImplementedException();
+            return proxy.GetLogEntityById(id);
         }
 
         public void testServerMessage(string message)

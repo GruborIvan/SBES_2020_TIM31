@@ -1,4 +1,4 @@
-﻿using Client;
+﻿
 using Common;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,6 @@ namespace LocalDBase
 {
     public class WCFLocalDB : DuplexClientBase<IDatabaseService>, IDatabaseService, IDisposable {
         IDatabaseService factory;
-        Encryption encryptor = new Encryption();
 
         public WCFLocalDB(object callbackInstance, NetTcpBinding binding, EndpointAddress address) : base(callbackInstance, binding, address)
         {
@@ -44,19 +43,10 @@ namespace LocalDBase
             float potrosnja;
 
             potrosnja = factory.GetAverageConsumptionForCity(grad);
+         
+            Console.WriteLine($"Prosečna godišnja potrošnja za {grad}" +
+                            $" je : {potrosnja} [kW/h]");
             
-            using (AesManaged aes = new AesManaged())
-            {
-                byte[] encrypted = encryptor.encryptCall(grad, aes.Key, aes.IV);
-                byte[] encrypted1 = encryptor.encryptCall(potrosnja.ToString(), aes.Key, aes.IV);
-                Console.WriteLine($"Prosečna godišnja potrošnja za {System.Text.Encoding.UTF8.GetString(encrypted)}" +
-                                $" je : {System.Text.Encoding.UTF8.GetString(encrypted1)} [kW/h]");
-
-                string decrypted = encryptor.decryptCall(encrypted, aes.Key, aes.IV);
-                string decrypted1 = encryptor.decryptCall(encrypted1, aes.Key, aes.IV);
-                Console.WriteLine($"Prosečna godišnja potrošnja za {decrypted}" +
-                                $" je : {decrypted1} [kW/h]");
-            }
 
             return potrosnja;
         }
