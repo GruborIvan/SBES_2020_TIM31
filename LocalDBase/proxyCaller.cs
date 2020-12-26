@@ -1,9 +1,12 @@
 ﻿using Common;
+using SecurityManager;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IdentityModel.Policy;
 using System.Linq;
 using System.ServiceModel;
+using System.ServiceModel.Description;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,6 +36,14 @@ namespace LocalDBase
 
                     ServiceHost host = new ServiceHost(typeof(WCFLocalDBService));
                     host.AddServiceEndpoint(typeof(IDatabaseService), bindingClient, addressSelf);
+
+                    host.Authorization.ServiceAuthorizationManager = new CustomAuthorizationManager();
+
+                    host.Authorization.PrincipalPermissionMode = PrincipalPermissionMode.Custom;
+                    List<IAuthorizationPolicy> policies = new List<IAuthorizationPolicy>();
+                    policies.Add(new CustomAuthorizationPolicy());
+                    host.Authorization.ExternalAuthorizationPolicies = policies.AsReadOnly();
+
                     host.Open();
                     break;
                 }

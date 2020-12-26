@@ -12,8 +12,9 @@ namespace SecurityManager
     {
         protected override bool CheckAccessCore(OperationContext operationContext)
         {
-            //TO DO : Obezbediti proveru permisije iz principala koji smo podesili na kontekst
-            return true;
+            // Provera da li postoji permisija za Read. S obzirom da svi treba da imaju permisiju da citaju, zabrana pristupa 
+            CustomPrincipal principal = operationContext.ServiceSecurityContext.AuthorizationContext.Properties["Principal"] as CustomPrincipal;
+            return principal.IsInRole("Read");
         }
     }
 }

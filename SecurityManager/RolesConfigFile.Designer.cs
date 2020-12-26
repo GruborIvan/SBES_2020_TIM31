@@ -61,16 +61,25 @@ namespace SecurityManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Read,Modify,Delete,Administrate.
+        ///   Looks up a localized string similar to Read,Admin.
         /// </summary>
-        public static string Admin {
+        public static string Administrate {
             get {
-                return ResourceManager.GetString("Admin", resourceCulture);
+                return ResourceManager.GetString("Administrate", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Read,Modify,Delete.
+        ///   Looks up a localized string similar to Read,Calculate.
+        /// </summary>
+        public static string Calculator {
+            get {
+                return ResourceManager.GetString("Calculator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Read,Modify.
         /// </summary>
         public static string Modifier {
             get {
