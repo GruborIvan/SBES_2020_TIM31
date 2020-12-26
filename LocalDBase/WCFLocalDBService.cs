@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace LocalDBase
 
         }
 
+        [PrincipalPermission(SecurityAction.Demand, Role = "Admin")]
         public string AddLogEntity(LogEntity entitet)
         {
             IDatabaseCallback callback = OperationContext.Current.GetCallbackChannel<IDatabaseCallback>();
@@ -32,12 +34,14 @@ namespace LocalDBase
             return Convert.ToBase64String( Encryption.Encrypt(proxy.AddLogEntity(ent)));
         }
 
+        [PrincipalPermission(SecurityAction.Demand, Role = "Admin")]
         public bool DeleteLogEntity(string id)
         {
             Encryption.Decrypt(Convert.FromBase64String(id));
             return proxy.DeleteLogEntity(id);
         }
 
+        [PrincipalPermission(SecurityAction.Demand, Role = "Calculate")]
         public float GetAverageConsumptionForCity(string city)
         {
             throw new NotImplementedException();
@@ -93,6 +97,7 @@ namespace LocalDBase
             proxy.testServerMessage(message);
         }
 
+        [PrincipalPermission(SecurityAction.Demand, Role = "Modify")]
         public LogEntity UpdateConsumption(string id, int month, float consumption)
         {
             LogEntity le = Encryption.decryptLogEntity(id);
@@ -101,16 +106,19 @@ namespace LocalDBase
             return lent;
         }
 
+        [PrincipalPermission(SecurityAction.Demand, Role = "Calculate")]
         public float GetAverageConsumptionForRegion(Region reg)
         {
             throw new NotImplementedException();
         }
 
+        [PrincipalPermission(SecurityAction.Demand, Role = "Calculate")]
         public float GetAverageConsumptionForRegionList(string reg)
         {
             throw new NotImplementedException();
         }
 
+        [PrincipalPermission(SecurityAction.Demand, Role = "Calculate")]
         public string GetAverageConsumptionForCityRetStr(string city)
         {
             city = Encryption.Decrypt(Convert.FromBase64String(city));
@@ -119,6 +127,7 @@ namespace LocalDBase
             return Encryption.encryptFloat(potrosnja);
         }
 
+        [PrincipalPermission(SecurityAction.Demand, Role = "Calculate")]
         public string GetAverageConsumptionForRegionRetStr(string reg)
         {
             List<Region> regs = Encryption.decryptLogListRegion(reg);

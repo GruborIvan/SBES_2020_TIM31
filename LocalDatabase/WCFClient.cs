@@ -1,6 +1,7 @@
 ﻿using Common;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 using System.ServiceModel;
@@ -24,8 +25,19 @@ namespace Client
             Database db = new Database();
             string ent = Encryption.encryptLogEntity(entitet);
             entitet.Grad = ent;
-
-            string Id = factory.AddLogEntity(entitet);
+            string Id = "";
+            
+            try
+            {
+                Id = factory.AddLogEntity(entitet);
+            }
+            catch(Exception e)
+            {
+                Trace.TraceInformation(e.Message);
+                Console.WriteLine("User not authorized to Add Entities!");
+                return null;
+            }
+            
 
             entitet = Encryption.decryptLogEntity(ent);
             entitet.Id = Encryption.Decrypt(Convert.FromBase64String( Id));
@@ -48,18 +60,27 @@ namespace Client
             ProsPotrosnja potrosnja = new ProsPotrosnja();
             
             string encGrad = Convert.ToBase64String( enc.encryptCall(grad));
-            string ret = factory.GetAverageConsumptionForCityRetStr(encGrad);
+            string ret = String.Empty;
+
+            try
+            {
+                ret = factory.GetAverageConsumptionForCityRetStr(encGrad);
+            }
+            catch(Exception e)
+            {
+                Trace.TraceInformation(e.Message);
+                Console.WriteLine("User not authorized to Calculate average consumption for city!");
+                return 0;
+            }
 
             potrosnja = Encryption.decryptFloat(ret);
-
-            Console.WriteLine($"Prosečna godišnja potrošnja za {grad}" +
-                            $" je : {potrosnja.Potrosnja} [kW/h]");
-            
+            Console.WriteLine($"Prosečna godišnja potrošnja za {grad} je: {potrosnja.Potrosnja} [kW/h]");
             return potrosnja.Potrosnja;
         }
 
         public bool DeleteLogEntity(string id) {
 
+            //Debugger.Launch();
             Database db = new Database();
 
             if (db.EntityList.ContainsKey(id) == false) {
@@ -68,20 +89,22 @@ namespace Client
             }
             else
             {
+                try
+                {
+                    factory.DeleteLogEntity(id);
+                }
+                catch(Exception e)
+                {
+                    Trace.TraceInformation(e.Message);
+                    Console.WriteLine("User not authrized to delete Log Entities!");
+                    return false;
+                }
+
                 db.EntityList.Remove(id);
                 id = Convert.ToBase64String( enc.encryptCall(id));
-                factory.DeleteLogEntity(id);
             }
 
             return true;
-        }
-
-        public void Dispose() {
-            if (factory != null) {
-                factory = null;
-            }
-
-            this.Close();
         }
 
         public List<LogEntity> GetEntitiesForRegions(List<Region> regioni) {
@@ -91,7 +114,16 @@ namespace Client
 
             string reg = Encryption.encryptListRegion(regioni);
 
-            entiteti = factory.GetEntitiesForRegionsString(reg);
+            try
+            {
+                entiteti = factory.GetEntitiesForRegionsString(reg);
+            }
+            catch(Exception e)
+            {
+                Trace.TraceInformation(e.Message);
+                Console.WriteLine("User not authorized to Read entities for regions!");
+                return null;
+            }
 
             int i = 0;
             List<LogEntity> lle = new List<LogEntity>();
@@ -117,8 +149,18 @@ namespace Client
             List<Region> r = new List<Region>();
             r.Add(reg);
             string send = Encryption.encryptListRegion(r);
+            string ret = String.Empty;
 
-            string ret = factory.GetAverageConsumptionForRegionRetStr(send);
+            try
+            {
+                ret = factory.GetAverageConsumptionForRegionRetStr(send);
+            }
+            catch(Exception e)
+            {
+                Trace.TraceInformation(e.Message);
+                Console.WriteLine("User not authorized to calculate consumption for region!");
+                return 0;
+            }
 
             potrosnja = Encryption.decryptFloat(ret);
 
@@ -126,8 +168,17 @@ namespace Client
 
             return potrosnja.Potrosnja;
         }
+
         public void testServerMessage(string message) {
-            factory.testServerMessage(message);    
+            try {
+                factory.testServerMessage(message);
+            }
+            catch(Exception e)
+            {
+                Trace.TraceInformation(e.Message);
+                Console.WriteLine("User not authorized to use this service!");
+                return;
+            }  
         }
 
         public LogEntity UpdateConsumption(string id, int month, float consumption) {
@@ -142,7 +193,20 @@ namespace Client
 
                 month = 0;
                 consumption = 0;
-                le = Encryption.decryptLogEntity( factory.UpdateConsumption(logent, month, consumption).Grad);
+                LogEntity logEntt = null;
+
+                try
+                {
+                    logEntt = factory.UpdateConsumption(logent, month, consumption);
+                }
+                catch(Exception e)
+                {
+                    Trace.TraceInformation(e.Message);
+                    Console.WriteLine("User not authorized to Update Log Entities!");
+                    return null;
+                }
+
+                le = Encryption.decryptLogEntity(logEntt.Grad);
                 db.EntityList[id] = le;
                 return db.EntityList[id];
             }
@@ -154,10 +218,20 @@ namespace Client
         public LogEntity GetLogEntityById(string id) {
 
             Database db = new Database();
+            LogEntity entitet = null;
             
-            LogEntity entitet = factory.GetLogEntityById(Convert.ToBase64String( enc.encryptCall(id)));
+            try
+            {
+                entitet = factory.GetLogEntityById(Convert.ToBase64String(enc.encryptCall(id)));
+            }
+            catch(Exception e)
+            {
+                Trace.TraceInformation(e.Message);
+                Console.WriteLine("User not authorized to get elements!");
+                return null;
+            }
+          
             entitet = Encryption.decryptLogEntity(entitet.Grad);
-
             return entitet;
         }
 
@@ -179,6 +253,16 @@ namespace Client
         public string GetAverageConsumptionForRegionRetStr(string reg)
         {
             throw new NotImplementedException();
+        }
+
+        public void Dispose()
+        {
+
+            if (factory != null)
+            {
+                factory = null;
+            }
+            this.Close();
         }
     }
 }
