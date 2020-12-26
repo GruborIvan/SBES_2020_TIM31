@@ -18,6 +18,8 @@ namespace Client
             callbackclient.Proxy = null;
             WCFClient proxy = null;
             NetTcpBinding binding = new NetTcpBinding();
+            binding.Security.Mode = SecurityMode.Transport;
+            binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Windows;
 
             Console.WriteLine("Na koji localDB zelis da se konektujes[0, 1, 2, 3 ... x]:");
             while (true) {

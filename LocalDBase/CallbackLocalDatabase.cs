@@ -20,22 +20,22 @@ namespace LocalDBase
             List<IDatabaseCallback> deleteitems = new List<IDatabaseCallback>();
           
 
-            foreach (IDatabaseCallback client in WCFLocalDBService.klijenti) {
+            foreach (KeyValuePair<IDatabaseCallback, List<Region>> kwp in WCFLocalDBService.klijenti) {
 
                 try {
 
-                    if (handler.ReturnList().Find(x => x.Id == id) == null) {
+                    if (handler.ReturnList().Find(x => x.Id == id) == null && kwp.Value.ToList().Contains(region)) {
                         Console.WriteLine("Odradjen add za id: {0}.", id);
                         proxy = proxyCaller.proxy;
                         LogEntity entitet = proxy.GetLogEntityById(id);
                         handler.AddEntity(entitet);
                     }
 
-                    client.broadcastAddLogEntity(region, id);
+                    kwp.Key.broadcastAddLogEntity(region, id);
                 }
                 catch (Exception ex) {
                     Console.WriteLine("{0}", ex.Message);
-                    deleteitems.Add(client);
+                    deleteitems.Add(kwp.Key);
                 }
 
             }
@@ -51,7 +51,7 @@ namespace LocalDBase
 
             List<IDatabaseCallback> deleteitems = new List<IDatabaseCallback>();
 
-            foreach (IDatabaseCallback client in WCFLocalDBService.klijenti) {
+            foreach (KeyValuePair<IDatabaseCallback, List<Region>> kwp in WCFLocalDBService.klijenti) {
 
                 try {
 
@@ -60,11 +60,11 @@ namespace LocalDBase
                         handler.DeleteEntity(id);
                     }
 
-                    client.broadcastDeleteId(id);
+                    kwp.Key.broadcastDeleteId(id);
                 }
                 catch (Exception ex) {
                     Console.WriteLine("{0}", ex.Message);
-                    deleteitems.Add(client);
+                    deleteitems.Add(kwp.Key);
                 }
 
             }
@@ -80,7 +80,7 @@ namespace LocalDBase
 
             List<IDatabaseCallback> deleteitems = new List<IDatabaseCallback>();
 
-            foreach (IDatabaseCallback client in WCFLocalDBService.klijenti) {
+            foreach (KeyValuePair<IDatabaseCallback, List<Region>> kwp in WCFLocalDBService.klijenti) {
 
                 try {
 
@@ -91,12 +91,12 @@ namespace LocalDBase
                         handler.UpdateEntity(entitet);
                     }
 
-                    client.broadcastUpdateId(id);
+                    kwp.Key.broadcastUpdateId(id);
                 }
                 catch (Exception ex) {
 
                     Console.WriteLine("{0}", ex.Message);
-                    deleteitems.Add(client);
+                    deleteitems.Add(kwp.Key);
                 }
             }
 
