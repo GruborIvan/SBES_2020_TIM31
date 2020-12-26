@@ -13,7 +13,7 @@ namespace CryptoProject
         static void Main(string[] args) {
 
 			NetTcpBinding binding = new NetTcpBinding();
-			string address = "net.tcp://localhost:9999/wcfserver";
+			string address = "net.tcp://localhost:9998/wcfserver";
 
 			ServiceHost host = new ServiceHost(typeof(WCFServer));
 			host.AddServiceEndpoint(typeof(IDatabaseService), binding, address);

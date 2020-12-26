@@ -17,7 +17,7 @@ namespace LocalDBase
         {
             //MARCETA RADI
             NetTcpBinding bindingServer = new NetTcpBinding();
-            string addressServer = "net.tcp://localhost:9999/wcfserver";
+            string addressServer = "net.tcp://localhost:9998/wcfserver";
 
             CallbackLocalDatabase callbackclient = new CallbackLocalDatabase();
             WCFLocalDB proxy = new WCFLocalDB(callbackclient, bindingServer, new EndpointAddress(new Uri(addressServer)));

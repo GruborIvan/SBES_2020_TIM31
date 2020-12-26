@@ -15,7 +15,6 @@ namespace LocalDBase
         //komentar
 
         XmlHandler xh = new XmlHandler();
-
         public WCFLocalDB(object callbackInstance, NetTcpBinding binding, EndpointAddress address) : base(callbackInstance, binding, address)
         {
             factory = this.CreateChannel();
@@ -24,6 +23,7 @@ namespace LocalDBase
         public string AddLogEntity(LogEntity entitet)
         {
             List<LogEntity> list = xh.ReturnList();
+            
             if(list.Find(x=> x.Grad.ToLower() == entitet.Grad.ToLower() && x.Godina == entitet.Godina) != null)
             {
                 return null;
@@ -37,13 +37,10 @@ namespace LocalDBase
 
         public float GetAverageConsumptionForCity(string grad)
         {
-
+            
             float potrosnja;
 
             potrosnja = factory.GetAverageConsumptionForCity(grad);
-         
-            Console.WriteLine($"Prosečna godišnja potrošnja za {grad}" +
-                            $" je : {potrosnja} [kW/h]");
 
             return potrosnja;
         }
@@ -51,7 +48,6 @@ namespace LocalDBase
         public bool DeleteLogEntity(string id)
         {
             bool deleted = false;
-
             try
             {
                 factory.DeleteLogEntity(id);
@@ -89,6 +85,7 @@ namespace LocalDBase
             return lista;
         }
 
+
         public float GetAverageConsumptionForRegion(Region reg)
         {
 
@@ -101,8 +98,8 @@ namespace LocalDBase
 
         public void testServerMessage(string message)
         {
-            Console.WriteLine(message +" LOKALNA");
-            factory.testServerMessage(message);
+            Console.WriteLine(message);
+            factory.testServerMessage("hello from localDB :)");
         }
 
         public LogEntity UpdateConsumption(string id, int month, float consumption)
@@ -131,6 +128,26 @@ namespace LocalDBase
             LogEntity entitet = factory.GetLogEntityById(id);
 
             return entitet;
+        }
+
+        public List<LogEntity> GetEntitiesForRegionsString(string regioni)
+        {
+            throw new NotImplementedException();
+        }
+
+        public float GetAverageConsumptionForRegionList(string reg)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetAverageConsumptionForCityRetStr(string city)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetAverageConsumptionForRegionRetStr(string reg)
+        {
+            throw new NotImplementedException();
         }
     }
 }

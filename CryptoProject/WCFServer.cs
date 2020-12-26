@@ -212,5 +212,24 @@ namespace CryptoProject
             return updateVal;
         }
 
+        public List<LogEntity> GetEntitiesForRegionsString(string regioni)
+        {
+            throw new NotImplementedException();
+        }
+
+        public float GetAverageConsumptionForRegionList(string reg)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetAverageConsumptionForCityRetStr(string city)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetAverageConsumptionForRegionRetStr(string reg)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

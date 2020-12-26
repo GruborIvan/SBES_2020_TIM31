@@ -21,6 +21,9 @@ namespace Common
         float GetAverageConsumptionForRegion(Region reg);
 
         [OperationContract]
+        float GetAverageConsumptionForRegionList(string reg);
+
+        [OperationContract]
         string AddLogEntity(LogEntity entitet);
 
         [OperationContract]
@@ -32,5 +35,13 @@ namespace Common
         [OperationContract]
         LogEntity GetLogEntityById(string id);
 
+        [OperationContract]
+        List<LogEntity> GetEntitiesForRegionsString(string regioni);
+
+        [OperationContract]
+        string GetAverageConsumptionForCityRetStr(string city);
+
+        [OperationContract]
+        string GetAverageConsumptionForRegionRetStr(string reg);
     }
 }

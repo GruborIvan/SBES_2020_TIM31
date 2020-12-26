@@ -59,4 +59,15 @@ namespace Common
         [DataMember]
         public List<float> Potrosnja { get => potrosnja; set => potrosnja = value; }
     }
+
+    public class ProsPotrosnja
+    {
+        private float potrosnja;
+
+        public float Potrosnja { get => potrosnja; set => potrosnja = value; }
+        public ProsPotrosnja()
+        {
+
+        }
+    }
 }
