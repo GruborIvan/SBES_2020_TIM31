@@ -17,6 +17,7 @@ namespace LocalDBase
         XmlHandler xh = new XmlHandler();
         public WCFLocalDB(object callbackInstance, NetTcpBinding binding, EndpointAddress address) : base(callbackInstance, binding, address)
         {
+
             factory = this.CreateChannel();
         }
 
@@ -31,7 +32,7 @@ namespace LocalDBase
 
             string id = factory.AddLogEntity(entitet);
             entitet.Id = id;
-            //xh.AddEntity(entitet);
+           // xh.AddEntity(entitet);
             return entitet.Id;
         }
 
@@ -47,12 +48,12 @@ namespace LocalDBase
 
         public bool DeleteLogEntity(string id)
         {
-            bool deleted = false;
+
             try
             {
                 factory.DeleteLogEntity(id);
                 //deleted = xh.DeleteEntity(id);
-                return deleted;
+                return true;
             }
             catch (Exception e)
             {

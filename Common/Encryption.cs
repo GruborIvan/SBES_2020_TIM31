@@ -37,19 +37,16 @@ namespace Common
             ProsPotrosnja le = JsonConvert.DeserializeObject<ProsPotrosnja>(Decrypt(Convert.FromBase64String(pp)));
             return le;
         }
-
         public static string encryptLogEntity(LogEntity le)
         {
             string s = JsonConvert.SerializeObject(le);
             return Convert.ToBase64String( Encrypt(s));
         }
-
         public static LogEntity decryptLogEntity(string logent)
         {
             LogEntity le = JsonConvert.DeserializeObject<LogEntity>(Decrypt(Convert.FromBase64String(logent)));
             return le;
         }
-       
         public static string encryptListRegion(List<Region> regioni)
         {
             string s = JsonConvert.SerializeObject(regioni);

@@ -30,7 +30,7 @@ namespace LocalDBase
 
             int port = callerbase.openNewEndpoint();
 
-            string baseName = "baza" + port.ToString() +".xml";
+            string baseName = "baza" + port.ToString() + ".xml";
 
             XmlHandler xh = new XmlHandler(baseName);
 

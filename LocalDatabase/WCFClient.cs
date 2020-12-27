@@ -30,6 +30,7 @@ namespace Client
             try
             {
                 Id = factory.AddLogEntity(entitet);
+                
             }
             catch(Exception e)
             {
@@ -41,7 +42,7 @@ namespace Client
 
             entitet = Encryption.decryptLogEntity(ent);
             entitet.Id = Encryption.Decrypt(Convert.FromBase64String( Id));
-
+            Console.WriteLine("AJDI JE: " + entitet.Id);
             if (entitet.Id == null)
             {
                 Console.WriteLine("Entitet za grad: {0} i godinu: {1} već postoji!", entitet.Grad, entitet.Godina);
@@ -91,17 +92,19 @@ namespace Client
             {
                 try
                 {
+                    id = Convert.ToBase64String(enc.encryptCall(id));
                     factory.DeleteLogEntity(id);
                 }
                 catch(Exception e)
                 {
                     Trace.TraceInformation(e.Message);
+                    Console.WriteLine(e);
                     Console.WriteLine("User not authrized to delete Log Entities!");
                     return false;
                 }
 
                 db.EntityList.Remove(id);
-                id = Convert.ToBase64String( enc.encryptCall(id));
+               
             }
 
             return true;

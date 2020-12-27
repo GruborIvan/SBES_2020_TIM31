@@ -35,7 +35,14 @@ namespace SecurityManager
 
                 if (RolesConfig.GetPermissions(groupName, out permissions))
                 {
-                    return permissions.Contains(permission);
+                    if (permissions.Contains(permission))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        continue;
+                    }
                 }
                 Console.WriteLine($"Group {groupName} doesn't have permission {permission}");
             }

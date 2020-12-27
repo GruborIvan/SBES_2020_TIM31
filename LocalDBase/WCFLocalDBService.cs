@@ -12,6 +12,7 @@ namespace LocalDBase
     [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant)]
     class WCFLocalDBService : IDatabaseService
     {
+        Encryption enc = new Encryption();
         IDatabaseService proxy = null;
         public static Dictionary<IDatabaseCallback, List<Region>> klijenti = new Dictionary<IDatabaseCallback, List<Region>>();
 
@@ -37,8 +38,9 @@ namespace LocalDBase
         [PrincipalPermission(SecurityAction.Demand, Role = "Admin")]
         public bool DeleteLogEntity(string id)
         {
-            Encryption.Decrypt(Convert.FromBase64String(id));
-            return proxy.DeleteLogEntity(id);
+
+            string ajdi = enc.decryptCall(Convert.FromBase64String(id));
+            return proxy.DeleteLogEntity(ajdi);
         }
 
         [PrincipalPermission(SecurityAction.Demand, Role = "Calculate")]
@@ -62,13 +64,15 @@ namespace LocalDBase
         public List<LogEntity> GetEntitiesForRegionsString(string regioni)
         {
             IDatabaseCallback callback = OperationContext.Current.GetCallbackChannel<IDatabaseCallback>();
-            if (klijenti.Contains(callback) == false)
-            {
-                klijenti.Add(callback);
-            }
 
             List<Region> reg = Encryption.decryptLogListRegion(regioni);
             List<LogEntity> lle = proxy.GetEntitiesForRegions(reg);
+
+            if (klijenti.ContainsKey(callback) == false)
+            {
+                klijenti.Add(callback, reg);
+
+            }
 
             int i = 0;
             foreach (LogEntity item in lle)

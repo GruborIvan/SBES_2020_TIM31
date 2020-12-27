@@ -11,8 +11,9 @@ namespace Client
 {
     class Program
     {
+        
         static void Main(string[] args) {
-
+            Database database = new Database();
             int localdb = 0;
             CallbackClient callbackclient = new CallbackClient();
             callbackclient.Proxy = null;
@@ -45,7 +46,6 @@ namespace Client
             }
             
             callbackclient.Proxy = proxy;
-            Database database = new Database();
 
             int opt;
 
@@ -90,7 +90,7 @@ namespace Client
                         }
                         break;
                     case 6:
-                        string identification = IzbrisiEntitet();
+                        string identification = IzbrisiEntitet(database);
                         if (identification != null) {
                             proxy.DeleteLogEntity(identification);
                         }
@@ -310,9 +310,9 @@ namespace Client
             return entitet;
         }
 
-        static string IzbrisiEntitet() {
+        static string IzbrisiEntitet(Database database) {
 
-            Database database = new Database();
+            
             int i;
             int ch;
 
