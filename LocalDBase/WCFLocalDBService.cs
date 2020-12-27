@@ -25,13 +25,12 @@ namespace LocalDBase
         [PrincipalPermission(SecurityAction.Demand, Role = "Admin")]
         public string AddLogEntity(LogEntity entitet)
         {
+            LogEntity ent = Encryption.decryptLogEntity(entitet.Grad);
             IDatabaseCallback callback = OperationContext.Current.GetCallbackChannel<IDatabaseCallback>();
             if (klijenti.ContainsKey(callback) == false) {
                 klijenti.Add(callback, new List<Region>());
             }
-
-            LogEntity ent = Encryption.decryptLogEntity(entitet.Grad);
-
+            
             return Convert.ToBase64String( Encryption.Encrypt(proxy.AddLogEntity(ent)));
         }
 

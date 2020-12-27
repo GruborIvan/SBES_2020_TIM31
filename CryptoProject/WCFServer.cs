@@ -20,15 +20,15 @@ namespace CryptoProject
 
         public string AddLogEntity(LogEntity entitet) {
 
-            List<LogEntity> list = xh.ReturnList();
-            if (list.Find(x => x.Grad.ToLower() == entitet.Grad.ToLower() && x.Godina == entitet.Godina) != null) {
-                return null;
-            }
 
             IDatabaseCallback callback = OperationContext.Current.GetCallbackChannel<IDatabaseCallback>();
             if (klijenti.Contains(callback) == false)
-            { 
+            {
                 klijenti.Add(callback);
+            }
+            List<LogEntity> list = xh.ReturnList();
+            if (list.Find(x => x.Grad.ToLower() == entitet.Grad.ToLower() && x.Godina == entitet.Godina) != null) {
+                return null;
             }
 
             string id = xh.AddEntity(entitet);

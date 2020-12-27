@@ -32,7 +32,7 @@ namespace LocalDBase
 
             string id = factory.AddLogEntity(entitet);
             entitet.Id = id;
-           // xh.AddEntity(entitet);
+            xh.AddEntity(entitet);
             return entitet.Id;
         }
 
@@ -116,7 +116,7 @@ namespace LocalDBase
                 }
             }
 
-            factory.UpdateConsumption(id, month, consumption);
+            entitet = factory.UpdateConsumption(id, month, consumption);
             entitet.Potrosnja[month] = consumption;
             //xh.UpdateEntity(entitet);
 
