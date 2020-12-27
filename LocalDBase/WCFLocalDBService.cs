@@ -13,7 +13,7 @@ namespace LocalDBase
     class WCFLocalDBService : IDatabaseService
     {
         IDatabaseService proxy = null;
-        public static List<IDatabaseCallback> klijenti = new List<IDatabaseCallback>();
+        public static Dictionary<IDatabaseCallback, List<Region>> klijenti = new Dictionary<IDatabaseCallback, List<Region>>();
 
         public WCFLocalDBService() {
 
@@ -25,8 +25,8 @@ namespace LocalDBase
         public string AddLogEntity(LogEntity entitet)
         {
             IDatabaseCallback callback = OperationContext.Current.GetCallbackChannel<IDatabaseCallback>();
-            if (klijenti.Contains(callback) == false) {
-                klijenti.Add(callback);
+            if (klijenti.ContainsKey(callback) == false) {
+                klijenti.Add(callback, new List<Region>());
             }
 
             LogEntity ent = Encryption.decryptLogEntity(entitet.Grad);
@@ -51,8 +51,8 @@ namespace LocalDBase
         {
 
             IDatabaseCallback callback = OperationContext.Current.GetCallbackChannel<IDatabaseCallback>();
-            if (klijenti.Contains(callback) == false) {
-                klijenti.Add(callback);
+            if (klijenti.ContainsKey(callback) == false) {
+                klijenti.Add(callback, regioni);
             }
             
             return proxy.GetEntitiesForRegions(regioni);
