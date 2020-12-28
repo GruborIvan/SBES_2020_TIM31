@@ -94,7 +94,6 @@ namespace Client
                 catch(Exception e)
                 {
                     Trace.TraceInformation(e.Message);
-                    Console.WriteLine(e);
                     Console.WriteLine("User not authrized to delete Log Entities!");
                     return false;
                 }               
@@ -114,7 +113,11 @@ namespace Client
             {
                 entiteti = factory.GetEntitiesForRegionsString(reg);
             }
-            catch(Exception e)
+            catch (FaultException<SecurityException> ex)
+            {
+                Console.WriteLine("Exception");
+            }
+            catch (Exception e)
             {
                 Trace.TraceInformation(e.Message);
                 Console.WriteLine("User not authorized to Read entities for regions!");
