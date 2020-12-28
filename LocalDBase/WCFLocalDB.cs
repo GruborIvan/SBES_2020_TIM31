@@ -32,7 +32,7 @@ namespace LocalDBase
 
             string id = factory.AddLogEntity(entitet);
             entitet.Id = id;
-            xh.AddEntity(entitet);
+            //xh.AddEntity(entitet);
             return entitet.Id;
         }
 

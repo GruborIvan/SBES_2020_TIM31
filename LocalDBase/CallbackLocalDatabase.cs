@@ -24,14 +24,19 @@ namespace LocalDBase
 
                 try {
 
-                    if (handler.ReturnList().Find(x => x.Id == id) == null && kwp.Value.ToList().Contains(region)) {
+                    if (kwp.Value.Contains(region)) {
+
                         Console.WriteLine("Odradjen add za id: {0}.", id);
-                        proxy = proxyCaller.proxy;
-                        LogEntity entitet = proxy.GetLogEntityById(id);
-                        handler.AddEntity(entitet);
+
+                        if (handler.ReturnList().Find(x => x.Id == id) == null) {
+                            proxy = proxyCaller.proxy;
+                            LogEntity entitet = proxy.GetLogEntityById(id);
+                            handler.AddEntity(entitet);
+                        }
+
+                        kwp.Key.broadcastAddLogEntity(region, id);
                     }
 
-                    kwp.Key.broadcastAddLogEntity(region, id);
                 }
                 catch (Exception ex) {
                     Console.WriteLine("{0}", ex.Message);

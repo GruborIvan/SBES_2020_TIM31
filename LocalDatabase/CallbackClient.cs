@@ -45,11 +45,7 @@ namespace Client
 
             Database database = new Database();
 
-            foreach (Region reg in Database.RegioniOdInteresa) {
-                Console.WriteLine("{0}\n", reg);
-            }
-
-            if (database.InterestRegions.Contains(region))
+            if (Database.RegioniOdInteresa.Contains(region))
             {
                 if (database.EntityList.ContainsKey(id) == false)
                 {

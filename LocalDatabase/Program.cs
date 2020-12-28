@@ -21,6 +21,7 @@ namespace Client
             NetTcpBinding binding = new NetTcpBinding();
             binding.Security.Mode = SecurityMode.Transport;
             binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Windows;
+            binding.ReceiveTimeout = TimeSpan.FromHours(1);
 
             Console.WriteLine("Na koji localDB zelis da se konektujes[0, 1, 2, 3 ... x]:");
             while (true) 

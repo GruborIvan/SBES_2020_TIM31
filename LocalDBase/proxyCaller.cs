@@ -44,6 +44,9 @@ namespace LocalDBase
                     policies.Add(new CustomAuthorizationPolicy());
                     host.Authorization.ExternalAuthorizationPolicies = policies.AsReadOnly();
 
+                    bindingClient.SendTimeout = new TimeSpan(0, 10, 0);
+                    bindingClient.ReceiveTimeout = new TimeSpan(0, 10, 0);
+
                     host.Open();
                     break;
                 }

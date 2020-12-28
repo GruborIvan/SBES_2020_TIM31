@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security;
 using System.Security.Cryptography;
 using System.ServiceModel;
 using System.Text;
@@ -38,7 +39,6 @@ namespace Client
                 Console.WriteLine("User not authorized to Add Entities!");
                 return null;
             }
-            
 
             entitet = Encryption.decryptLogEntity(ent);
             entitet.Id = Encryption.Decrypt(Convert.FromBase64String( Id));
@@ -47,10 +47,6 @@ namespace Client
             {
                 Console.WriteLine("Entitet za grad: {0} i godinu: {1} već postoji!", entitet.Grad, entitet.Godina);
                 return null;
-            }
-            if (!db.EntityList.ContainsKey(entitet.Id))
-            {
-                db.EntityList.Add(entitet.Id, entitet);
             }
             
             return entitet.Id;
@@ -101,10 +97,7 @@ namespace Client
                     Console.WriteLine(e);
                     Console.WriteLine("User not authrized to delete Log Entities!");
                     return false;
-                }
-
-                db.EntityList.Remove(id);
-               
+                }               
             }
 
             return true;
@@ -181,7 +174,7 @@ namespace Client
                 Trace.TraceInformation(e.Message);
                 Console.WriteLine("User not authorized to use this service!");
                 return;
-            }  
+            }
         }
 
         public LogEntity UpdateConsumption(string id, int month, float consumption) {
@@ -209,8 +202,6 @@ namespace Client
                     return null;
                 }
 
-                le = Encryption.decryptLogEntity(logEntt.Grad);
-                db.EntityList[id] = le;
                 return db.EntityList[id];
             }
 
@@ -226,6 +217,9 @@ namespace Client
             try
             {
                 entitet = factory.GetLogEntityById(Convert.ToBase64String(enc.encryptCall(id)));
+            }
+            catch (FaultException<SecurityException> ex) {
+                Console.WriteLine("Exception");
             }
             catch(Exception e)
             {
