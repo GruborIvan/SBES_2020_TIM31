@@ -76,8 +76,8 @@ namespace LocalDBase
             int i = 0;
             foreach (LogEntity item in lle)
             {
-                lle[i].Godina = 0;
                 lle[i].Grad = Encryption.encryptLogEntity(item);
+                lle[i].Godina = 1;
                 lle[i].Id = "";
                 lle[i].Region = Region.Banat;
                 i++;
