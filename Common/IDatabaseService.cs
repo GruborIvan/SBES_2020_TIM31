@@ -21,9 +21,6 @@ namespace Common
         float GetAverageConsumptionForRegion(Region reg);
 
         [OperationContract]
-        float GetAverageConsumptionForRegionList(string reg);
-
-        [OperationContract]
         string AddLogEntity(LogEntity entitet);
 
         [OperationContract]

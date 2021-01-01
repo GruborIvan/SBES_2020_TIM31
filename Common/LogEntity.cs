@@ -9,7 +9,7 @@ namespace Common
 {
     [DataContract]
 
-    public enum OperationCode { ADD, UPDATE, DELETE };
+    public enum OperationCode {[EnumMember] ADD, [EnumMember] UPDATE, [EnumMember] DELETE };
 
     public enum Region { 
         [EnumMember] Srem, [EnumMember] Banat, [EnumMember] Bačka, [EnumMember] Beograd, 

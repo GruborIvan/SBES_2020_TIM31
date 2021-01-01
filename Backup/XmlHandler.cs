@@ -79,12 +79,6 @@ namespace Backup
         {
             lock (pblock)
             {
-                le.Id = "0";
-                if (!(ListaLogEntity.Count() == 0))
-                {
-                    le.Id = NadjiRupu(ListaLogEntity).ToString();
-                }
-
                 ListaLogEntity.Add(le.Id, le);
 
 
@@ -157,7 +151,6 @@ namespace Backup
             {
                 if (ListaLogEntity.ContainsKey(le.Id))
                 {
-                    int rupa = NadjiRupu(ListaLogEntity);
 
                     ListaLogEntity[le.Id] = le;
 
@@ -193,20 +186,8 @@ namespace Backup
                 return false;
             }
         }
-        public int NadjiRupu(Dictionary<string, LogEntity> provera)
-        {
-            lock (pblock)
-            {
-                int a = 0;
-
-                while (provera.ContainsKey(a.ToString()))
-                {
-                    a++;
-                }
-
-                return a;
-            }
-        }
+        
+        
 
     }
 }

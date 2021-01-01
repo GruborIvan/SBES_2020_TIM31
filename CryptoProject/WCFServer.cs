@@ -32,8 +32,10 @@ namespace CryptoProject
             }
 
             string id = xh.AddEntity(entitet);
+            entitet.Id = id;
             broadcastIdMessage(id, CallbackOperation.ADD);
 
+            Changes.ChangeList.Add(new Tuple<OperationCode, LogEntity>(OperationCode.ADD, entitet));
             return id;
         }
 
@@ -70,8 +72,11 @@ namespace CryptoProject
             bool deletion = false;
 
             try {
+                LogEntity le = xh.ReturnList().Find(x => x.Id.Equals(id));
                 deletion = xh.DeleteEntity(id);
+
                 broadcastIdMessage(id, CallbackOperation.DELETE);
+                Changes.ChangeList.Add(new Tuple<OperationCode, LogEntity>(OperationCode.DELETE, le));
                 return deletion;
             }
             catch (Exception e) {
@@ -143,7 +148,6 @@ namespace CryptoProject
         public void testServerMessage(string message) {
             Console.WriteLine(message);
             Console.WriteLine("test");
-
         }
 
         public LogEntity UpdateConsumption(string id, int month, float consumption) {
@@ -163,6 +167,7 @@ namespace CryptoProject
             xh.UpdateEntity(le);
 
             broadcastIdMessage(le.Id, CallbackOperation.UPDATE);
+            Changes.ChangeList.Add(new Tuple<OperationCode, LogEntity>(OperationCode.UPDATE , xh.ReturnList().Find(x => x.Id.Equals(id))));
             return le;
         }
 
@@ -213,11 +218,6 @@ namespace CryptoProject
         }
 
         public List<LogEntity> GetEntitiesForRegionsString(string regioni)
-        {
-            throw new NotImplementedException();
-        }
-
-        public float GetAverageConsumptionForRegionList(string reg)
         {
             throw new NotImplementedException();
         }

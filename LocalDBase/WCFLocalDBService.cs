@@ -115,12 +115,6 @@ namespace LocalDBase
             throw new NotImplementedException();
         }
 
-        //PrincipalPermission(SecurityAction.Demand, Role = "Calculate")]
-        public float GetAverageConsumptionForRegionList(string reg)
-        {
-            throw new NotImplementedException();
-        }
-
         [PrincipalPermission(SecurityAction.Demand, Role = "Calculate")]
         public string GetAverageConsumptionForCityRetStr(string city)
         {

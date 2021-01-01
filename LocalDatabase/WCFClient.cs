@@ -240,11 +240,6 @@ namespace Client
             throw new NotImplementedException();
         }
 
-        public float GetAverageConsumptionForRegionList(string reg)
-        {
-            throw new NotImplementedException();
-        }
-
         public string GetAverageConsumptionForCityRetStr(string city)
         {
             throw new NotImplementedException();

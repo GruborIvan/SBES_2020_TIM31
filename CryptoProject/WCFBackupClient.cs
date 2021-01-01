@@ -29,7 +29,7 @@ namespace CryptoProject
 
         public bool sendChanges(List<Tuple<OperationCode, LogEntity>> promena)
         {
-            return factory.sendChanges(null);
+            return factory.sendChanges(promena);
         }
     }
 }

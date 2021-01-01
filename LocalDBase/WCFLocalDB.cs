@@ -72,20 +72,6 @@ namespace LocalDBase
             this.Close();
         }
 
-        public List<LogEntity> GetEntitiesForRegions(List<Region> regioni)
-        {
-
-            List<LogEntity> lista = factory.GetEntitiesForRegions(regioni);
-            
-            foreach (LogEntity entitet in lista) {
-                if (xh.ReturnList().Find(x => x.Id == entitet.Id) == null) {
-                    xh.AddEntity(entitet);
-                }
-            }
-
-            return lista;
-        }
-
 
         public float GetAverageConsumptionForRegion(Region reg)
         {
@@ -131,12 +117,23 @@ namespace LocalDBase
             return entitet;
         }
 
-        public List<LogEntity> GetEntitiesForRegionsString(string regioni)
+        public List<LogEntity> GetEntitiesForRegions(List<Region> regioni)
         {
-            throw new NotImplementedException();
+
+            List<LogEntity> lista = factory.GetEntitiesForRegions(regioni);
+
+            foreach (LogEntity entitet in lista)
+            {
+                if (xh.ReturnList().Find(x => x.Id == entitet.Id) == null)
+                {
+                    xh.AddEntity(entitet);
+                }
+            }
+
+            return lista;
         }
 
-        public float GetAverageConsumptionForRegionList(string reg)
+        public List<LogEntity> GetEntitiesForRegionsString(string regioni)
         {
             throw new NotImplementedException();
         }
