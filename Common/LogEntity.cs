@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 namespace Common
 {
     [DataContract]
+
+    public enum OperationCode { ADD, UPDATE, DELETE };
+
     public enum Region { 
         [EnumMember] Srem, [EnumMember] Banat, [EnumMember] Bačka, [EnumMember] Beograd, 
         [EnumMember] Šumadija, [EnumMember] Zapadna_Srbija, [EnumMember] Južna_Srbija, 

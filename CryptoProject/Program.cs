@@ -20,7 +20,19 @@ namespace CryptoProject
 
 			host.Open();
 			Console.WriteLine("WCFService is opened. Press <enter> to finish...");
-			Console.ReadLine();
+
+            ///-----------------------------------------------------------------------
+            
+            NetTcpBinding bindingServer = new NetTcpBinding();
+            string addressServer = "net.tcp://localhost:7000/wcfBackup";
+
+            WCFBackupClient proxy = new WCFBackupClient(bindingServer, new EndpointAddress(new Uri(addressServer)));
+            proxy.sendChanges(null);
+
+            //callbackclient.Proxy = proxy;
+            ///-------------------------------------------------------------------------
+           
+            Console.ReadLine();
 
         }
     }
