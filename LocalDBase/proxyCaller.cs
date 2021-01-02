@@ -40,10 +40,13 @@ namespace LocalDBase
                     host.Authorization.ServiceAuthorizationManager = new CustomAuthorizationManager();
 
                     host.Authorization.PrincipalPermissionMode = PrincipalPermissionMode.Custom;
+
                     List<IAuthorizationPolicy> policies = new List<IAuthorizationPolicy>();
                     policies.Add(new CustomAuthorizationPolicy());
                     host.Authorization.ExternalAuthorizationPolicies = policies.AsReadOnly();
 
+                    bindingClient.Security.Mode = SecurityMode.Transport;
+                    bindingClient.Security.Transport.ClientCredentialType = TcpClientCredentialType.Windows;
                     bindingClient.SendTimeout = new TimeSpan(0, 10, 0);
                     bindingClient.ReceiveTimeout = new TimeSpan(0, 10, 0);
 

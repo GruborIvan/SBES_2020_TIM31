@@ -25,6 +25,10 @@ namespace CryptoProject
             ///-----------------------------------------------------------------------
             
             NetTcpBinding bindingServer = new NetTcpBinding();
+
+            bindingServer.Security.Mode = SecurityMode.Transport;
+            bindingServer.Security.Transport.ClientCredentialType = TcpClientCredentialType.Windows;
+
             string addressServer = "net.tcp://localhost:7000/wcfBackup";
 
             WCFBackupClient proxy = new WCFBackupClient(bindingServer, new EndpointAddress(new Uri(addressServer)));

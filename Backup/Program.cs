@@ -18,6 +18,9 @@ namespace Backup
             ServiceHost host = new ServiceHost(typeof(WCFBackupServer));
             host.AddServiceEndpoint(typeof(IBackupServer), binding, address);
 
+            binding.Security.Mode = SecurityMode.Transport;
+            binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Windows;
+
             host.Open();
             Console.WriteLine("WCFBackup is opened. Press <enter> to finish...");
             Console.ReadLine();
