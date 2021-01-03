@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Encryption.cs" />
+    <Compile Include="Enumerations.cs" />
     <Compile Include="IBackupServer.cs" />
     <Compile Include="IDatabaseCallback.cs" />
     <Compile Include="IDatabaseService.cs" />

@@ -1,10 +1,12 @@
 ﻿using Common;
+using SecurityManager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
 using System.ServiceModel;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CryptoProject
@@ -16,14 +18,11 @@ namespace CryptoProject
         //private static Dictionary<string, IIdentity> klijenti = new Dictionary<string, IIdentity>();
         public static List<IDatabaseCallback> klijenti = new List<IDatabaseCallback>();
 
-        public enum CallbackOperation { ADD, UPDATE,DELETE };
-
         public string AddLogEntity(LogEntity entitet) {
 
 
             IDatabaseCallback callback = OperationContext.Current.GetCallbackChannel<IDatabaseCallback>();
-            if (klijenti.Contains(callback) == false)
-            {
+            if (klijenti.Contains(callback) == false) {
                 klijenti.Add(callback);
             }
             List<LogEntity> list = xh.ReturnList();
@@ -36,6 +35,14 @@ namespace CryptoProject
             broadcastIdMessage(id, CallbackOperation.ADD);
 
             Changes.ChangeList.Add(new Tuple<OperationCode, LogEntity>(OperationCode.ADD, entitet));
+
+            try {
+                AuditLoggingSystem.AddLogEntitySuccess(WindowsIdentity.GetCurrent().Name, OperationContext.Current.IncomingMessageHeaders.Action, id);
+            }
+            catch (Exception ex) {
+                Console.WriteLine("Greška prilikom upisa u log fajl.");
+            }
+
             return id;
         }
 
@@ -47,9 +54,9 @@ namespace CryptoProject
             int n = 0, i = 0;
 
             foreach (LogEntity item in xh.ReturnList()) {/////////////////////////////////////////ako klijentu nije dostupna dotican item -> continue
-                                                          //   if (!klijenti[item.Id].Equals(client))
-                                                          //       continue;
-                                                          /////////////////////////////////////////
+                                                         //   if (!klijenti[item.Id].Equals(client))
+                                                         //       continue;
+                                                         /////////////////////////////////////////
                 if (item.Grad.Equals(grad)) {
                     foreach (float f in item.Potrosnja) {
                         cons += item.Potrosnja[i];
@@ -77,13 +84,19 @@ namespace CryptoProject
 
                 broadcastIdMessage(id, CallbackOperation.DELETE);
                 Changes.ChangeList.Add(new Tuple<OperationCode, LogEntity>(OperationCode.DELETE, le));
-                return deletion;
             }
             catch (Exception e) {
                 Console.WriteLine(e);
-                return false;
             }
 
+            try {
+                AuditLoggingSystem.DeleteLogEntitySuccess(WindowsIdentity.GetCurrent().Name, OperationContext.Current.IncomingMessageHeaders.Action, deletion, id);
+            }
+            catch (Exception ex) {
+                Console.WriteLine("Greška prilikom upisa u log fajl.");
+            }
+
+            return deletion;
         }
 
         public List<LogEntity> GetEntitiesForRegions(List<Region> regioni) {
@@ -164,10 +177,18 @@ namespace CryptoProject
 
             }
             le.Potrosnja[month] = consumption;
-            xh.UpdateEntity(le);
+            bool updatesuccess = xh.UpdateEntity(le);
 
             broadcastIdMessage(le.Id, CallbackOperation.UPDATE);
-            Changes.ChangeList.Add(new Tuple<OperationCode, LogEntity>(OperationCode.UPDATE , xh.ReturnList().Find(x => x.Id.Equals(id))));
+            Changes.ChangeList.Add(new Tuple<OperationCode, LogEntity>(OperationCode.UPDATE, xh.ReturnList().Find(x => x.Id.Equals(id))));
+
+            try {
+                AuditLoggingSystem.UpdateLogEntitySuccess(WindowsIdentity.GetCurrent().Name, OperationContext.Current.IncomingMessageHeaders.Action, updatesuccess, id, month, consumption);
+            }
+            catch (Exception ex) {
+                Console.WriteLine("Greška prilikom upisa u log fajl.");
+            }
+
             return le;
         }
 
@@ -177,21 +198,18 @@ namespace CryptoProject
 
             foreach (IDatabaseCallback client in klijenti) {
 
-                try 
-                {
-                    switch(op)
-                    {
+                try {
+                    switch (op) {
                         case CallbackOperation.ADD:
-                                        LogEntity entity = GetLogEntityById(id);
-                                        client.broadcastAddLogEntity(entity.Region,entity.Id);
-                                        break;
-
+                            LogEntity entity = GetLogEntityById(id);
+                            client.broadcastAddLogEntity(entity.Region, entity.Id);
+                            break;
                         case CallbackOperation.UPDATE:
-                                        client.broadcastUpdateId(id);
-                                        break;
+                            client.broadcastUpdateId(id);
+                            break;
                         case CallbackOperation.DELETE:
-                                        client.broadcastDeleteId(id);
-                                        break;
+                            client.broadcastDeleteId(id);
+                            break;
                     }
 
                 }
@@ -207,6 +225,13 @@ namespace CryptoProject
                 klijenti.Remove(client);
             }
 
+            try {
+                AuditLoggingSystem.BroadcastLogEntitySuccess(WindowsIdentity.GetCurrent().Name, OperationContext.Current.IncomingMessageHeaders.Action, op, id, klijenti.Count);
+            }
+            catch (Exception ex) {
+                Console.WriteLine("Greška prilikom upisa u log fajl.");
+            }
+
         }
 
         public LogEntity GetLogEntityById(string id) {
@@ -217,18 +242,15 @@ namespace CryptoProject
             return updateVal;
         }
 
-        public List<LogEntity> GetEntitiesForRegionsString(string regioni)
-        {
+        public List<LogEntity> GetEntitiesForRegionsString(string regioni) {
             throw new NotImplementedException();
         }
 
-        public string GetAverageConsumptionForCityRetStr(string city)
-        {
+        public string GetAverageConsumptionForCityRetStr(string city) {
             throw new NotImplementedException();
         }
 
-        public string GetAverageConsumptionForRegionRetStr(string reg)
-        {
+        public string GetAverageConsumptionForRegionRetStr(string reg) {
             throw new NotImplementedException();
         }
     }

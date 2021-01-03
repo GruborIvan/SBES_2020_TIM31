@@ -1,8 +1,11 @@
 ﻿using Common;
+using SecurityManager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.ServiceModel;
+using System.ServiceModel.Description;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,7 +22,14 @@ namespace CryptoProject
 			ServiceHost host = new ServiceHost(typeof(WCFServer));
 			host.AddServiceEndpoint(typeof(IDatabaseService), binding, address);
 
-			host.Open();
+            ServiceSecurityAuditBehavior newAudit = new ServiceSecurityAuditBehavior();
+            newAudit.AuditLogLocation = AuditLogLocation.Application;
+            newAudit.ServiceAuthorizationAuditLevel = AuditLevel.SuccessOrFailure;
+
+            host.Description.Behaviors.Remove<ServiceSecurityAuditBehavior>();
+            host.Description.Behaviors.Add(newAudit);
+
+            host.Open();
 			Console.WriteLine("WCFService is opened. Press <enter> to finish...");
 
             ///-----------------------------------------------------------------------
@@ -32,7 +42,6 @@ namespace CryptoProject
             string addressServer = "net.tcp://localhost:7000/wcfBackup";
 
             WCFBackupClient proxy = new WCFBackupClient(bindingServer, new EndpointAddress(new Uri(addressServer)));
-
 
             //callbackclient.Proxy = proxy;
             ///-------------------------------------------------------------------------
@@ -53,7 +62,8 @@ namespace CryptoProject
             {
                 Console.WriteLine("2");
                 proxy.sendChanges(Changes.ChangeList);
-                Changes.ChangeList.Clear(); 
+                //AuditLoggingSystem.ChangesTupleListSent(WindowsIdentity.GetCurrent().Name, Changes.ChangeList.Count);
+                Changes.ChangeList.Clear();
                 Thread.Sleep(5000);
             }
         }
