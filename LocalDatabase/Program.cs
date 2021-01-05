@@ -50,6 +50,13 @@ namespace Client
 
             int opt;
 
+            // Odabir regiona od interesa...
+            Console.WriteLine("Odaberite regione od interesa:");
+            database.InterestRegions = Odaberiregione();
+            if (database.InterestRegions != null)
+            {
+                proxy.GetEntitiesForRegions(database.InterestRegions);
+            }
 
             while (true) 
             {
@@ -59,47 +66,49 @@ namespace Client
                 switch (opt) {
 
                     case 1:
-                        database.InterestRegions = Odaberiregione();
-                        if (database.InterestRegions != null) {
-                            proxy.GetEntitiesForRegions(database.InterestRegions);
-                        }
-                        break;
-                    case 2:
                         Region ch = OdaberiRegion();
                         if (ch != Region.Nazad) {
 
                             proxy.GetAverageConsumptionForRegion(ch);
                         }
                         break;
-                    case 3:
+                    case 2:
                         string grad = OdaberiGrad();
                         if (grad != null) {
                             proxy.GetAverageConsumptionForCity(grad);
                         }
                         break;
-                    case 4:
+                    case 3:
                         string package = OdaberiEntitet();
                         if (package != null) {
                             string[] input = package.Split(',');
                             proxy.UpdateConsumption(input[0], int.Parse(input[1]), float.Parse(input[2]));
                         }
                         break;
-                    case 5:
+                    case 4:
                         LogEntity kreiranEntitet = DodajEntitet();
+
                         if (kreiranEntitet != null) {
-                            proxy.AddLogEntity(kreiranEntitet);
+                            if (!database.InterestRegions.Contains(kreiranEntitet.Region))
+                            {
+                                Console.WriteLine("Niste izabrali region za koji ste pretplaceni!");
+                            }
+                            else
+                            {
+                                proxy.AddLogEntity(kreiranEntitet);
+                            }
                         }
                         break;
-                    case 6:
+                    case 5:
                         string identification = IzbrisiEntitet(database);
                         if (identification != null) {
                             proxy.DeleteLogEntity(identification);
                         }
                         break;
-                    case 7:
+                    case 6:
                         IzlistajEntitete();
                         break;
-                    case 8:
+                    case 7:
                         goto labela;
                     default:
                         Console.WriteLine("Nepostojeća opcija je odabrana, molimo pokušajte ponovo.");
@@ -119,10 +128,10 @@ namespace Client
             int ch;
 
             do {
-                Console.WriteLine("1. Prikaži odgovarajuće entitete(odaberi regione).\n2. Izračunaj srednju vrednost potrošnju za region.\n" +
-                "3. Izračunaj srednju vrednost potrošnje za grad.\n4. Ažuriraj mesečnu potrošnju grada.\n5. Dodaj nov entitet.\n6. Obriši postojeći entitet.\n7. Izlistaj entitete.\n8. Izlaz iz programa.");
+                Console.WriteLine("1. Izračunaj srednju vrednost potrošnju za region.\n" +
+                "2. Izračunaj srednju vrednost potrošnje za grad.\n3. Ažuriraj mesečnu potrošnju grada.\n4. Dodaj nov entitet.\n5. Obriši postojeći entitet.\n6. Izlistaj entitete.\n7. Izlaz iz programa.");
 
-            } while (int.TryParse(Console.ReadLine(), out ch) == false || ch < 1 || ch > 8);
+            } while (int.TryParse(Console.ReadLine(), out ch) == false || ch < 1 || ch > 7);
 
 
             return ch;

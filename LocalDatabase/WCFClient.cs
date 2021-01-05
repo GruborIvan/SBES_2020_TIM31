@@ -115,12 +115,14 @@ namespace Client
             }
             catch (FaultException<SecurityException> ex)
             {
+                Trace.TraceInformation(ex.Message);
+                Console.WriteLine(ex.Message);
                 Console.WriteLine("Exception");
             }
             catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 Trace.TraceInformation(e.Message);
-                Console.WriteLine("User not authorized to Read entities for regions!");
                 return null;
             }
 

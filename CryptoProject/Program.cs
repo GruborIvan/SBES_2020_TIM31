@@ -53,7 +53,6 @@ namespace CryptoProject
                 Console.WriteLine("1");
                 Thread.Sleep(2500);
             }
-            Console.ReadLine();
 
         }
         static void threadWhileUpdate(WCFBackupClient proxy)
