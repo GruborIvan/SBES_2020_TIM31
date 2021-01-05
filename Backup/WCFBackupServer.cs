@@ -32,5 +32,28 @@ namespace Backup
 
             return true;
         }
+
+        public List<string> sendCentralDatabaseId(List<string> centraldatabaseids) {
+
+            List<string> listaids = xh.ReturnList().Select(x => x.Id).ToList();
+
+            return centraldatabaseids.FindAll(x => (listaids.Contains(x) == false));
+        }
+
+        public bool sendMissingEntities(List<LogEntity> logentities) {
+
+            foreach (LogEntity entitet in logentities) {
+
+                try {
+                    xh.AddEntity(entitet);
+                }
+                catch (Exception ex) {
+                    Console.WriteLine("Dodat entitet koji vec postoji u bekap bazi.");
+                    return false;
+                }
+            }
+
+            return true;
+        }
     }
 }

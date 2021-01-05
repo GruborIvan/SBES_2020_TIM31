@@ -45,6 +45,7 @@ namespace CryptoProject
 
             //callbackclient.Proxy = proxy;
             ///-------------------------------------------------------------------------
+            synchronizeBackup(proxy);
 
             Thread t = new Thread(() => threadWhileUpdate(proxy));
             t.Start();
@@ -65,6 +66,16 @@ namespace CryptoProject
                 Changes.ChangeList.Clear();
                 Thread.Sleep(5000);
             }
+        }
+
+        static void synchronizeBackup(WCFBackupClient proxy) {
+
+            XmlHandler xh = new XmlHandler();
+            List<string> missingids = proxy.sendCentralDatabaseId(xh.ReturnList().Select(x => x.Id).ToList());
+
+            List<LogEntity> missingentities = xh.ReturnList().FindAll(x => missingids.Contains(x.Id));
+            proxy.sendMissingEntities(missingentities);
+
         }
     }
 

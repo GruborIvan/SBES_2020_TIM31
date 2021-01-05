@@ -17,16 +17,13 @@ namespace Backup
         static readonly object pblock = new object();
 
 
-        public XmlHandler()
-        {
+        public XmlHandler() {
 
-            if (!File.Exists("backup.xml"))
-            {
+            if (!File.Exists("backup.xml")) {
                 XmlWriterSettings xws = new XmlWriterSettings();
                 xws.Indent = true;
                 xws.NewLineOnAttributes = true;
-                using (XmlWriter xmlwriter = XmlWriter.Create("backup.xml", xws))
-                {
+                using (XmlWriter xmlwriter = XmlWriter.Create("backup.xml", xws)) {
                     xmlwriter.WriteStartDocument();
                     xmlwriter.WriteStartElement("ArrayOfLogEntity");
                     xmlwriter.WriteEndElement();
@@ -35,10 +32,8 @@ namespace Backup
                 }
 
             }
-            else
-            {
-                if (ListaLogEntity.Count == 0)
-                {
+            else {
+                if (ListaLogEntity.Count == 0) {
                     List<LogEntity> ArrayOfLogEntity = new List<LogEntity>();
                     string xmlstring = File.ReadAllText("backup.xml");
                     XmlSerializer ser = new XmlSerializer(typeof(List<LogEntity>), new XmlRootAttribute("ArrayOfLogEntity"));
@@ -48,13 +43,11 @@ namespace Backup
                 }
             }
         }
-        public void UpdateDictionary(List<LogEntity> lista)
-        {
-            lock (pblock)
-            {
+
+        public void UpdateDictionary(List<LogEntity> lista) {
+            lock (pblock) {
                 Console.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>ITEMI IZ BAZE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-                foreach (var item in lista)
-                {
+                foreach (var item in lista) {
                     Console.WriteLine("------------------------------------------------------------");
                     ListaLogEntity.Add(item.Id, item);
                     Console.WriteLine("ID: " + item.Id + " Grad: " + item.Grad + " Godina: " + item.Godina + " Region: " + item.Region);
@@ -63,24 +56,46 @@ namespace Backup
                 Console.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             }
         }
-        public List<LogEntity> ReturnList()
-        {
-            lock (pblock)
-            {
+
+        public List<LogEntity> ReturnList() {
+            lock (pblock) {
                 List<LogEntity> entries = new List<LogEntity>(ListaLogEntity.Count);
-                foreach (string key in ListaLogEntity.Keys)
-                {
+                foreach (string key in ListaLogEntity.Keys) {
                     entries.Add(ListaLogEntity[key]);
                 }
                 return entries;
             }
         }
-        public string AddEntity(LogEntity le)
-        {
-            lock (pblock)
-            {
-                ListaLogEntity.Add(le.Id, le);
 
+        public string AddEntity(LogEntity le) {
+            lock (pblock) {
+
+                int i = 0;
+                try {
+
+                    ListaLogEntity.Add(le.Id, le);
+
+                }
+                catch (Exception ex) {
+
+                    LogEntity entitet = ListaLogEntity[le.Id];
+                    while (true) {
+
+                        if (ListaLogEntity.ContainsKey(le.Id + "old" + i.ToString()) == false) {
+                            entitet.Id = le.Id + "old" + i.ToString();
+                            break;
+
+                        }
+                        else {
+                            i++;
+                        }
+                    }
+                    
+                    AddEntity(entitet);
+                    UpdateEntity(le);
+
+                    return le.Id;
+                }
 
                 XDocument doc = XDocument.Load("backup.xml");
                 XElement lista = doc.Element("ArrayOfLogEntity");
@@ -93,8 +108,7 @@ namespace Backup
                 XElement GrdEle = new XElement("Grad", le.Grad);
                 XElement PotEle = new XElement("Potrosnja");
 
-                foreach (float item in le.Potrosnja)
-                {
+                foreach (float item in le.Potrosnja) {
                     PotEle.Add(
                         new XElement("float", item.ToString())
                         );
@@ -116,15 +130,13 @@ namespace Backup
                 return le.Id;
             }
         }
-        public bool DeleteEntity(string id)
-        {
-            lock (pblock)
-            {
+
+        public bool DeleteEntity(string id) {
+            lock (pblock) {
                 string xmlEntitet = "";
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(LogEntity));
 
-                using (StringWriter textWriter = new StringWriter())
-                {
+                using (StringWriter textWriter = new StringWriter()) {
                     xmlSerializer.Serialize(textWriter, ListaLogEntity[id]);
                     xmlEntitet = textWriter.ToString();
                 }
@@ -135,8 +147,7 @@ namespace Backup
 
                 ListaLogEntity.Remove(id);
 
-                if (xmlNode != null)
-                {
+                if (xmlNode != null) {
                     xmlNode.ParentNode.RemoveChild(xmlNode);
                     doc.Save("backup.xml");
                     return true;
@@ -145,12 +156,10 @@ namespace Backup
                 return false;
             }
         }
-        public bool UpdateEntity(LogEntity le)
-        {
-            lock (pblock)
-            {
-                if (ListaLogEntity.ContainsKey(le.Id))
-                {
+
+        public bool UpdateEntity(LogEntity le) {
+            lock (pblock) {
+                if (ListaLogEntity.ContainsKey(le.Id)) {
 
                     ListaLogEntity[le.Id] = le;
 
@@ -161,18 +170,15 @@ namespace Backup
                                 select item;
 
 
-                    foreach (XElement ielement in items)
-                    {
+                    foreach (XElement ielement in items) {
 
                         ielement.SetElementValue("Region", le.Region.ToString());
                         ielement.SetElementValue("Grad", le.Grad.ToString());
                         ielement.SetElementValue("Godina", le.Godina.ToString());
 
-
                         int i = 0;
 
-                        foreach (var pot in items.Descendants("Potrosnja").Descendants("float"))
-                        {
+                        foreach (var pot in items.Descendants("Potrosnja").Descendants("float")) {
                             pot.SetValue(le.Potrosnja[i]);
                             i++;
                             if (i == le.Potrosnja.Count)
@@ -186,8 +192,6 @@ namespace Backup
                 return false;
             }
         }
-        
-        
 
     }
 }

@@ -10,7 +10,13 @@ namespace Common
     [ServiceContract]
     public interface IBackupServer
     {
+
+        [OperationContract]
+        List<string> sendCentralDatabaseId(List<string> centraldatabaseids);
+        [OperationContract]
+        bool sendMissingEntities(List<LogEntity> logentities);
         [OperationContract]
         bool sendChanges(List<Tuple<OperationCode, LogEntity>> promena);
+
     }
 }

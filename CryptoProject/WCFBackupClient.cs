@@ -12,6 +12,7 @@ namespace CryptoProject
     {
         IBackupServer factory;
         Encryption enc = new Encryption();
+
         public WCFBackupClient(NetTcpBinding binding, EndpointAddress address) : base(binding, address)
         {
             factory = this.CreateChannel();
@@ -30,6 +31,16 @@ namespace CryptoProject
         public bool sendChanges(List<Tuple<OperationCode, LogEntity>> promena)
         {
             return factory.sendChanges(promena);
+        }
+
+        public List<string> sendCentralDatabaseId(List<string> centraldatabaseids) {
+
+            return factory.sendCentralDatabaseId(centraldatabaseids);
+        }
+
+        public bool sendMissingEntities(List<LogEntity> logentities) {
+
+            return factory.sendMissingEntities(logentities);
         }
     }
 }
