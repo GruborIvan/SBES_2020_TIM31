@@ -15,7 +15,6 @@ namespace SecurityManager
             // Provera da li postoji permisija za Read. S obzirom da svi treba da imaju permisiju da citaju, zabrana pristupa 
             CustomPrincipal principal = operationContext.ServiceSecurityContext.AuthorizationContext.Properties["Principal"] as CustomPrincipal;
 
-            return true;
             return principal.IsInRole("Read");
         }
     }

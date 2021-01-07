@@ -12,17 +12,18 @@ namespace CertificationManager
 {
     public class CentralDataBaseCertValidator : X509CertificateValidator
     {
-         //u parametru dobijam client cert
         public override void Validate(X509Certificate2 localDBcertificate)
         {
-            Debugger.Launch();
+            //Debugger.Launch();
             X509Certificate2 cdbCert = CertManager.GetCertificateFromStorage(StoreName.My, StoreLocation.LocalMachine,
                 Formatter.ParseName(WindowsIdentity.GetCurrent().Name));
 
-            if (!localDBcertificate.Issuer.Equals("CN=CentralDbCA"))
+            Console.WriteLine("Issuer Local DataBase: " + localDBcertificate.Issuer);
+            Console.WriteLine("SubjectName Central DataBase: " + cdbCert.Subject);
+
+            if (!localDBcertificate.Issuer.Equals(cdbCert.Subject))
             {
-                Console.WriteLine("Certificate nisu izdala ista CA!");
-                //throw new Exception("EX: Certificate nisu izdala ista CA!!!!!!!!");
+                throw new Exception("Issuer i Subject se ne poklapaju!");
             }
         }
     }

@@ -22,7 +22,7 @@ namespace LocalDBase
 
         }
 
-        //[PrincipalPermission(SecurityAction.Demand, Role = "Admin")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "Admin")]
         public string AddLogEntity(LogEntity entitet)
         {
             LogEntity ent = Encryption.decryptLogEntity(entitet.Grad);
@@ -34,7 +34,7 @@ namespace LocalDBase
             return Convert.ToBase64String(Encryption.Encrypt(proxy.AddLogEntity(ent)));
         }
 
-        //[PrincipalPermission(SecurityAction.Demand, Role = "Admin")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "Admin")]
         public bool DeleteLogEntity(string id)
         {
 
@@ -42,7 +42,7 @@ namespace LocalDBase
             return proxy.DeleteLogEntity(ajdi);
         }
 
-        //[PrincipalPermission(SecurityAction.Demand, Role = "Calculate")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "Calculate")]
         public float GetAverageConsumptionForCity(string city)
         {
             throw new NotImplementedException();
@@ -101,7 +101,7 @@ namespace LocalDBase
             proxy.testServerMessage(message);
         }
 
-        //[PrincipalPermission(SecurityAction.Demand, Role = "Modify")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "Modify")]
         public LogEntity UpdateConsumption(string id, int month, float consumption)
         {
             LogEntity le = Encryption.decryptLogEntity(id);
@@ -115,7 +115,7 @@ namespace LocalDBase
             throw new NotImplementedException();
         }
 
-        //[PrincipalPermission(SecurityAction.Demand, Role = "Calculate")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "Calculate")]
         public string GetAverageConsumptionForCityRetStr(string city)
         {
             city = Encryption.Decrypt(Convert.FromBase64String(city));
@@ -124,7 +124,7 @@ namespace LocalDBase
             return Encryption.encryptFloat(potrosnja);
         }
 
-        //[PrincipalPermission(SecurityAction.Demand, Role = "Calculate")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "Calculate")]
         public string GetAverageConsumptionForRegionRetStr(string reg)
         {
             List<Region> regs = Encryption.decryptLogListRegion(reg);

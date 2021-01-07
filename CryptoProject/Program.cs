@@ -1,11 +1,14 @@
-﻿using Common;
+﻿using CertificationManager;
+using Common;
 using SecurityManager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.ServiceModel;
 using System.ServiceModel.Description;
+using System.ServiceModel.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +19,11 @@ namespace CryptoProject
     {
         static void Main(string[] args) {
 
-			NetTcpBinding binding = new NetTcpBinding();
+            string centralDbCertCN = CertificationManager.Formatter.ParseName(WindowsIdentity.GetCurrent().Name);
+
+            NetTcpBinding binding = new NetTcpBinding();
+
+            binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Certificate;
 			string address = "net.tcp://localhost:9998/wcfserver";
 
 			ServiceHost host = new ServiceHost(typeof(WCFServer));
@@ -28,6 +35,13 @@ namespace CryptoProject
 
             host.Description.Behaviors.Remove<ServiceSecurityAuditBehavior>();
             host.Description.Behaviors.Add(newAudit);
+
+            host.Credentials.ClientCertificate.Authentication.CertificateValidationMode = X509CertificateValidationMode.Custom;
+            host.Credentials.ClientCertificate.Authentication.CustomCertificateValidator = new CentralDataBaseCertValidator();
+
+            host.Credentials.ClientCertificate.Authentication.RevocationMode = X509RevocationMode.NoCheck;
+
+            host.Credentials.ServiceCertificate.Certificate = CertManager.GetCertificateFromStorage(StoreName.My, StoreLocation.LocalMachine, centralDbCertCN);
 
             host.Open();
 			Console.WriteLine("WCFService is opened. Press <enter> to finish...");
@@ -51,7 +65,7 @@ namespace CryptoProject
             t.Start();
             while (true)
             {
-                Console.WriteLine("1");
+                //Console.WriteLine("1");
                 Thread.Sleep(2500);
             }
 
@@ -60,9 +74,16 @@ namespace CryptoProject
         {
             while (true)
             {
-                Console.WriteLine("2");
+                //Console.WriteLine("2");
                 proxy.sendChanges(Changes.ChangeList);
-                //AuditLoggingSystem.ChangesTupleListSent(WindowsIdentity.GetCurrent().Name, Changes.ChangeList.Count);
+                try
+                {
+                    //AuditLoggingSystem.ChangesTupleListSent(WindowsIdentity.GetCurrent().Name, Changes.ChangeList.Count);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
                 Changes.ChangeList.Clear();
                 Thread.Sleep(5000);
             }
