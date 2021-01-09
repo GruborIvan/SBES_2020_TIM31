@@ -134,7 +134,7 @@ namespace LocalDBase
 
             foreach (LogEntity entitet in lista)
             {
-                if (xh.ReturnList().Find(x => x.Id == entitet.Id) == null)
+                if (!xh.IfContains(entitet.Id))
                 {
                     xh.AddEntity(entitet);
                 }

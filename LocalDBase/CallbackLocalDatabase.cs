@@ -28,7 +28,7 @@ namespace LocalDBase
 
                         Console.WriteLine("Odradjen add za id: {0}.", id);
 
-                        if (handler.ReturnList().Find(x => x.Id == id) == null) {
+                        if (!handler.IfContains(id)) {
                             proxy = proxyCaller.proxy;
                             LogEntity entitet = proxy.GetLogEntityById(id);
                             handler.AddEntity(entitet);
@@ -60,7 +60,7 @@ namespace LocalDBase
 
                 try {
 
-                    if (handler.ReturnList().Find(x => x.Id == id) != null) {
+                    if (handler.IfContains(id)) {
                         Console.WriteLine("Odradjen delete za id: {0}.\n", id);
                         handler.DeleteEntity(id);
                     }
@@ -89,7 +89,7 @@ namespace LocalDBase
 
                 try {
 
-                    if (handler.ReturnList().Find(x => x.Id == id) != null) {
+                    if (handler.IfContains(id)) {
                         Console.WriteLine("Odradjen update za id: {0}.", id);
                         proxy = proxyCaller.proxy;
                         LogEntity entitet = proxy.GetLogEntityById(id);

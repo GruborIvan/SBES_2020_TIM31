@@ -94,6 +94,14 @@ namespace LocalDBase
             }
         }
 
+        public bool IfContains(string id)
+        {
+            lock (pblock)
+            {
+                return ListaLogEntity.ContainsKey(id);
+            }
+        }
+
         public bool DeleteEntity(string id) {
             lock (pblock) {
                 string xmlEntitet = "";

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Common;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,19 +8,19 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common
+namespace Client
 {
-    public class Encryption
+    public class EncryptionClient
     {
         private static byte[] Key;
         private static byte[] IV;
 
-        public Encryption()
+        public EncryptionClient()
         {
 
         }
          
-        public Encryption(byte[] key1, byte[] IV1)
+        public EncryptionClient(byte[] key1, byte[] IV1)
         {
             Key = key1;
             IV = IV1;

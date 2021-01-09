@@ -13,6 +13,9 @@ namespace Client
     {
         
         static void Main(string[] args) {
+
+            new EncryptionClient(KeyClass.Key, KeyClass.IV);
+
             Database database = new Database();
             int localdb = 0;
             CallbackClient callbackclient = new CallbackClient();
@@ -34,6 +37,7 @@ namespace Client
 
                 try 
                 { 
+
                     proxy.testServerMessage("Hello from client to server."); 
                 }
                 catch (Exception e) 

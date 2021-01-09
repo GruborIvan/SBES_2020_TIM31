@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Common;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,22 +8,21 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common
+namespace LocalDBase
 {
-    public class Encryption
+    public class EncryptionLocalDB
     {
         private static byte[] Key;
-        private static byte[] IV;
+        private static readonly byte[] IV = Convert.FromBase64String("Aq0UThtJhjbuyWXtmZs1rw==");
 
-        public Encryption()
+        public EncryptionLocalDB()
         {
 
         }
          
-        public Encryption(byte[] key1, byte[] IV1)
+        public EncryptionLocalDB(byte[] key1)
         {
             Key = key1;
-            IV = IV1;
         }
 
 

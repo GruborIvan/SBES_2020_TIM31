@@ -28,9 +28,9 @@ namespace SecurityManager
                 SecurityIdentifier sid = (SecurityIdentifier)group.Translate(typeof(SecurityIdentifier));
                 var name = sid.Translate(typeof(NTAccount));
 
-                Console.WriteLine($"Full name: {name.ToString()}");
+                //Console.WriteLine($"Full name: {name.ToString()}");
                 string groupName = Formatter.ParseName(name.ToString());
-                Console.WriteLine($"Formatted name: {groupName.ToString()}");
+                //Console.WriteLine($"Formatted name: {groupName.ToString()}");
                 string[] permissions;
 
                 if (RolesConfig.GetPermissions(groupName, out permissions))

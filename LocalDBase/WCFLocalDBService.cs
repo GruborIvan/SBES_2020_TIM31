@@ -12,7 +12,7 @@ namespace LocalDBase
     [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant)]
     class WCFLocalDBService : IDatabaseService
     {
-        Encryption enc = new Encryption();
+        EncryptionLocalDB enc = new EncryptionLocalDB();
         IDatabaseService proxy = null;
         public static Dictionary<IDatabaseCallback, List<Region>> klijenti = new Dictionary<IDatabaseCallback, List<Region>>();
 
@@ -25,13 +25,13 @@ namespace LocalDBase
         [PrincipalPermission(SecurityAction.Demand, Role = "Admin")]
         public string AddLogEntity(LogEntity entitet)
         {
-            LogEntity ent = Encryption.decryptLogEntity(entitet.Grad);
+            LogEntity ent = EncryptionLocalDB.decryptLogEntity(entitet.Grad);
             IDatabaseCallback callback = OperationContext.Current.GetCallbackChannel<IDatabaseCallback>();
             if (klijenti.ContainsKey(callback) == false) {
                 klijenti.Add(callback, new List<Region>());
             }
             
-            return Convert.ToBase64String(Encryption.Encrypt(proxy.AddLogEntity(ent)));
+            return Convert.ToBase64String(EncryptionLocalDB.Encrypt(proxy.AddLogEntity(ent)));
         }
 
         [PrincipalPermission(SecurityAction.Demand, Role = "Admin")]
@@ -64,7 +64,7 @@ namespace LocalDBase
         {
             IDatabaseCallback callback = OperationContext.Current.GetCallbackChannel<IDatabaseCallback>();
 
-            List<Region> reg = Encryption.decryptLogListRegion(regioni);
+            List<Region> reg = EncryptionLocalDB.decryptLogListRegion(regioni);
             List<LogEntity> lle = proxy.GetEntitiesForRegions(reg);
 
             if (klijenti.ContainsKey(callback) == false)
@@ -76,7 +76,7 @@ namespace LocalDBase
             int i = 0;
             foreach (LogEntity item in lle)
             {
-                lle[i].Grad = Encryption.encryptLogEntity(item);
+                lle[i].Grad = EncryptionLocalDB.encryptLogEntity(item);
                 lle[i].Godina = 1;
                 lle[i].Id = "";
                 lle[i].Region = Region.Banat;
@@ -89,24 +89,26 @@ namespace LocalDBase
         public LogEntity GetLogEntityById(string id)
         {
 
-            string decryptedid = Encryption.Decrypt(Convert.FromBase64String(id));
+            string decryptedid = EncryptionLocalDB.Decrypt(Convert.FromBase64String(id));
             LogEntity lent = proxy.GetLogEntityById(decryptedid);
-            lent.Grad = Encryption.encryptLogEntity(lent);
+            lent.Grad = EncryptionLocalDB.encryptLogEntity(lent);
 
             return lent;
         }
 
         public void testServerMessage(string message)
         {
+            RSAKeyClass.DecryptData(message);
+            message = "Hello from Local DataBase! :) xD";
             proxy.testServerMessage(message);
         }
 
         [PrincipalPermission(SecurityAction.Demand, Role = "Modify")]
         public LogEntity UpdateConsumption(string id, int month, float consumption)
         {
-            LogEntity le = Encryption.decryptLogEntity(id);
+            LogEntity le = EncryptionLocalDB.decryptLogEntity(id);
             LogEntity lent = new LogEntity();
-            lent.Grad = Encryption.encryptLogEntity(proxy.UpdateConsumption(le.Id, le.Godina, le.Potrosnja[0]));
+            lent.Grad = EncryptionLocalDB.encryptLogEntity(proxy.UpdateConsumption(le.Id, le.Godina, le.Potrosnja[0]));
             return lent;
         }
 
@@ -118,19 +120,19 @@ namespace LocalDBase
         [PrincipalPermission(SecurityAction.Demand, Role = "Calculate")]
         public string GetAverageConsumptionForCityRetStr(string city)
         {
-            city = Encryption.Decrypt(Convert.FromBase64String(city));
+            city = EncryptionLocalDB.Decrypt(Convert.FromBase64String(city));
             ProsPotrosnja potrosnja = new ProsPotrosnja();
             potrosnja.Potrosnja = proxy.GetAverageConsumptionForCity(city);
-            return Encryption.encryptFloat(potrosnja);
+            return EncryptionLocalDB.encryptFloat(potrosnja);
         }
 
         [PrincipalPermission(SecurityAction.Demand, Role = "Calculate")]
         public string GetAverageConsumptionForRegionRetStr(string reg)
         {
-            List<Region> regs = Encryption.decryptLogListRegion(reg);
+            List<Region> regs = EncryptionLocalDB.decryptLogListRegion(reg);
             ProsPotrosnja potrosnja = new ProsPotrosnja();
             potrosnja.Potrosnja = proxy.GetAverageConsumptionForRegion(regs[0]);
-            return Encryption.encryptFloat(potrosnja);
+            return EncryptionLocalDB.encryptFloat(potrosnja);
         }
     }
 }

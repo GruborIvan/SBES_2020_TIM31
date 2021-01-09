@@ -15,7 +15,7 @@ namespace Client
     {
 
         IDatabaseService factory;
-        Encryption enc = new Encryption();
+        EncryptionClient enc = new EncryptionClient();
         public WCFClient(object callbackInstance, NetTcpBinding binding, EndpointAddress address) : base(callbackInstance, binding, address) 
         {
             factory = this.CreateChannel();
@@ -24,7 +24,7 @@ namespace Client
         public string AddLogEntity(LogEntity entitet) {
 
             Database db = new Database();
-            string ent = Encryption.encryptLogEntity(entitet);
+            string ent = EncryptionClient.encryptLogEntity(entitet);
             entitet.Grad = ent;
             string Id = "";
             
@@ -40,8 +40,8 @@ namespace Client
                 return null;
             }
 
-            entitet = Encryption.decryptLogEntity(ent);
-            entitet.Id = Encryption.Decrypt(Convert.FromBase64String( Id));
+            entitet = EncryptionClient.decryptLogEntity(ent);
+            entitet.Id = EncryptionClient.Decrypt(Convert.FromBase64String( Id));
             Console.WriteLine("AJDI JE: " + entitet.Id);
             if (entitet.Id == null)
             {
@@ -70,7 +70,7 @@ namespace Client
                 return 0;
             }
 
-            potrosnja = Encryption.decryptFloat(ret);
+            potrosnja = EncryptionClient.decryptFloat(ret);
             Console.WriteLine($"Prosečna godišnja potrošnja za {grad} je: {potrosnja.Potrosnja} [kW/h]");
             return potrosnja.Potrosnja;
         }
@@ -107,7 +107,7 @@ namespace Client
             List<LogEntity> entiteti = new List<LogEntity>();
             Database db = new Database();
 
-            string reg = Encryption.encryptListRegion(regioni);
+            string reg = EncryptionClient.encryptListRegion(regioni);
 
             try
             {
@@ -130,7 +130,7 @@ namespace Client
             List<LogEntity> lle = new List<LogEntity>();
             foreach(LogEntity item in entiteti)
             {
-                lle.Add(Encryption.decryptLogEntity(entiteti[i].Grad));
+                lle.Add(EncryptionClient.decryptLogEntity(entiteti[i].Grad));
                 i++;
             }
 
@@ -149,7 +149,7 @@ namespace Client
             ProsPotrosnja potrosnja;
             List<Region> r = new List<Region>();
             r.Add(reg);
-            string send = Encryption.encryptListRegion(r);
+            string send = EncryptionClient.encryptListRegion(r);
             string ret = String.Empty;
 
             try
@@ -163,7 +163,7 @@ namespace Client
                 return 0;
             }
 
-            potrosnja = Encryption.decryptFloat(ret);
+            potrosnja = EncryptionClient.decryptFloat(ret);
 
             Console.WriteLine($"Prosečna godišnja potrošnja za {reg} je : {potrosnja.Potrosnja} [kW/h]");
 
@@ -172,6 +172,9 @@ namespace Client
 
         public void testServerMessage(string message) {
             try {
+                byte[] arr = KeyClass.encrKey();
+                message = Convert.ToBase64String(arr);
+                
                 factory.testServerMessage(message);
             }
             catch(Exception e)
@@ -190,7 +193,7 @@ namespace Client
                 le.Id = id;
                 le.Godina = month;
                 le.Potrosnja.Add(consumption);
-                string logent = Encryption.encryptLogEntity(le);
+                string logent = EncryptionClient.encryptLogEntity(le);
 
                 month = 0;
                 consumption = 0;
@@ -233,7 +236,7 @@ namespace Client
                 return null;
             }
           
-            entitet = Encryption.decryptLogEntity(entitet.Grad);
+            entitet = EncryptionClient.decryptLogEntity(entitet.Grad);
             return entitet;
         }
 
